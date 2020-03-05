@@ -6,7 +6,12 @@
         <script src="//d3js.org/topojson.v2.min.js"></script>
         <link rel="stylesheet" type="text/css" href="map_style.css" />
 
+        <div id="logo"></div>
+
         <script>
+
+            var logo = d3.select("#logo");
+            logo.append('img').attr('src', 'f1_logo.png');
 
             var width = window.innerWidth,
                 height = window.innerHeight,
@@ -134,7 +139,6 @@
 
                 svg.transition()
                     .duration(750)
-                    // .call(zoom.translate(translate).scale(scale).event); // not in d3 v4
                     .call( zoom.transform, d3.zoomIdentity.translate(translate[0],translate[1]).scale(scale) ); // updated for d3 v4
             }
 
