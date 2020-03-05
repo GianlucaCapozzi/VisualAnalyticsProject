@@ -2,7 +2,6 @@
     <meta charset="utf-8">
 
     <body>
-        <script src="trip_data.js"></script>
         <script src="//d3js.org/d3.v4.min.js"></script>
         <script src="//d3js.org/topojson.v2.min.js"></script>
         <link rel="stylesheet" type="text/css" href="map_style.css" />
@@ -113,16 +112,14 @@
                             //console.log(c.long + " " + c.lat);
                             return projection([+c.long, +c.lat])[1];
                         })
-                        .attr("r", 3)
+                        .attr("r", 1)
                         .style("fill", "red")
                         .on("click", function(d) {
                             console.log("click", d);
-                            if(active.node() === this) {
-                                d3.select(this).classed("")
-                            }
                             div
-                                .style("left", d3.event.pageX - 70 +"px")
-                                .style("top", d3.event.pageY - 90 + "px")
+                                .style("left", d3.event.pageX + "px")
+                                .style("top", d3.event.pageY + "px")
+                                .style("opacity", .9)
                                 .style("display", "inline-block")
                                 .html(d.name);
                         });
@@ -147,6 +144,8 @@
 
                 var circles = svg.selectAll("circle");
                 circles.remove();
+
+                div.style("opacity", 0);
 
                 svg.transition()
                     .duration(750)
