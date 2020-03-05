@@ -31,7 +31,7 @@
                 .on("click", reset);
 
             var g = svg.append("g");
-            
+
             // Define the div for the tooltip
             var div = d3.select("body")
                 .append("div")
@@ -39,7 +39,7 @@
 
             var countries_with_circ = [];
 
-            d3.csv("formula-1-race-data-19502017/circuits.csv", function(csv){
+            d3.csv("formula-1-race-data/circuits.csv", function(csv){
                 csv.map(function(d){
                     if(!countries_with_circ.includes(d.country)) {
                         countries_with_circ.push(d.country);
@@ -95,7 +95,7 @@
                 active = d3.select(this).classed("active", true);
                 var loc = d.properties.name;
 
-                d3.csv("formula-1-race-data-19502017/circuits.csv", function(error2, data){
+                d3.csv("formula-1-race-data/circuits.csv", function(error2, data){
                     if(error2, data) console.log(error2);
                     g.selectAll("circle")
                         .data(data
