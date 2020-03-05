@@ -16,7 +16,7 @@
             var projection = d3.geoMercator()
                 .scale(width / 15)
                 .translate([width / 2, height / 2]);
-            
+
             var zoom = d3.zoom().on("zoom", zoomed);
             var path = d3.geoPath().projection(projection);
 
@@ -35,7 +35,7 @@
 
             var countries_with_circ = [];
 
-            d3.csv("circuits.csv", function(csv){
+            d3.csv("formula-1-race-data-19502017/circuits.csv", function(csv){
                 csv.map(function(d){
                     if(!countries_with_circ.includes(d.country)) {
                         countries_with_circ.push(d.country);
@@ -44,7 +44,7 @@
             });
 
             //console.log(countries_with_circ);
-            
+
             //svg
                 //.call(zoom); // delete this line to disable free zooming
                 // .call(zoom.event); // not in d3 v4
@@ -63,7 +63,7 @@
                 // Color countries with at least one circuit
                 g.selectAll("path")
                     .style("fill", colorCountry);
-                
+
                 // Insert borders
                 g.append("path")
                     .datum(topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }))
@@ -86,11 +86,12 @@
 
             function clicked(d) {
                 if (active.node() === this) return reset();
+                reset();
                 active.classed("active", false);
                 active = d3.select(this).classed("active", true);
                 var loc = d.properties.name;
-                
-                d3.csv("circuits.csv", function(error2, data){
+
+                d3.csv("formula-1-race-data-19502017/circuits.csv", function(error2, data){
                     if(error2, data) console.log(error2);
                     g.selectAll("circle")
                         .data(data
