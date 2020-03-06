@@ -25,9 +25,13 @@ var rect = svg.append("rect")
 var g = svg.append("g");
 
 var countries_with_circ = [];
-var tracks = []
+var tracks = [];
+var racesId = [];
+var raceId;
+var res;
 
 var year = $("#yearSelect").val();
+
 
 d3.queue()
         .defer(d3.csv, circuits)
@@ -38,19 +42,20 @@ function processRacesByYear(err, circ, rac) {
     rac.forEach(r => {
         //console.log("YEAR: " + r.year);
         if(r.year == year) {
-            console.log("YEAR: " + r.year);
             circ.forEach(c => {
                 if(r.circuitId === c.circuitId) {
                     if(!tracks.includes(c.name)) {
                         //console.log(c.name);
                         countries_with_circ.push(c.country);
                         tracks.push(c.name);
+                        racesId[c.name] = r.raceId;
                     }
                 }
             });
         }
     });
-    console.log(tracks);
+    updateData();
+    console.log(racesId);
 }
 
 
@@ -64,21 +69,28 @@ $("#yearSelect").on("change", function() {
         .defer(d3.csv, circuits)
         .defer(d3.csv, races)
         .await(processRacesByYear);
+
+    function processRacesByYear(err, circ, rac) {
+        rac.forEach(r => {
+            //console.log("YEAR: " + r.year);
+            if(r.year == year) {
+                circ.forEach(c => {
+                    if(r.circuitId === c.circuitId) {
+                        if(!tracks.includes(c.name)) {
+                            //console.log(c.name);
+                            countries_with_circ.push(c.country);
+                            tracks.push(c.name);
+                            racesId[c.name] = r.raceId;
+                        }
+                    }
+                });
+            }
+        });
+        updateData();
+        console.log(racesId);
+    }
+        
 });
-
-/*
-d3.csv(circuits, function(csv){
-    csv.map(function(d){
-        if(!countries_with_circ.includes(d.country)) {
-            countries_with_circ.push(d.country);
-        }
-    });
-});
-*/
-
-//console.log("YEAR: " + year.options[year.selectedIndex].value);
-
-//console.log(countries_with_circ);
 
 function updateData() {
     reset();
@@ -112,11 +124,7 @@ function updateData() {
 
 }
 
-//svg
-    //.call(zoom); // delete this line to disable free zooming
-    // .call(zoom.event); // not in d3 v4
 
-updateData();
 
 // color country
 function colorCountry(country) {
@@ -159,8 +167,6 @@ function clicked(d) {
             .attr("r", 3)
             .style("fill", "red")
             .on("mouseover", function(d) {
-                console.log("click", d);
-
                 // Add tooltip
                 $(".tooltip")
                             .css("transition", "1s")
@@ -176,11 +182,13 @@ function clicked(d) {
                             .css("opacity", 0);
             })
             .on("click", function(d) {
-                //window.location.assign("http://en.wikipedia.org");
                 var active = mapID.active ? false : true,
                     newOpacity = active ? 0.3 : 1;
                 g.selectAll("#mapID").style("opacity", newOpacity);
                 mapID.active = active
+                raceId = racesId[d.name];
+                //console.log(raceId);
+                getResults();
                 g.append("text")
                     .attr("x", 10)
                     .attr("y", 20)
@@ -201,6 +209,26 @@ function clicked(d) {
     svg.transition()
         .duration(750)
         .call( zoom.transform, d3.zoomIdentity.translate(translate[0],translate[1]).scale(scale) ); // updated for d3 v4
+}
+
+function getResults() {
+    d3.queue()
+        .defer(d3.csv, drivers)
+        .defer(d3.csv, results)
+        .await(processRace);
+}
+
+function processRace(err, drvs, rsts) {
+    rsts.forEach(race => {
+        //console.log(race.raceId);
+        if(race.raceId === raceId) {
+            drvs.forEach(driver => {
+                if(driver.driverId === race.driverId) {
+                    console.log(driver.driverRef + " " + race.positionText);
+                }
+            });
+        }
+    });
 }
 
 function reset() {
