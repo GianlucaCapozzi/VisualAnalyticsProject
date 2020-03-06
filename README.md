@@ -13,5 +13,5 @@ Final project for Visual Analytics course
 ## Demo
 Click on the image for the interactive demo
 <p align="center">
-    <a href="#"><img src="src/images/f1_logo.png"><a>
+    <a href="https://gianlucacapozzi.github.io/VisualAnalyticsProject/main.html"><img src="src/images/f1_logo.png"><a>
 </p>
