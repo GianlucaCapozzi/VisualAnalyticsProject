@@ -3,9 +3,10 @@ var width = window.innerWidth / 2,
     height = window.innerHeight / 2,
     active = d3.select(null);
 
-var projection = d3.geoMercator()
-    .scale(width / 15)
-    .translate([width / 2, height / 2]);
+var projection = d3.geoEquirectangular()
+    .center([0, 15]) // set centre to further North as we are cropping more off bottom of map
+    .scale(width / 6) // scale to fit group width
+    .translate([width / 2, height / 2]); // ensure centred in group
 
 var zoom = d3.zoom().on("zoom", zoomed);
 var path = d3.geoPath().projection(projection);
@@ -15,7 +16,7 @@ var svg = d3.select("#mapView").append("svg")
     .attr("height", height)
     .on("click", stopped, true);
 
-svg.append("rect")
+var rect = svg.append("rect")
     .attr("class", "background")
     .attr("width", width)
     .attr("height", height)
@@ -63,26 +64,6 @@ $("#yearSelect").on("change", function() {
         .defer(d3.csv, circuits)
         .defer(d3.csv, races)
         .await(processRacesByYear);
-
-    function processRacesByYear(err, circ, rac) {
-        rac.forEach(r => {
-            //console.log("YEAR: " + r.year);
-            if(r.year == year) {
-                console.log("YEAR: " + r.year);
-                circ.forEach(c => {
-                    if(r.circuitId === c.circuitId) {
-                        if(!tracks.includes(c.name)) {
-                            //console.log(c.country);
-                            countries_with_circ.push(c.country);
-                            tracks.push(c.name);
-                            updateData();
-                        }
-                    }
-                });
-            }
-        });
-        console.log(tracks);
-    }
 });
 
 /*
@@ -134,29 +115,7 @@ function updateData() {
     //.call(zoom); // delete this line to disable free zooming
     // .call(zoom.event); // not in d3 v4
 
-d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json", function(error, world) {
-    if (error) throw error;
-
-    g.selectAll("path")
-        .data(topojson.feature(world, world.objects.countries)
-        .features.filter(d => d.properties.name != "Antarctica"))
-        .enter().append("path")
-        .attr("id", "mapID")
-        .attr("d", path)
-        .attr("class", "feature")
-        .on("click", clicked);
-
-    // Color countries with at least one circuit
-    g.selectAll("path")
-        .style("fill", colorCountry);
-
-    // Insert borders
-    g.append("path")
-        .datum(topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }))
-        .attr("class", "mesh")
-        .attr("d", path);
-
-});
+updateData();
 
 // color country
 function colorCountry(country) {
@@ -196,7 +155,7 @@ function clicked(d) {
                 //console.log(c.long + " " + c.lat);
                 return projection([+c.long, +c.lat])[1];
             })
-            .attr("r", 1)
+            .attr("r", 3)
             .style("fill", "red")
             .on("mouseover", function(d) {
                 console.log("click", d);
@@ -279,3 +238,33 @@ function zoomed() {
 function stopped() {
     if (d3.event.defaultPrevented) d3.event.stopPropagation();
 }
+
+var isZoom = false;
+
+$("#zoom").on("click", function() {
+    if (!isZoom) {
+        width = width * 2;
+        height = height * 2;
+    } else {
+        width = width / 2;
+        height = height / 2;
+    }
+    d3.select("#mapView").selectAll("*").remove();
+    projection = d3.geoEquirectangular()
+        .center([0, 15]) // set centre to further North as we are cropping more off bottom of map
+        .scale(width / 6) // scale to fit group width
+        .translate([width / 2, height / 2]); // ensure centred in group
+    path = d3.geoPath().projection(projection);
+    svg = d3.select("#mapView").append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .on("click", stopped, true);
+    rect = svg.append("rect")
+        .attr("class", "background")
+        .attr("width", width)
+        .attr("height", height)
+        .on("click", reset);
+    g = svg.append("g");
+    updateData();
+    isZoom = !isZoom;
+});
