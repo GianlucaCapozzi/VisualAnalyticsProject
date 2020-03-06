@@ -6,3 +6,7 @@
 .dropdown-content.select-dropdown > li span {
     background-color: #222222;
 }
+
+.option {
+    color: #ff0000
+}

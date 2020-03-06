@@ -6,7 +6,11 @@ $(document).ready(function(){
         $('select').formSelect();
 });
 
-for (let i = 1950; i < 2020; i++) {
+for (let i = 1950; i < 2018; i++) {
     let year = "<option value=" + i + ">" + i + "</option>";
     $("#yearSelect").append(year);
 }
+let year2018 = "<option selected='selected' value=" + 2018 + ">" + 2018 + "</option>";
+$("#yearSelect").append(year2018);
+
+$(".dropdown-content>li>a").css("color", "red");
