@@ -1,0 +1,8 @@
+/* Selector style */
+.select-wrapper input.select-dropdown {
+    color: #ffffff;
+}
+
+.dropdown-content.select-dropdown > li span {
+    background-color: #222222;
+}

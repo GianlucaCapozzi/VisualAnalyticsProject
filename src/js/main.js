@@ -2,12 +2,7 @@ var dataset = "src/formula-1-race-data";
 var circuits = dataset.concat("/circuits.csv");
 
 $(document).ready(function(){
-    $('.sidenav').sidenav();
         $('select').formSelect();
-});
-
-$("#sidenav-trigger").on("click", function(event) {
-     $('.sidenav').sidenav('open');
 });
 
 for (let i = 1967; i < 2020; i++) {
