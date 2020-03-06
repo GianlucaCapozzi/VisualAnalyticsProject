@@ -25,6 +25,62 @@ var g = svg.append("g");
 
 var countries_with_circ = [];
 
+var year = $("#yearSelect").val();
+
+d3.queue()
+        .defer(d3.csv, circuits)
+        .defer(d3.csv, races)
+        .await(processRacesByYear);
+
+function processRacesByYear(err, circ, rac) {
+    rac.forEach(r => {
+        //console.log("YEAR: " + r.year);
+        if(r.year == year) {
+            console.log("YEAR: " + r.year);
+            circ.forEach(c => {
+                if(r.circuitId === c.circuitId) {
+                    if(!countries_with_circ.includes(c.country)) {
+                        console.log(c.country);
+                        countries_with_circ.push(c.country);
+                    }
+                }
+            });
+        }
+    });
+}
+
+
+$("#yearSelect").on("change", function() {
+    countries_with_circ = [];
+    let year = $("#yearSelect").val();
+    console.log("YEAR: " + year);
+
+    d3.queue()
+        .defer(d3.csv, circuits)
+        .defer(d3.csv, races)
+        .await(processRacesByYear);
+
+    function processRacesByYear(err, circ, rac) {
+        rac.forEach(r => {
+            //console.log("YEAR: " + r.year);
+            if(r.year == year) {
+                console.log("YEAR: " + r.year);
+                circ.forEach(c => {
+                    if(r.circuitId === c.circuitId) {
+                        if(!countries_with_circ.includes(c.country)) {
+                            console.log(c.country);
+                            countries_with_circ.push(c.country);
+                            updateData();
+                        }
+                    }
+                });
+            }
+        });
+        console.log(countries_with_circ);
+    }
+});
+
+/*
 d3.csv(circuits, function(csv){
     csv.map(function(d){
         if(!countries_with_circ.includes(d.country)) {
@@ -32,8 +88,42 @@ d3.csv(circuits, function(csv){
         }
     });
 });
+*/
 
-//console.log(countries_with_circ);
+//console.log("YEAR: " + year.options[year.selectedIndex].value);
+
+console.log(countries_with_circ);
+
+function updateData() {
+    d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json", function(error, world) {
+        if (error) throw error;
+
+        g.selectAll("path")
+            .remove()
+            .exit();
+
+        g.selectAll("path")
+            .data(topojson.feature(world, world.objects.countries)
+            .features.filter(d => d.properties.name != "Antarctica"))
+            .enter().append("path")
+            .attr("id", "mapID")
+            .attr("d", path)
+            .attr("class", "feature")
+            .on("click", clicked);
+
+        // Color countries with at least one circuit
+        g.selectAll("path")
+            .style("fill", colorCountry);
+
+        // Insert borders
+        g.append("path")
+            .datum(topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }))
+            .attr("class", "mesh")
+            .attr("d", path);
+
+    });
+
+}
 
 //svg
     //.call(zoom); // delete this line to disable free zooming
