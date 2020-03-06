@@ -178,7 +178,7 @@ function clicked(d) {
             .data(data
             .filter(function(d) {
                 //console.log(d.name);
-                return d.country == loc;
+                return d.country == loc && countries_with_circ.includes(d.country);
             }))
             .enter().append("circle")
             .attr("cx", function(c) {
