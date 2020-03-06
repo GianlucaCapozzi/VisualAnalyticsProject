@@ -100,6 +100,7 @@ d3.csv(circuits, function(csv){
 //console.log(countries_with_circ);
 
 function updateData() {
+    reset();
     d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json", function(error, world) {
         if (error) throw error;
 
