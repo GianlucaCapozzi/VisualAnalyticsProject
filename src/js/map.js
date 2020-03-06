@@ -46,6 +46,7 @@ d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json", functi
         .data(topojson.feature(world, world.objects.countries)
         .features.filter(d => d.properties.name != "Antarctica"))
         .enter().append("path")
+        .attr("id", "mapID")
         .attr("d", path)
         .attr("class", "feature")
         .on("click", clicked);
@@ -100,16 +101,36 @@ function clicked(d) {
             })
             .attr("r", 1)
             .style("fill", "red")
-            .on("click", function(d) {
+            .on("mouseover", function(d) {
                 console.log("click", d);
 
                 // Add tooltip
                 $(".tooltip")
+                            .css("transition", "1s")
                             .css("left", d3.event.pageX + "px")
                             .css("top", d3.event.pageY + "px")
                             .css("opacity", .9)
                             .css("display", "inline-block")
                             .html(d.name);
+            })
+            .on("mouseout", function(d) {
+                $(".tooltip")
+                            .css("transition", "1s")
+                            .css("opacity", 0);
+            })
+            .on("click", function(d) {
+                //window.location.assign("http://en.wikipedia.org");
+                var active = mapID.active ? false : true,
+                    newOpacity = active ? 0.3 : 1;
+                g.selectAll("#mapID").style("opacity", newOpacity);
+                mapID.active = active
+                g.append("text")
+                    .attr("x", 10)
+                    .attr("y", 20)
+                    .text("HELLO WORLD");
+            })
+            .on("dbclick", function(d){
+                g.selectAll("#mapID").style("opacity", 1);
             });
     });
     var bounds = path.bounds(d),
@@ -134,6 +155,15 @@ function reset() {
 
     // Remove tooltip
     $(".tooltip").css("opacity", 0);
+
+    g.selectAll("#mapID").style("opacity", 1);
+
+    /*
+    var mapActive = mapID.active ? false : true,
+                    newOpacity = mapActive ? 0.3 : 1;
+                g.selectAll("#mapID").style("opacity", newOpacity);
+                mapID.mapActive = mapActive;
+    */
 
     svg.transition()
         .duration(750)
