@@ -24,6 +24,7 @@ svg.append("rect")
 var g = svg.append("g");
 
 var countries_with_circ = [];
+var tracks = []
 
 var year = $("#yearSelect").val();
 
@@ -39,19 +40,22 @@ function processRacesByYear(err, circ, rac) {
             console.log("YEAR: " + r.year);
             circ.forEach(c => {
                 if(r.circuitId === c.circuitId) {
-                    if(!countries_with_circ.includes(c.country)) {
-                        console.log(c.country);
+                    if(!tracks.includes(c.name)) {
+                        //console.log(c.name);
                         countries_with_circ.push(c.country);
+                        tracks.push(c.name);
                     }
                 }
             });
         }
     });
+    console.log(tracks);
 }
 
 
 $("#yearSelect").on("change", function() {
     countries_with_circ = [];
+    tracks = [];
     let year = $("#yearSelect").val();
     console.log("YEAR: " + year);
 
@@ -67,16 +71,17 @@ $("#yearSelect").on("change", function() {
                 console.log("YEAR: " + r.year);
                 circ.forEach(c => {
                     if(r.circuitId === c.circuitId) {
-                        if(!countries_with_circ.includes(c.country)) {
-                            console.log(c.country);
+                        if(!tracks.includes(c.name)) {
+                            //console.log(c.country);
                             countries_with_circ.push(c.country);
+                            tracks.push(c.name);
                             updateData();
                         }
                     }
                 });
             }
         });
-        console.log(countries_with_circ);
+        console.log(tracks);
     }
 });
 
@@ -92,7 +97,7 @@ d3.csv(circuits, function(csv){
 
 //console.log("YEAR: " + year.options[year.selectedIndex].value);
 
-console.log(countries_with_circ);
+//console.log(countries_with_circ);
 
 function updateData() {
     d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json", function(error, world) {
@@ -157,7 +162,7 @@ d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json", functi
 function colorCountry(country) {
     //console.log(country.properties.name);
     if (countries_with_circ.includes(country.properties.name)) {
-        console.log(country.properties.name);
+        //console.log(country.properties.name);
         return '#1CA3DE';
     } else {
         return '#e7d8ad';
@@ -177,8 +182,10 @@ function clicked(d) {
         g.selectAll("circle")
             .data(data
             .filter(function(d) {
-                //console.log(d.name);
-                return d.country == loc && countries_with_circ.includes(d.country);
+                //if(d.country == loc && countries_with_circ.includes(d.country) && circ.includes(d.name)) {
+                //    console.log(d.name);
+                //}
+                return d.country == loc && countries_with_circ.includes(d.country) && tracks.includes(d.name);
             }))
             .enter().append("circle")
             .attr("cx", function(c) {
