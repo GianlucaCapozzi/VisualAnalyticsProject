@@ -1,6 +1,6 @@
 
-var width = window.innerWidth,
-    height = window.innerHeight,
+var width = window.innerWidth / 2,
+    height = window.innerHeight / 2,
     active = d3.select(null);
 
 var projection = d3.geoMercator()
@@ -10,7 +10,7 @@ var projection = d3.geoMercator()
 var zoom = d3.zoom().on("zoom", zoomed);
 var path = d3.geoPath().projection(projection);
 
-var svg = d3.select("body").append("svg")
+var svg = d3.select("#mapView").append("svg")
     .attr("width", width)
     .attr("height", height)
     .on("click", stopped, true);

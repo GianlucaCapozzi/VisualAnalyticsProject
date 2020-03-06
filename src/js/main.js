@@ -1,7 +1,16 @@
 var dataset = "src/formula-1-race-data";
 var circuits = dataset.concat("/circuits.csv");
 
-$("body").css("background-image", "url(src/images/f1_logo.png)");
-$("body").css("background-repeat", "no-repeat");
-$("body").css("background-attachment", "fixed");
-$("body").css("background-position", "2% 2%");
+$(document).ready(function(){
+    $('.sidenav').sidenav();
+        $('select').formSelect();
+});
+
+$("#sidenav-trigger").on("click", function(event) {
+     $('.sidenav').sidenav('open');
+});
+
+for (let i = 1967; i < 2020; i++) {
+    let year = "<option value=" + i + ">" + i + "</option>";
+    $("#yearSelect").append(year);
+}
