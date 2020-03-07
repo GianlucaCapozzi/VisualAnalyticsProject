@@ -10,3 +10,22 @@
 .option {
     color: #ff0000
 }
+
+html, body, #viewsContainer {
+    width: 100%;
+    height: 100%;
+}
+
+#mapView, #resTable, #b, #c {
+    width: 50%;
+    height: 50%;
+    float: left;
+}
+
+#b {
+    background-color: #00ff00
+}
+
+#c {
+    background-color: #0000ff
+}

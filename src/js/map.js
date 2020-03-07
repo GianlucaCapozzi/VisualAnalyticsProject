@@ -92,7 +92,7 @@ $("#yearSelect").on("change", function() {
         updateData();
         console.log(racesId);
     }
-        
+
 });
 
 function updateData() {
@@ -197,7 +197,7 @@ function clicked(d) {
             .on("dbclick", function(d){
                 g.selectAll("#mapID").style("opacity", 1);
                 g.selectAll("#circleMap").style("opacity", 1);
-                g.selectAll("#resTable").remove();
+                d3.select("#resTable").selectAll("*").remove();
             });
     });
     var bounds = path.bounds(d),
@@ -258,14 +258,14 @@ function makePlot(ranking) {
         .data(columns).enter()
         .append('th')
         .text(function(column) {return column;} );
-    
+
     // create a row for each object in the data
     var rows = tbody.selectAll('tr')
         .data(ranking)
         .enter()
         .append('tr');
 
-    rows.exit().remove();    
+    rows.exit().remove();
 
     // create a cell in each row for each column
     var cells = rows.selectAll('td')
@@ -277,11 +277,11 @@ function makePlot(ranking) {
         .enter()
         .append('td')
         .text(function(d) { return d.value; });
-    
+
     cells.exit().remove();
-    
+
     return table;
-                      
+
 }
 
 
@@ -298,7 +298,7 @@ function reset() {
     g.selectAll("#mapID").style("opacity", 1);
 
     res = [];
-    d3.selectAll("#resTable").exit().remove();
+    d3.select("#resTable").selectAll("*").remove();
 
     /*
     var mapActive = mapID.active ? false : true,
@@ -326,15 +326,7 @@ function stopped() {
 }
 
 var isZoom = false;
-
-$("#zoom").on("click", function() {
-    if (!isZoom) {
-        width = width * 2;
-        height = height * 2;
-    } else {
-        width = width / 2;
-        height = height / 2;
-    }
+function zoomMap() {
     d3.select("#mapView").selectAll("*").remove();
     projection = d3.geoEquirectangular()
         .center([0, 15]) // set centre to further North as we are cropping more off bottom of map
@@ -353,4 +345,24 @@ $("#zoom").on("click", function() {
     g = svg.append("g");
     updateData();
     isZoom = !isZoom;
+}
+$("#zoom").on("click", function() {
+    if (!isZoom) {
+        width = width * 2;
+        height = height * 2;
+        $("#c").toggle("fast", function() {
+            $("#b").toggle("fast", function() {
+                $("#resTable").toggle("fast", zoomMap());
+            });
+        });
+    } else {
+        width = width / 2;
+        height = height / 2;
+        zoomMap();
+        $("#resTable").toggle("fast", function() {
+            $("#b").toggle("fast", function() {
+                $("#c").toggle("fast");
+            });
+        });
+    }
 });
