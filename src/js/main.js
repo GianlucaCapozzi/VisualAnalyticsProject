@@ -8,11 +8,11 @@ $(document).ready(function(){
         $('select').formSelect();
 });
 
-for (let i = 2018; i > 1950; i--) {
+for (let i = 2019; i > 1950; i--) {
     let year = "<option value=" + i + ">" + i + "</option>";
     $("#yearSelect").append(year);
 }
-//let year2018 = "<option selected='selected' value=" + 2018 + ">" + 2018 + "</option>";
-//$("#yearSelect").append(year2018);
+//let year2019 = "<option selected='selected' value=" + 2019 + ">" + 2019 + "</option>";
+//$("#yearSelect").append(year2019);
 
 $(".dropdown-content>li>a").css("color", "red");
