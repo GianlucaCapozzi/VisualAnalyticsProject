@@ -28,7 +28,7 @@ var countries_with_circ = [];
 var tracks = [];
 var racesId = [];
 var raceId;
-var res;
+var res = [];
 
 var year = $("#yearSelect").val();
 
@@ -39,6 +39,9 @@ d3.queue()
         .await(processRacesByYear);
 
 function processRacesByYear(err, circ, rac) {
+    countries_with_circ = [];
+    tracks = [];
+    racesId = [];
     rac.forEach(r => {
         //console.log("YEAR: " + r.year);
         if(r.year == year) {
@@ -55,7 +58,7 @@ function processRacesByYear(err, circ, rac) {
         }
     });
     updateData();
-    console.log(racesId);
+    //console.log(racesId);
 }
 
 
@@ -156,6 +159,7 @@ function clicked(d) {
                 return d.country == loc && countries_with_circ.includes(d.country) && tracks.includes(d.name);
             }))
             .enter().append("circle")
+            .attr("id", "circleMap")
             .attr("cx", function(c) {
                 //console.log(c.country);
                 return projection([+c.long, +c.lat])[0];
@@ -185,17 +189,15 @@ function clicked(d) {
                 var active = mapID.active ? false : true,
                     newOpacity = active ? 0.3 : 1;
                 g.selectAll("#mapID").style("opacity", newOpacity);
+                g.selectAll("#circleMap").style("opacity", newOpacity);
                 mapID.active = active
                 raceId = racesId[d.name];
-                //console.log(raceId);
                 getResults();
-                g.append("text")
-                    .attr("x", 10)
-                    .attr("y", 20)
-                    .text("HELLO WORLD");
             })
             .on("dbclick", function(d){
                 g.selectAll("#mapID").style("opacity", 1);
+                g.selectAll("#circleMap").style("opacity", 1);
+                g.selectAll("#resTable").remove();
             });
     });
     var bounds = path.bounds(d),
@@ -219,29 +221,84 @@ function getResults() {
 }
 
 function processRace(err, drvs, rsts) {
+    res = [];
     rsts.forEach(race => {
         //console.log(race.raceId);
         if(race.raceId === raceId) {
             drvs.forEach(driver => {
                 if(driver.driverId === race.driverId) {
-                    console.log(driver.driverRef + " " + race.positionText);
+                    res.push({ 'Driver' : driver.driverRef, 'Result' : race.positionText });
+                    //console.log(driver.driverRef + " " + race.positionText);
                 }
             });
         }
     });
+    //console.log(res);
+    makePlot(res);
 }
+
+
+function makePlot(ranking) {
+    //var canvas_width = 500;
+    //var canvas_height = 200;
+    //var padding = 25;
+
+    console.log(ranking);
+
+    var columns = ["Driver", "Result"];
+
+    var table = d3.select("#resTable").append('table');
+
+    var thead = table.append('thead');
+    var tbody = table.append('tbody');
+
+    // append the header
+    thead.append('tr')
+        .selectAll('th')
+        .data(columns).enter()
+        .append('th')
+        .text(function(column) {return column;} );
+    
+    // create a row for each object in the data
+    var rows = tbody.selectAll('tr')
+        .data(ranking)
+        .enter()
+        .append('tr');
+
+    rows.exit().remove();    
+
+    // create a cell in each row for each column
+    var cells = rows.selectAll('td')
+        .data(function(row) {
+            return columns.map(function(column) {
+                return {column : column, value : row[column]};
+            });
+        })
+        .enter()
+        .append('td')
+        .text(function(d) { return d.value; });
+    
+    cells.exit().remove();
+    
+    return table;
+                      
+}
+
 
 function reset() {
     active.classed("active", false);
     active = d3.select(null);
 
-    var circles = svg.selectAll("circle");
+    var circles = svg.selectAll("#circleMap");
     circles.remove();
 
     // Remove tooltip
     $(".tooltip").css("opacity", 0);
 
     g.selectAll("#mapID").style("opacity", 1);
+
+    res = [];
+    d3.selectAll("#resTable").exit().remove();
 
     /*
     var mapActive = mapID.active ? false : true,
