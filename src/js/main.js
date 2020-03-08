@@ -3,6 +3,7 @@ var circuits = dataset.concat("/circuits.csv");
 var races = dataset.concat("/races.csv");
 var drivers = dataset.concat("/drivers.csv");
 var results = dataset.concat("/results.csv");
+var driver_standings = dataset.concat("/driver_standings.csv");
 
 $(document).ready(function(){
         $('select').formSelect();

@@ -3,6 +3,8 @@ var width = window.innerWidth / 2,
     height = window.innerHeight / 2,
     active = d3.select(null);
 
+var margin = {top: 10, right: 100, bottom: 30, left: 30}    
+
 var projection = d3.geoEquirectangular()
     .center([0, 15]) // set centre to further North as we are cropping more off bottom of map
     .scale(width / 6) // scale to fit group width
@@ -27,8 +29,11 @@ var g = svg.append("g");
 var countries_with_circ = [];
 var tracks = [];
 var racesId = [];
+var racesIdForRank = []; // Array for compute drivers' ranking
 var raceId;
 var res = [];
+var driv_rank = [];
+var season_drivers = [];
 
 var year = $("#yearSelect").val();
 
@@ -42,6 +47,9 @@ function processRacesByYear(err, circ, rac) {
     countries_with_circ = [];
     tracks = [];
     racesId = [];
+    racesIdForRank = [];
+    driv_rank = [];
+    season_drivers = [];
     rac.forEach(r => {
         //console.log("YEAR: " + r.year);
         if(r.year == year) {
@@ -52,19 +60,24 @@ function processRacesByYear(err, circ, rac) {
                         countries_with_circ.push(c.country);
                         tracks.push(c.name);
                         racesId[c.name] = r.raceId;
+                        racesIdForRank.push(r.raceId);
                     }
                 }
             });
         }
     });
     updateData();
-    //console.log(racesId);
+    //console.log(racesIdForRank);
 }
 
 
 $("#yearSelect").on("change", function() {
     countries_with_circ = [];
     tracks = [];
+    racesId = [];
+    racesIdForRank = [];
+    driv_rank = [];
+    season_drivers = [];
     let year = $("#yearSelect").val();
     console.log("YEAR: " + year);
 
@@ -84,13 +97,14 @@ $("#yearSelect").on("change", function() {
                             countries_with_circ.push(c.country);
                             tracks.push(c.name);
                             racesId[c.name] = r.raceId;
+                            racesIdForRank.push(r.raceId);
                         }
                     }
                 });
             }
         });
         updateData();
-        console.log(racesId);
+        //console.log(racesIdForRank);
     }
 
 });
@@ -142,6 +156,7 @@ function colorCountry(country) {
 
 
 function clicked(d) {
+    if(!countries_with_circ.includes(d.properties.name)) return reset();
     if (active.node() === this) return reset();
     reset();
     active.classed("active", false);
@@ -153,9 +168,6 @@ function clicked(d) {
         g.selectAll("circle")
             .data(data
             .filter(function(d) {
-                //if(d.country == loc && countries_with_circ.includes(d.country) && circ.includes(d.name)) {
-                //    console.log(d.name);
-                //}
                 return d.country == loc && countries_with_circ.includes(d.country) && tracks.includes(d.name);
             }))
             .enter().append("circle")
@@ -192,11 +204,10 @@ function clicked(d) {
                 g.selectAll("#circleMap").style("opacity", newOpacity);
                 mapID.active = active
                 raceId = racesId[d.name];
+                getStanding();
                 getResults();
             })
             .on("dbclick", function(d){
-                g.selectAll("#mapID").style("opacity", 1);
-                g.selectAll("#circleMap").style("opacity", 1);
                 d3.select("#resTable").selectAll("*").remove();
             });
     });
@@ -220,6 +231,13 @@ function getResults() {
         .await(processRace);
 }
 
+function getStanding() {
+    d3.queue()
+        .defer(d3.csv, drivers)
+        .defer(d3.csv, driver_standings)
+        .await(processStanding);
+}
+
 function processRace(err, drvs, rsts) {
     res = [];
     rsts.forEach(race => {
@@ -227,23 +245,53 @@ function processRace(err, drvs, rsts) {
         if(race.raceId === raceId) {
             drvs.forEach(driver => {
                 if(driver.driverId === race.driverId) {
-                    res.push({ 'Driver' : driver.driverRef, 'Result' : race.positionText });
+                    res.push({ 'Driver' : driver.forename + " " + driver.surname, 'Result' : race.positionText });
                     //console.log(driver.driverRef + " " + race.positionText);
                 }
             });
         }
     });
     //console.log(res);
-    makePlot(res);
+    makeTable(res);
+}
+
+function processStanding(err, drvs, stnds) {
+    driv_rank = [];
+    season_drivers = [];
+    var firstRound = d3.min(racesIdForRank) - 1;
+    console.log("First round: " + firstRound);
+    racesIdForRank.forEach( rId => {
+        //console.log(rId);
+        stnds.forEach(stand => {
+            if(parseInt(rId) <= parseInt(raceId) && stand.raceId === rId) {
+                //console.log(stand.raceId);
+                drvs.forEach(driver => {
+                    if(driver.driverId === stand.driverId) {
+                        //if(driv_rank[driver.forename + " " + driver.surname] === undefined){
+                        //    driv_rank[driver.forename + " " + driver.surname] = [];
+                        //    season_drivers.push(driver.forename + " " + driver.surname);
+                        //}
+                        //driv_rank[driver.forename + " " + driver.surname].push({'race' : stand.raceId - firstRound, 'position' : stand.position});
+                        driv_rank.push({'driver' : driver.forename + " " + driver.surname, 'race' : stand.raceId - firstRound, 'position' : stand.position});
+                        if(!season_drivers.includes(driver.forename + " " + driver.surname)) {
+                            season_drivers.push(driver.forename + " " + driver.surname);
+                        }
+                        //console.log(driver.driverRef + " " + stand.position + " " + stand.points);
+                    }
+                });
+            }
+        });
+    });
+    driv_rank.sort(function(x, y){
+        return x.position - y.position;
+    });
+
+    //console.log(season_drivers);
+    makePlot(driv_rank, season_drivers);
 }
 
 
-function makePlot(ranking) {
-    //var canvas_width = 500;
-    //var canvas_height = 200;
-    //var padding = 25;
-
-    console.log(ranking);
+function makeTable(ranking) {
 
     var columns = ["Driver", "Result"];
 
@@ -285,6 +333,119 @@ function makePlot(ranking) {
 }
 
 
+function makePlot(standing, pilots) {
+
+    //console.log(racesIdForRank.length + " " + pilots.length);
+
+    //var sWidth = scatPlot.node().getBoundingClientRect().width;
+    //console.log(sWidth);
+
+    //var sHeight = scatPlot.node().getBoundingClientRect().height;
+    //console.log(sHeight);
+
+    //console.log(standing["Carlos Sainz"][0].race);
+
+    //console.log(standing);
+    
+    //var dataReady = pilots.map(function(drv) {
+        //console.log(drv);
+    //    return {
+    //        name : drv,
+    //        values : standing[drv]
+    //    };
+    //});
+    //console.log(dataReady);
+
+    //dataReady.forEach(d => {
+    //    console.log(d.values);
+    //})
+
+    var sWidth = $("#standingPlot").width();
+    var sHeight = $("#standingPlot").height();
+    console.log(sWidth + " " + sHeight);
+
+    var scatPlot = d3.select("#standingPlot")
+        .append("svg")
+        .attr("width", sWidth + margin.left + margin.right)
+        .attr("height", sHeight + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    standing.forEach(function(d) {
+        d.race = +d.race;
+        d.position = +d.position;
+    });
+
+    var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+    var valueline = d3.line()
+        .x(function(d) { 
+            console.log(d);
+            return x(d.race); })
+        .y(function(d) { return y(d.position); });
+
+    var x = d3.scaleLinear()
+        .range([0, sWidth]);
+
+    var y = d3.scaleLinear()
+        .range([sHeight, 0]);
+           
+    var xAxis = d3.axisBottom(x);
+    
+    var yAxis = d3.axisLeft(y);
+
+    x.domain([0, racesIdForRank.length]);
+    y.domain([0, pilots.length]);
+
+    scatPlot.append("g")
+        .attr("class", "x axis")    
+        .attr("transform", "translate(0," + sHeight + ")")
+        .call(xAxis);
+    scatPlot.append("g")
+        .attr("class", "y axis")
+        .call(yAxis);    
+
+    scatPlot.selectAll(".line")
+        .data(standing)
+        .enter()
+        .append('path')
+        .attr('d', valueline)
+        .attr('stroke', function(d) { return color(d.driver)});
+        
+    scatPlot.selectAll(".dot")
+        .data(standing)
+        .enter()
+        .append("circle")
+        .attr("class", "dot")
+        .attr("r", 3.5)
+        .attr("cx", function(d) { return x(d.race); })
+        .attr("cy", function(d) { return y(d.position); })
+        .style("fill", function(d) { return color(d.driver)});
+
+    var legend = scatPlot.selectAll(".legend")
+            .data(color.domain())
+            .enter()
+            .append("g")
+            .attr("class", "legend")
+            .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+    legend.append("rect")
+        .attr("x", sWidth - 18)
+        .attr("width", 18)
+        .attr("height", 18)
+        .style("fill", color);
+        
+    legend.append("text")
+        .attr("x", sWidth - 24)
+        .attr("y", 9)
+        .attr("dy", ".35em")
+        .style("text-anchor", "end")
+        .text(function(d) { 
+            console.log(d);
+            return d; });
+  
+
+}
+
 function reset() {
     active.classed("active", false);
     active = d3.select(null);
@@ -300,12 +461,15 @@ function reset() {
     res = [];
     d3.select("#resTable").selectAll("*").remove();
 
+    d3.select("#standingPlot").selectAll("*").remove();
+
     /*
     var mapActive = mapID.active ? false : true,
                     newOpacity = mapActive ? 0.3 : 1;
                 g.selectAll("#mapID").style("opacity", newOpacity);
                 mapID.mapActive = mapActive;
     */
+
 
     svg.transition()
         .duration(750)

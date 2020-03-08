@@ -1,7 +1,7 @@
 circuitId,circuitRef,name,location,country,lat,long,alt,url
 1,albert_park,Albert Park Grand Prix Circuit,Melbourne,Australia,-37.8497,144.968,10,http://en.wikipedia.org/wiki/Melbourne_Grand_Prix_Circuit
 2,sepang,Sepang International Circuit,Kuala Lumpur,Malaysia,2.76083,101.738,,http://en.wikipedia.org/wiki/Sepang_International_Circuit
-3,bahrain,Bahrain International Circuit,Sakhir,Bahrain,26.0325,50.5106,,http://en.wikipedia.org/wiki/Bahrain_International_Circuit
+3,bahrain,Bahrain International Circuit,Sakhir,Saudi Arabia,26.0325,50.5106,,http://en.wikipedia.org/wiki/Bahrain_International_Circuit
 4,catalunya,Circuit de Barcelona-Catalunya,Montmeló,Spain,41.57,2.26111,,http://en.wikipedia.org/wiki/Circuit_de_Barcelona-Catalunya
 5,istanbul,Istanbul Park,Istanbul,Turkey,40.9517,29.405,,http://en.wikipedia.org/wiki/Istanbul_Park
 6,monaco,Circuit de Monaco,Monte-Carlo,France,43.7347,7.42056,,http://en.wikipedia.org/wiki/Circuit_de_Monaco

@@ -11,15 +11,32 @@
     color: #ff0000
 }
 
+.dot {
+    stroke: #000;
+}
+
+.line {
+    fill: none;
+    stroke-width: 2px;
+}  
+
 html, body, #viewsContainer {
     width: 100%;
     height: 100%;
 }
 
-#mapView, #resTable, #b, #c {
+#mapView, #resTable, #standingPlot, #c {
     width: 50%;
     height: 50%;
     float: left;
+}
+
+#resTable {
+    overflow-y: scroll;
+}
+
+#standingPlot {
+    overflow-y: scroll;
 }
 
 #b {
