@@ -1,7 +1,5 @@
 
-var width = window.innerWidth / 2,
-    height = window.innerHeight / 2,
-    active = d3.select(null);
+var active = d3.select(null);
 
 var margin = {top: 10, right: 100, bottom: 30, left: 30}
 
@@ -25,18 +23,6 @@ var rect = svg.append("rect")
     .on("click", reset);
 
 var g = svg.append("g");
-
-var countries_with_circ = [];
-var tracks = [];
-var racesId = [];
-var racesIdForRank = []; // Array for compute drivers' ranking
-var raceId;
-var res = [];
-var driv_rank = [];
-var season_drivers = [];
-
-var year = $("#yearSelect").val();
-
 
 d3.queue()
         .defer(d3.csv, circuits)
@@ -88,7 +74,6 @@ $("#yearSelect").on("change", function() {
 
     function processRacesByYear(err, circ, rac) {
         rac.forEach(r => {
-            //console.log("YEAR: " + r.year);
             if(r.year == year) {
                 circ.forEach(c => {
                     if(r.circuitId === c.circuitId) {
@@ -104,7 +89,6 @@ $("#yearSelect").on("change", function() {
             }
         });
         updateData();
-        //console.log(racesIdForRank);
     }
 
 });
@@ -224,261 +208,6 @@ function clicked(d) {
         .call( zoom.transform, d3.zoomIdentity.translate(translate[0],translate[1]).scale(scale) ); // updated for d3 v4
 }
 
-function getResults() {
-    d3.queue()
-        .defer(d3.csv, drivers)
-        .defer(d3.csv, results)
-        .await(processRace);
-}
-
-function getStanding() {
-    d3.queue()
-        .defer(d3.csv, drivers)
-        .defer(d3.csv, driver_standings)
-        .await(processStanding);
-}
-
-function processRace(err, drvs, rsts) {
-    res = [];
-    rsts.forEach(race => {
-        //console.log(race.raceId);
-        if(race.raceId === raceId) {
-            drvs.forEach(driver => {
-                if(driver.driverId === race.driverId) {
-                    res.push({ 'Driver' : driver.forename + " " + driver.surname, 'Result' : race.positionText });
-                    //console.log(driver.driverRef + " " + race.positionText);
-                }
-            });
-        }
-    });
-    //console.log(res);
-    makeTable(res);
-}
-
-function processStanding(err, drvs, stnds) {
-    driv_rank = [];
-    season_drivers = [];
-    var firstRound = d3.min(racesIdForRank) - 1;
-    console.log("First round: " + firstRound);
-    racesIdForRank.forEach( rId => {
-        //console.log(rId);
-        stnds.forEach(stand => {
-            if(parseInt(rId) <= parseInt(raceId) && stand.raceId === rId) {
-                //console.log(stand.raceId);
-                drvs.forEach(driver => {
-                    if(driver.driverId === stand.driverId) {
-                        //if(driv_rank[driver.forename + " " + driver.surname] === undefined){
-                        //    driv_rank[driver.forename + " " + driver.surname] = [];
-                        //    season_drivers.push(driver.forename + " " + driver.surname);
-                        //}
-                        //driv_rank[driver.forename + " " + driver.surname].push({'race' : stand.raceId - firstRound, 'position' : stand.position});
-                        driv_rank.push({'driver' : driver.forename + " " + driver.surname, 'race' : stand.raceId - firstRound, 'position' : stand.position});
-                        if(!season_drivers.includes(driver.forename + " " + driver.surname)) {
-                            season_drivers.push(driver.forename + " " + driver.surname);
-                        }
-                        //console.log(driver.driverRef + " " + stand.position + " " + stand.points);
-                    }
-                });
-            }
-        });
-    });
-    driv_rank.sort(function(x, y){
-        return x.position - y.position;
-    });
-
-    //console.log(season_drivers);
-    makePlot(driv_rank, season_drivers);
-}
-
-
-function makeTable(ranking) {
-
-    var columns = ["Driver", "Result"];
-
-    var table = d3.select("#resTable").append('table');
-
-    var thead = table.append('thead');
-    var tbody = table.append('tbody');
-
-    // append the header
-    thead.append('tr')
-        .selectAll('th')
-        .data(columns).enter()
-        .append('th')
-        .text(function(column) {return column;} );
-
-    // create a row for each object in the data
-    var rows = tbody.selectAll('tr')
-        .data(ranking)
-        .enter()
-        .append('tr');
-
-    rows.exit().remove();
-
-    // create a cell in each row for each column
-    var cells = rows.selectAll('td')
-        .data(function(row) {
-            return columns.map(function(column) {
-                return {column : column, value : row[column]};
-            });
-        })
-        .enter()
-        .append('td')
-        .text(function(d) { return d.value; });
-
-    cells.exit().remove();
-
-    return table;
-
-}
-
-
-function makePlot(standing, pilots) {
-
-    //console.log(racesIdForRank.length + " " + pilots.length);
-
-    //var sWidth = scatPlot.node().getBoundingClientRect().width;
-    //console.log(sWidth);
-
-    //var sHeight = scatPlot.node().getBoundingClientRect().height;
-    //console.log(sHeight);
-
-    //console.log(standing["Carlos Sainz"][0].race);
-
-    //console.log(standing);
-
-    //var dataReady = pilots.map(function(drv) {
-        //console.log(drv);
-    //    return {
-    //        name : drv,
-    //        values : standing[drv]
-    //    };
-    //});
-    //console.log(dataReady);
-
-    //dataReady.forEach(d => {
-    //    console.log(d.values);
-    //})
-
-    var sWidth = $("#standingPlot").width();
-    var sHeight = $("#standingPlot").height();
-    //console.log(sWidth + " " + sHeight);
-
-    var scatPlot = d3.select("#standingPlot")
-        .append("svg")
-        .attr("width", sWidth + margin.left + margin.right)
-        .attr("height", sHeight + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    var color = d3.scaleOrdinal(d3.schemeCategory10);
-
-    var valueline = d3.line()
-        .x(function(d) {
-            //console.log(d);
-            return x(d.race); })
-        .y(function(d) { return y(d.position); });
-
-    var x = d3.scaleLinear()
-        .range([0, sWidth]);
-
-    var y = d3.scaleLinear()
-        .range([sHeight, 0]);
-
-    var xAxis = d3.axisBottom(x);
-
-    var yAxis = d3.axisLeft(y);
-
-    x.domain([0, racesIdForRank.length]);
-    y.domain([0, pilots.length]);
-
-    scatPlot.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + sHeight + ")")
-        .call(xAxis);
-    scatPlot.append("g")
-        .attr("class", "y axis")
-        .call(yAxis);
-
-    var nested_data = d3.nest()
-                        .key(function(d) { return d.driver; })
-                        .entries(standing)
-                        .sort(function(a,b) {return d3.descending(a.value,b.value);});
-    // Sort values
-    for(let i = 0; i < nested_data.length; i++) {
-        nested_data[i].values = nested_data[i].values.sort(function(a,b) {return d3.ascending(a.race,b.race);});
-    }
-
-    // Add the lines
-    var line = d3.line()
-      .x(function(d) { return x(+d.race) })
-      .y(function(d) { return y(+d.position) })
-    scatPlot.selectAll("lines")
-      .data(nested_data)
-      .enter()
-      .append("path")
-        .attr("d", function(d){ return line(d.values) } )
-        .attr("stroke", function(d){ return color(d.key) })
-        .style("stroke-width", 4)
-        .style("fill", "none");
-
-        // Add the points
-        scatPlot
-          // First we need to enter in a group
-          .selectAll("dots")
-          .data(nested_data)
-          .enter()
-            .append('g')
-            .style("fill", function(d){ return color(d.key) })
-          // Second we need to enter in the 'values' part of this group
-          .selectAll("myPoints")
-          .data(function(d){ return d.values })
-          .enter()
-          .append("circle")
-            .attr("cx", function(d) { return x(d.race) } )
-            .attr("cy", function(d) { return y(d.position) } )
-            .attr("r", 3.5)
-            .attr("stroke", "white");
-
-            // Add a legend at the end of each line
-    scatPlot
-      .selectAll("myLabels")
-      .data(nested_data)
-      .enter()
-      .append('g')
-      .append("text")
-      .datum(function(d) { return {name: d.key, value: d.values[d.values.length - 1]}; }) // keep only the last value of each time series
-      .attr("transform", function(d) { return "translate(" + x(d.value.race) + "," + y(d.value.position) + ")"; }) // Put the text at the position of the last point
-      .attr("x", 12) // shift the text a bit more right
-      .text(function(d) { return d.name; })
-      .style("fill", function(d){ return color(d.name) })
-      .style("font-size", 15);
-
-/*
-    var legend = scatPlot.selectAll(".legend")
-            .data(color.domain())
-            .enter()
-            .append("g")
-            .attr("class", "legend")
-            .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-    legend.append("rect")
-        .attr("x", sWidth - 18)
-        .attr("width", 18)
-        .attr("height", 18)
-        .style("fill", color);
-
-    legend.append("text")
-        .attr("x", sWidth - 24)
-        .attr("y", 9)
-        .attr("dy", ".35em")
-        .style("text-anchor", "end")
-        .text(function(d) {
-            console.log(d);
-            return d; });*/
-
-
-}
-
 function reset() {
     active.classed("active", false);
     active = d3.select(null);
@@ -521,45 +250,3 @@ function zoomed() {
 function stopped() {
     if (d3.event.defaultPrevented) d3.event.stopPropagation();
 }
-
-var isZoomMap = false, isZoomTable = false, isZoomPlot = false;
-function zoomMap() {
-    d3.select("#mapView").selectAll("*").remove();
-    projection = d3.geoEquirectangular()
-        .center([0, 15]) // set centre to further North as we are cropping more off bottom of map
-        .scale(width / 6) // scale to fit group width
-        .translate([width / 2, height / 2]); // ensure centred in group
-    path = d3.geoPath().projection(projection);
-    svg = d3.select("#mapView").append("svg")
-        .attr("width", width)
-        .attr("height", height)
-        .on("click", stopped, true);
-    rect = svg.append("rect")
-        .attr("class", "background")
-        .attr("width", width)
-        .attr("height", height)
-        .on("click", reset);
-    g = svg.append("g");
-    updateData();
-}
-$("#onlyMap").on("click", function() {
-    isZoomTable = false, isZoomPlot = false;
-    if (!isZoomMap) {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        $("#c").addClass("scale-out");
-        $("#standingPlot").addClass("scale-out");
-        $("#resTable").addClass("scale-out");
-        $("#mapView").removeClass("scale-out");
-        zoomMap();
-    } else {
-        width = window.innerWidth / 2;
-        height = window.innerHeight / 2;
-        zoomMap();
-        $("#mapView").removeClass("scale-out");
-        $("#resTable").removeClass("scale-out");
-        $("#standingPlot").removeClass("scale-out");
-        $("#c").removeClass("scale-out");
-    }
-    isZoomMap = !isZoomMap;
-});
