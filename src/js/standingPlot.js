@@ -6,7 +6,7 @@ function processStanding(err, drvs, stnds) {
     racesIdForRank.forEach( rId => {
         //console.log(rId);
         stnds.forEach(stand => {
-            if(parseInt(rId) <= parseInt(raceId) && stand.raceId === rId) {
+            if(rId <= parseInt(raceId) && parseInt(stand.raceId) === rId) {
                 //console.log(stand.raceId);
                 drvs.forEach(driver => {
                     if(driver.driverId === stand.driverId) {
@@ -79,6 +79,8 @@ function makePlot() {
         nested_data[i].values = nested_data[i].values.sort(function(a,b) {return d3.ascending(a.race,b.race);});
     }
 
+    console.log(nested_data);
+
     var scatPlot = d3.select("#standingPlot")
         .append("svg")
         .attr("width", sWidth + margin.left + margin.right)
@@ -100,9 +102,13 @@ function makePlot() {
     var y = d3.scaleLinear()
         .range([sHeight, 0]);
 
-    var xAxis = d3.axisBottom(x);
+    var xAxis = d3.axisBottom(x)
+        .tickFormat(d3.format('d'))
+        .ticks(racesIdForRank.length - 1);
 
-    var yAxis = d3.axisLeft(y);
+    var yAxis = d3.axisLeft(y)    
+        .tickFormat(d3.format('d'))
+        .ticks(nested_data.length - 1);
 
     x.domain([0, racesIdForRank.length]);
     y.domain([0, nested_data.length]);

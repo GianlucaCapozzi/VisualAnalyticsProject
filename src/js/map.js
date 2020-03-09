@@ -46,14 +46,14 @@ function processRacesByYear(err, circ, rac) {
                         countries_with_circ.push(c.country);
                         tracks.push(c.name);
                         racesId[c.name] = r.raceId;
-                        racesIdForRank.push(r.raceId);
+                        racesIdForRank.push(+r.raceId);
                     }
                 }
             });
         }
     });
     updateData();
-    //console.log(racesIdForRank);
+    console.log(racesIdForRank);
 }
 
 
@@ -82,13 +82,14 @@ $("#yearSelect").on("change", function() {
                             countries_with_circ.push(c.country);
                             tracks.push(c.name);
                             racesId[c.name] = r.raceId;
-                            racesIdForRank.push(r.raceId);
+                            racesIdForRank.push(+r.raceId);
                         }
                     }
                 });
             }
         });
         updateData();
+        console.log(racesIdForRank);
     }
 
 });
