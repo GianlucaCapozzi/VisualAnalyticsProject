@@ -25,7 +25,7 @@ html, body, #viewsContainer {
     height: 100%;
 }
 
-#mapView,  #c {
+#mapView,  #racesView {
     width: 50%;
     height: 50%;
     float: left;

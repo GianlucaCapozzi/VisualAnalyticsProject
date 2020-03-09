@@ -1,6 +1,5 @@
 function processStanding(err, drvs, stnds) {
     driv_rank = [];
-    season_drivers = [];
     var firstRound = d3.min(racesIdForRank) - 1;
     console.log("First round: " + firstRound);
     racesIdForRank.forEach( rId => {
@@ -10,9 +9,6 @@ function processStanding(err, drvs, stnds) {
                 drvs.forEach(driver => {
                     if(driver.driverId === stand.driverId) {
                         driv_rank.push({'driver' : driver.forename + " " + driver.surname, 'race' : stand.raceId - firstRound, 'position' : stand.position});
-                        if(!season_drivers.includes(driver.forename + " " + driver.surname)) {
-                            season_drivers.push(driver.forename + " " + driver.surname);
-                        }
                     }
                 });
             }
@@ -42,7 +38,9 @@ function getStanding() {
 function makePlot() {
 
     var sWidth = $("#standingPlot").width();
-    var sHeight = $("#standingPlot").height();
+    var sHeight = window.innerHeight/2;
+
+    console.log(sWidth + " " + sHeight);
 
     var scatPlot = d3.select("#standingPlot")
                     .append("svg")
@@ -52,10 +50,6 @@ function makePlot() {
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     var color = d3.scaleOrdinal(d3.schemeCategory20);
-
-    var valueline = d3.line()
-                        .x(function(d) { return x(d.race); })
-                        .y(function(d) { return y(d.position); });
 
     var x = d3.scaleLinear().range([0, sWidth]);
 
@@ -72,13 +66,31 @@ function makePlot() {
     x.domain([0, racesIdForRank.length]);
     y.domain([0, driv_rank.length]);
 
+    // Add the x axis
     scatPlot.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + sHeight + ")")
             .call(xAxis);
+
+    // text label for the x axis        
+    scatPlot.append("text")
+        .attr("x", sWidth/2)
+        .attr("y", sHeight + margin.top + 20)
+        .style("text-anchor", "middle")
+        .text("Races");
+
+    // Add the y axis
     scatPlot.append("g")
             .attr("class", "y axis")
             .call(yAxis);
+   
+    scatPlot.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left)
+        .attr("x", 0 - sHeight / 2)
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Position");
 
     // Add the lines
     var line = d3.line()

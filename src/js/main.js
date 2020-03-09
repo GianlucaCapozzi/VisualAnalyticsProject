@@ -8,7 +8,7 @@ var driver_standings = dataset.concat("/driver_standings.csv");
 var width = window.innerWidth / 2,
     height = window.innerHeight / 2;
 
-var margin = {top: 10, right: 100, bottom: 30, left: 30}
+var margin = {top: 10, right: 100, bottom: 30, left: 40}
 
 $(document).ready(function(){
     $('select').formSelect();
@@ -47,7 +47,7 @@ $("#onlyMap").on("click", function() {
     if (!isZoomMap) {
         width = window.innerWidth;
         height = window.innerHeight;
-        $("#c").addClass("scale-out");
+        $("#racesView").addClass("scale-out");
         $("#mapView").removeClass("scale-out");
         zoomMap();
     } else {
@@ -55,7 +55,7 @@ $("#onlyMap").on("click", function() {
         height = window.innerHeight / 2;
         zoomMap();
         $("#mapView").removeClass("scale-out");
-        $("#c").removeClass("scale-out");
+        $("#racesView").removeClass("scale-out");
     }
     isZoomMap = !isZoomMap;
 });
