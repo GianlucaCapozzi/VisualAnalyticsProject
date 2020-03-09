@@ -18,7 +18,7 @@
 .line {
     fill: none;
     stroke-width: 2px;
-}  
+}
 
 html, body, #viewsContainer {
     width: 100%;
@@ -31,16 +31,8 @@ html, body, #viewsContainer {
     float: left;
 }
 
-#resTable {
+#resTable, #standingPlot {
     overflow-y: scroll;
-}
-
-#standingPlot {
-    overflow-y: scroll;
-}
-
-#b {
-    background-color: #00ff00
 }
 
 #c {

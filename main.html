@@ -18,7 +18,7 @@
               <div class="nav-wrapper">
                 <a href="#!" class="brand-logo"><img src="src/images/f1_logo.png" width="25%"/></a>
                 <ul class="right hide-on-med-and-down">
-                    <li><a><button id="zoom" class="waves-effect waves-red btn">Zoom map</button></a></li>
+                    <li><a class='dropdown-trigger btn' href='#' data-target='dropdown1'>Zoom</a></li>
                     <li><h5 id="yearLabel">Year:</h5></li>
                     <li><a>
                         <div class="row">
@@ -34,23 +34,31 @@
         </div>
 
         <div id="viewsContainer">
-            <div id="mapView"></div>
-            <div id="resTable"></div>
-            <div id="standingPlot"></div>
-            <div id="c"></div>
+            <div id="mapView" class="scale-transition"></div>
+            <div id="resTable" class="scale-transition"></div>
+            <div id="standingPlot" class="scale-transition"></div>
+            <div id="c" class="scale-transition"></div>
         </div>
 
 
         <div class="tooltip"></div>
 
+        <!-- Dropdown Structure -->
+        <ul id='dropdown1' class='dropdown-content'>
+            <li><a id="onlyMap"><i class="material-icons">add</i>Zoom map</a></li>
+            <li class="divider" tabindex="-1"></li>
+            <li><a id="onlyTable"><i class="material-icons">add</i>Zoom table</a></li>
+            <li class="divider" tabindex="-1"></li>
+            <li><a id="onlyPlot"><i class="material-icons">add</i>Zoom plot</a></li>
+        </ul>
+
         <script src="src/js/d3.js"></script>
+        <script src="src/js/d3-scale-chromatic.js"></script> <!-- Color Scale -->
         <script src="src/js/topojson.js"></script>
         <script src="src/js/jquery.js"></script>
         <script src="src/js/materialize.js"></script>
         <script src="src/js/main.js"></script>
         <script src="src/js/map.js"></script>
-        <!-- Color Scale -->
-        <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 
     </body>
 </html>

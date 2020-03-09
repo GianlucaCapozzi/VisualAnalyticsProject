@@ -6,14 +6,13 @@ var results = dataset.concat("/results.csv");
 var driver_standings = dataset.concat("/driver_standings.csv");
 
 $(document).ready(function(){
-        $('select').formSelect();
+    $('select').formSelect();
+    $('.dropdown-trigger').dropdown();
 });
 
 for (let i = 2019; i > 1950; i--) {
     let year = "<option value=" + i + ">" + i + "</option>";
     $("#yearSelect").append(year);
 }
-//let year2019 = "<option selected='selected' value=" + 2019 + ">" + 2019 + "</option>";
-//$("#yearSelect").append(year2019);
 
 $(".dropdown-content>li>a").css("color", "red");
