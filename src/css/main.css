@@ -25,14 +25,29 @@ html, body, #viewsContainer {
     height: 100%;
 }
 
-#mapView, #resTable, #standingPlot, #c {
+#mapView,  #c {
     width: 50%;
     height: 50%;
     float: left;
 }
 
+.modal {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+#modalContainer {
+    width: 100% !important;
+}
+
 #resTable, #standingPlot {
-    overflow-y: scroll;
+    width: 50% !important;
+    height: 100% !important;
+    float: left;
+}
+
+#resTable, #standingPlot {
+    overflow: auto;
 }
 
 #c {

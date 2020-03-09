@@ -1,8 +1,6 @@
 
 var active = d3.select(null);
 
-var margin = {top: 10, right: 100, bottom: 30, left: 30}
-
 var projection = d3.geoEquirectangular()
     .center([0, 15]) // set centre to further North as we are cropping more off bottom of map
     .scale(width / 6) // scale to fit group width
@@ -191,6 +189,7 @@ function clicked(d) {
                 raceId = racesId[d.name];
                 getStanding();
                 getResults();
+                $('.modal').modal('open');
             })
             .on("dbclick", function(d){
                 d3.select("#resTable").selectAll("*").remove();
