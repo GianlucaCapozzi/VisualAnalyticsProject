@@ -1,4 +1,4 @@
-var marginPlot = {top: 10, right: 100, bottom: 30, left: 40}
+var marginPlot = {top: 30, right: 100, bottom: 30, left: 40}
 
 function processStanding(err, drvs, stnds) {
     driv_rank = [];

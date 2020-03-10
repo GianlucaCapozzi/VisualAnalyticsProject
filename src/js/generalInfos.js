@@ -6,7 +6,6 @@ function processRaceResults(err, drvs, rsts) {
     rsts.forEach(grandPrix => {
         drvs.forEach(driv => {
             if(driv.driverId === grandPrix.driverId && +grandPrix.position == 1) {
-                //console.log(driv.forename);
                 driver_wins.push({'driver' : driv.forename + " " + driv.surname});
             }
         });
@@ -21,7 +20,6 @@ function processRaceResults(err, drvs, rsts) {
         })
         .entries(driver_wins)
         .sort(function(a, b) {return d3.descending(a.value, b.value)});
-    //console.log(data_count.slice(0, 10));
     plotBestDrivers(data_count.slice(0, 10));
 }
 
@@ -32,12 +30,9 @@ d3.queue()
     .await(processRaceResults);
 
 function plotBestDrivers(bestDrivers) {
-    console.log(bestDrivers);
 
     var dSWidth = window.innerHeight/2 - marginInfo.left - marginInfo.right;
     var dSHeight = window.innerHeight/2 - marginInfo.top - marginInfo.bottom;
-
-    console.log(dSWidth + " " + dSHeight);
 
     var tooltipForDrivPlot = d3.select("#driversPlot").append("div").attr("class", "tooltipForDr");
 

@@ -43,6 +43,7 @@ var raceId;
 var res = [];
 var driv_rank = [];
 var season_drivers = [];
+var season_races = [];
 
 var year = $("#yearSelect").val();
 

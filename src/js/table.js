@@ -1,17 +1,15 @@
 function processRace(err, drvs, rsts) {
     res = [];
     rsts.forEach(race => {
-        //console.log(race.raceId);
         if(race.raceId === raceId) {
             drvs.forEach(driver => {
                 if(driver.driverId === race.driverId) {
                     res.push({ 'Driver' : driver.forename + " " + driver.surname, 'Result' : race.positionText });
-                    //console.log(driver.driverRef + " " + race.positionText);
                 }
             });
         }
     });
-    //console.log(res);
+
     let table = makeTable(res);
     table.attr("class", "striped highlighted centered");
 }
