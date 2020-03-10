@@ -8,7 +8,7 @@ var driver_standings = dataset.concat("/driver_standings.csv");
 var width = window.innerWidth / 2,
     height = window.innerHeight / 2;
 
-var margin = {top: 10, right: 100, bottom: 30, left: 40}
+var margin = {top: 10, right: 20, bottom: 30, left: 40}
 
 $(document).ready(function(){
     $('select').formSelect();
