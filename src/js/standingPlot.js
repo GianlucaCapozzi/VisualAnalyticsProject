@@ -40,8 +40,7 @@ function makePlot() {
     var sWidth = $("#standingPlot").width();
     var sHeight = window.innerHeight/2;
 
-    console.log(sWidth + " " + sHeight);
-
+    d3.select("#standingPlot").append("h5").text("Plot");
     var scatPlot = d3.select("#standingPlot")
                     .append("svg")
                     .attr("width", sWidth + margin.left + margin.right)
@@ -72,7 +71,7 @@ function makePlot() {
             .attr("transform", "translate(0," + sHeight + ")")
             .call(xAxis);
 
-    // text label for the x axis        
+    // text label for the x axis
     scatPlot.append("text")
         .attr("x", sWidth/2)
         .attr("y", sHeight + margin.top + 20)
@@ -83,7 +82,7 @@ function makePlot() {
     scatPlot.append("g")
             .attr("class", "y axis")
             .call(yAxis);
-   
+
     scatPlot.append("text")
         .attr("transform", "rotate(-90)")
         .attr("y", 0 - margin.left)

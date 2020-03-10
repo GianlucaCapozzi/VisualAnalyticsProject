@@ -3,7 +3,7 @@
     <meta charset="utf-8">
 
     <head>
-        <title>F1 Visual Framework</title>
+        <title>FormulaTour</title>
         <link rel="shortcut icon" href="src/images/icon.ico"/> <!--Tab icon-->
         <link href="src/css/materialIcons.css" rel="stylesheet"> <!--Google Icon Font-->
         <link type="text/css" rel="stylesheet" href="src/css/materialize.css"  media="screen,projection"/> <!--Materialize css-->
@@ -29,7 +29,7 @@
                             </div>
                         </div>
                     </a></li>
-                    <li><a href="#" data-target="slide-out" class="buttol-collapse" id="sidenav-trigger"><i class="material-icons">menu</i></a></li>
+                    <li><a href="#" data-target="slide-out" class="buttol-collapse red pulse" id="sidenav-trigger"><i class="material-icons">menu</i></a></li>
                 </ul>
               </div>
             </nav>
@@ -40,7 +40,7 @@
             <div id="racesView" class="scale-transition"></div>
         </div>
 
-        <div id="infoContainer" class="scale-transition">
+        <div id="infoContainer" class="scale-transition"><h1>Ciao</h1>
         </div>
 
 
@@ -59,8 +59,8 @@
                 <a href="#"><img src="src/images/f1_logo.png" width="40%"></a>
             </div></li>
             <li><div class="divider"></div></li>
-            <li><button type="button" id="homeButton" class="waves-effect waves-red btn"><i class="material-icons left">home</i>Home</button></li>
-            <li><button type="button" id="infoButton" class="waves-effect waves-red btn"><i class="material-icons left">info</i>General Info</button></li>
+            <li><a><button type="button" id="homeButton" class="waves-effect waves-red btn"><i class="material-icons left">home</i>Home</button></a></li>
+            <li><a><button type="button" id="infoButton" class="waves-effect waves-red btn"><i class="material-icons left">info</i>General Info</button></a></li>
         </ul>
 
         <!-- Modal Structure -->
@@ -68,8 +68,8 @@
             <div class="modal-content">
               <h4>INFOS</h4>
               <div id="modalContainer">
-                  <div id="standingPlot" class="scale-transition"></div>
-                  <div id="resTable" class="scale-transition"></div>
+                  <div id="standingPlot"></div>
+                  <div id="resTable"></div>
               </div>
             </div>
             <div class="modal-footer">

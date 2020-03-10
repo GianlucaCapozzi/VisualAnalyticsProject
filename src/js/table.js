@@ -12,7 +12,8 @@ function processRace(err, drvs, rsts) {
         }
     });
     //console.log(res);
-    makeTable(res);
+    let table = makeTable(res);
+    table.attr("class", "striped highlighted centered");
 }
 
 function getResults() {
@@ -26,6 +27,7 @@ function makeTable(ranking) {
 
     var columns = ["Driver", "Result"];
 
+    d3.select("#resTable").append('h5').text("Table");
     var table = d3.select("#resTable").append('table');
 
     var thead = table.append('thead');

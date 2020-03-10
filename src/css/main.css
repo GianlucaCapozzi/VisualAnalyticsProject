@@ -25,6 +25,11 @@ html, body, #viewsContainer {
     height: 100%;
 }
 
+#infoContainer {
+    width: 0%;
+    height: 0%;
+}
+
 #mapView,  #racesView {
     width: 50%;
     height: 50%;
@@ -41,9 +46,17 @@ html, body, #viewsContainer {
 }
 
 #resTable, #standingPlot {
-    width: 50% !important;
+    width: 48% !important;
     height: 100% !important;
     float: left;
+}
+
+#resTable {
+    margin-left: 2%;
+}
+
+#standingPlot {
+    margin-right: 2%;
 }
 
 #resTable, #standingPlot {

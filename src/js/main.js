@@ -62,10 +62,18 @@ $("#onlyMap").on("click", function() {
 
 $("#homeButton").on("click", function() {
     $("#infoContainer").addClass("scale-out");
+    $("#infoContainer").width("0%");
+    $("#infoContainer").height("0%");
     $("#viewsContainer").removeClass("scale-out");
+    $("#viewsContainer").width("100%");
+    $("#viewsContainer").height("100%");
 });
 
 $("#infoButton").on("click", function() {
     $("#viewsContainer").addClass("scale-out");
+    $("#viewsContainer").width("0%");
+    $("#viewsContainer").height("0%");
     $("#infoContainer").removeClass("scale-out");
+    $("#infoContainer").width("100%");
+    $("#infoContainer").height("100%");
 });
