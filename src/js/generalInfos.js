@@ -39,6 +39,8 @@ function plotBestDrivers(bestDrivers) {
 
     console.log(dSWidth + " " + dSHeight);
 
+    var tooltipForDrivPlot = d3.select("#driversPlot").append("div").attr("class", "tooltipForDr");
+
     // set the ranges
     var x = d3.scaleBand()
         .range([0, dSWidth])
@@ -62,9 +64,15 @@ function plotBestDrivers(bestDrivers) {
         .attr("class", "bar")
         .attr("x", function(d) { return x(d.key); })
         .attr("width", x.bandwidth())
-        .style("fill", "steelblue")
         .attr("y", function(d) { return y(d.value); })
-        .attr("height", function(d) { return dSHeight - y(d.value); });
+        .attr("height", function(d) { return dSHeight - y(d.value); })
+        .on("mouseover", function(d) {
+            tooltipForDrivPlot
+                .style("left", d3.event.pageX - 50 + "px")
+                .style("display", "inline-block")
+                .html(d.value + " victories");
+        })
+        .on("mouseout", function(d){ tooltipForDrivPlot.style("display", "none");});
 
     bestDPlot.append("g")
         .attr("transform", "translate(0," + dSHeight + ")")
