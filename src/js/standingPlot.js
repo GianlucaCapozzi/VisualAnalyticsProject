@@ -1,7 +1,8 @@
+var marginPlot = {top: 10, right: 100, bottom: 30, left: 40}
+
 function processStanding(err, drvs, stnds) {
     driv_rank = [];
     var firstRound = d3.min(racesIdForRank) - 1;
-    console.log("First round: " + firstRound);
     racesIdForRank.forEach( rId => {
         //console.log(rId);
         stnds.forEach(stand => {
@@ -43,10 +44,10 @@ function makePlot() {
     d3.select("#standingPlot").append("h5").text("General Standing");
     var scatPlot = d3.select("#standingPlot")
                     .append("svg")
-                    .attr("width", sWidth + margin.left + margin.right)
-                    .attr("height", sHeight + margin.top + margin.bottom)
+                    .attr("width", sWidth + marginPlot.left + marginPlot.right)
+                    .attr("height", sHeight + marginPlot.top + marginPlot.bottom)
                     .append("g")
-                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                    .attr("transform", "translate(" + marginPlot.left + "," + marginPlot.top + ")");
 
     var color = d3.scaleOrdinal(d3.schemeCategory20);
 
@@ -74,7 +75,7 @@ function makePlot() {
     // text label for the x axis
     scatPlot.append("text")
         .attr("x", sWidth/2)
-        .attr("y", sHeight + margin.top + 20)
+        .attr("y", sHeight + marginPlot.top + 20)
         .style("text-anchor", "middle")
         .text("Races");
 
@@ -85,7 +86,7 @@ function makePlot() {
 
     scatPlot.append("text")
         .attr("transform", "rotate(-90)")
-        .attr("y", 0 - margin.left)
+        .attr("y", 0 - marginPlot.left)
         .attr("x", 0 - sHeight / 2)
         .attr("dy", "1em")
         .style("text-anchor", "middle")

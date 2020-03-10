@@ -8,8 +8,6 @@ var driver_standings = dataset.concat("/driver_standings.csv");
 var width = window.innerWidth / 2,
     height = window.innerHeight / 2;
 
-var margin = {top: 10, right: 100, bottom: 30, left: 40}
-
 var onCloseModal = function() {
     d3.select("#standingPlot").selectAll("*").remove();
     d3.select("#resTable").selectAll("*").remove();
