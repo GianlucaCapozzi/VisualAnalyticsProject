@@ -40,7 +40,7 @@ function makePlot() {
     var sWidth = $("#standingPlot").width();
     var sHeight = window.innerHeight/2;
 
-    d3.select("#standingPlot").append("h5").text("Plot");
+    d3.select("#standingPlot").append("h5").text("General Standing");
     var scatPlot = d3.select("#standingPlot")
                     .append("svg")
                     .attr("width", sWidth + margin.left + margin.right)

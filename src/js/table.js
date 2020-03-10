@@ -27,7 +27,7 @@ function makeTable(ranking) {
 
     var columns = ["Driver", "Result"];
 
-    d3.select("#resTable").append('h5').text("Table");
+    d3.select("#resTable").append('h5').text("Order of Arrival");
     var table = d3.select("#resTable").append('table');
 
     var thead = table.append('thead');
