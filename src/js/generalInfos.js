@@ -1,4 +1,5 @@
 var driver_wins = [];
+var marginInfo = {top: 10, right: 20, bottom: 100, left: 40}
 
 function processRaceResults(err, drvs, rsts) {
     driver_wins = [];
@@ -33,11 +34,9 @@ d3.queue()
 function plotBestDrivers(bestDrivers) {
     console.log(bestDrivers);
 
-    var dMargin = {top: 10, right: 20, bottom: 100, left: 40}
+    var dSWidth = window.innerHeight/2 - marginInfo.left - marginInfo.right;
+    var dSHeight = window.innerHeight/2 - marginInfo.top - marginInfo.bottom;
 
-    var dSWidth = window.innerHeight/2 - dMargin.left - dMargin.right;
-    var dSHeight = window.innerHeight/2 - dMargin.top - dMargin.bottom;
-    
     console.log(dSWidth + " " + dSHeight);
 
     // set the ranges
@@ -49,10 +48,10 @@ function plotBestDrivers(bestDrivers) {
 
     var bestDPlot = d3.select("#driversPlot")
         .append("svg")
-        .attr("width", dSWidth + dMargin.left + dMargin.right)
-        .attr("height", dSWidth + dMargin.top + dMargin.bottom)
+        .attr("width", dSWidth + marginInfo.left + marginInfo.right)
+        .attr("height", dSWidth + marginInfo.top + marginInfo.bottom)
         .append("g")
-        .attr("transform", "translate(" + dMargin.left + "," + dMargin.top + ")");
+        .attr("transform", "translate(" + marginInfo.left + "," + marginInfo.top + ")");
 
     x.domain(bestDrivers.map(function(d) { return d.key; }));
     y.domain([0, d3.max(bestDrivers, function(d) { return d.value; })]);
@@ -75,9 +74,9 @@ function plotBestDrivers(bestDrivers) {
         .attr("dx", "-.8em")
         .attr("dy", ".15em")
         .attr("transform", "rotate(-90)");
-        
+
     bestDPlot.append("g")
-        .call(d3.axisLeft(y));    
+        .call(d3.axisLeft(y));
 
 
 }

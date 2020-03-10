@@ -8,13 +8,20 @@ var driver_standings = dataset.concat("/driver_standings.csv");
 var width = window.innerWidth / 2,
     height = window.innerHeight / 2;
 
-var margin = {top: 10, right: 20, bottom: 30, left: 40}
+var onCloseModal = function() {
+    d3.select("#standingPlot").selectAll("*").remove();
+    d3.select("#resTable").selectAll("*").remove();
+    let active = true, newOpacity = 1;
+    g.selectAll("#mapID").style("opacity", newOpacity);
+    g.selectAll("#circleMap").style("opacity", newOpacity);
+    mapID.active = active;
+};
 
 $(document).ready(function(){
     $('select').formSelect();
     $('.dropdown-trigger').dropdown();
     $('.sidenav').sidenav({edge: 'right'});
-    $('.modal').modal();
+    $('.modal').modal({dismissible: false, onCloseEnd: onCloseModal});
 });
 
 $("#sidenav-trigger").on("click", function(event) {

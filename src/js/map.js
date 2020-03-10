@@ -51,7 +51,6 @@ function processRacesByYear(err, circ, rac) {
         }
     });
     updateData();
-    console.log(racesIdForRank);
 }
 
 
@@ -181,11 +180,10 @@ function clicked(d) {
                             .css("opacity", 0);
             })
             .on("click", function(d) {
-                var active = mapID.active ? false : true,
-                    newOpacity = active ? 0.3 : 1;
+                let active = false, newOpacity = 0.3;
                 g.selectAll("#mapID").style("opacity", newOpacity);
                 g.selectAll("#circleMap").style("opacity", newOpacity);
-                mapID.active = active
+                mapID.active = active;
                 raceId = racesId[d.name];
                 getStanding();
                 getResults();
