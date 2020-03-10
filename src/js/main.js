@@ -59,3 +59,13 @@ $("#onlyMap").on("click", function() {
     }
     isZoomMap = !isZoomMap;
 });
+
+$("#homeButton").on("click", function() {
+    $("#infoContainer").addClass("scale-out");
+    $("#viewsContainer").removeClass("scale-out");
+});
+
+$("#infoButton").on("click", function() {
+    $("#viewsContainer").addClass("scale-out");
+    $("#infoContainer").removeClass("scale-out");
+});

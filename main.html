@@ -35,9 +35,12 @@
             </nav>
         </div>
 
-        <div id="viewsContainer">
+        <div id="viewsContainer" class="scale-transition">
             <div id="mapView" class="scale-transition"></div>
             <div id="racesView" class="scale-transition"></div>
+        </div>
+
+        <div id="infoContainer" class="scale-transition">
         </div>
 
 
@@ -56,6 +59,8 @@
                 <a href="#"><img src="src/images/f1_logo.png" width="40%"></a>
             </div></li>
             <li><div class="divider"></div></li>
+            <li><button type="button" id="homeButton" class="waves-effect waves-red btn"><i class="material-icons left">home</i>Home</button></li>
+            <li><button type="button" id="infoButton" class="waves-effect waves-red btn"><i class="material-icons left">info</i>General Info</button></li>
         </ul>
 
         <!-- Modal Structure -->
