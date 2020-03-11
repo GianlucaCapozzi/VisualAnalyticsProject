@@ -37,7 +37,7 @@ html, body, #viewsContainer {
 }
 
 
-#constructorsPlotContainer, #driversPlotContainer, #driversChampsContainer {
+#constructorsPlotContainer, #driversPlotContainer, #driverChampPlot {
     width: 50%;
     overflow: auto;
     height: 50%;

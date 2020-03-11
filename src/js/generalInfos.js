@@ -1,5 +1,5 @@
 var driver_wins = [];
-var marginInfo = {top: 10, right: 20, bottom: 110, left: 40};
+var marginInfo = {top: 10, right: 20, bottom: 30, left: 30};
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 
 var dSWidth = window.innerWidth/2 - marginInfo.left - marginInfo.right;
@@ -242,12 +242,16 @@ function plotDrivChamps(champions) {
 
     console.log(radius);
 
-    var drChampPlot = d3.select("#drChampPlot")
+
+    d3.select("#driverChampPlot").append("h3").text("Driver's world championship winners");
+
+    var drChampPlot = d3.select("#driverChampPlot")
         .append("svg")
-        .attr("width", Math.min(dSWidth,dSHeight)/2)
-        .attr("height", Math.min(dSWidth,dSHeight)/2)
+        .attr("width", '100%')
+        .attr("height", '100%')
+        .attr('viewBox','0 0 '+Math.min(dSWidth,dSHeight) +' '+Math.min(dSWidth,dSHeight) )
         .append("g")
-        .attr("transform", "translate(" + Math.min(dSWidth, dSHeight) / 4 + "," + Math.min(dSWidth, dSHeight) / 4 + ")");
+        .attr("transform", "translate(" + dSWidth / 2 + "," + dSHeight / 2 + ")");
 
     var pie = d3.pie()
         .sort(null)
