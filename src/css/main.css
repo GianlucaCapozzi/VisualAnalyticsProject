@@ -30,10 +30,19 @@ html, body, #viewsContainer {
     height: 0%;
 }
 
-#mapView,  #racesView, #constructorsPlotContainer, #driversPlotContainer {
+#mapView,  #racesView {
     width: 50%;
     height: 50%;
     float: left;
+}
+
+
+#constructorsPlotContainer, #driversPlotContainer, #driversChampsContainer {
+    width: 50%;
+    overflow: auto;
+    height: 50%;
+    float: left;
+    
 }
 
 .modal {

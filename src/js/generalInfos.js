@@ -1,6 +1,9 @@
 var driver_wins = [];
-var marginInfo = {top: 10, right: 20, bottom: 100, left: 40};
+var marginInfo = {top: 10, right: 20, bottom: 110, left: 40};
 var color = d3.scaleOrdinal(d3.schemeCategory20);
+
+var dSWidth = window.innerWidth/2 - marginInfo.left - marginInfo.right;
+var dSHeight = window.innerHeight/2 - marginInfo.top - marginInfo.bottom;
 
 function processRaceResults(err, drvs, rsts) {
     driver_wins = [];
@@ -31,9 +34,6 @@ d3.queue()
     .await(processRaceResults);
 
 function plotBestDrivers(bestDrivers) {
-
-    var dSWidth = window.innerHeight/2 - marginInfo.left - marginInfo.right;
-    var dSHeight = window.innerHeight/2 - marginInfo.top - marginInfo.bottom;
 
     var tooltipForDrivPlot = d3.select("#driversPlot").append("div").attr("class", "tooltipForDr");
 
@@ -106,19 +106,16 @@ function processConstructorResults(err, cons, rsts) {
         .entries(constructor_wins)
         .sort(function(a, b) {return d3.descending(a.value, b.value)});
 
-    plotConstruncors(cons_count)
+    plotConstructors(cons_count.slice(0, 10))
 }
 
 
 d3.queue()
     .defer(d3.csv, constructors)
-    .defer(d3.csv, constructor_standings)
+    .defer(d3.csv, results)
     .await(processConstructorResults);
 
-function plotConstruncors(constructorWins) {
-
-        var dSWidth = window.innerHeight/2 - marginInfo.left - marginInfo.right;
-        var dSHeight = window.innerHeight/2 - marginInfo.top - marginInfo.bottom;
+function plotConstructors(constructorWins) {
 
         var tooltipForConsPlot = d3.select("#constructorsPlot").append("div").attr("class", "tooltipForCo");
 
@@ -167,4 +164,152 @@ function plotConstruncors(constructorWins) {
 
         bestCPlot.append("g")
             .call(d3.axisLeft(y));
+}
+
+
+var driv_champ_wins = [];
+
+var lastRacesId = [];
+
+d3.queue()
+        .defer(d3.csv, races)
+        .await(getLastRaces);
+
+function getLastRaces(err, GPs) {
+    var gpsByYear = [];
+    for (i = 1950; i < 2020; i++) {
+        GPs.forEach(gp => {
+            if(parseInt(gp.year) === i) {
+                //console.log(i);
+                gpsByYear.push(+gp.raceId);
+            }
+        });
+        //console.log(gpsByYear);
+        gpsByYear.sort(d3.descending);
+        //console.log(gpsByYear);
+        lastRacesId.push(gpsByYear[0]);
+        gpsByYear = [];
     }
+}
+
+d3.queue()
+    .defer(d3.csv, drivers)
+    .defer(d3.csv, driver_standings)
+    .await(processDriversChampionships);
+
+function processDriversChampionships(err, drivs, stands) {
+    //console.log(lastRacesId);
+    lastRacesId.forEach(lastRace => {
+        stands.forEach(st => {
+            if(parseInt(st.raceId) == lastRace) {
+                drivs.forEach(dr => {
+                    if(dr.driverId === st.driverId && parseInt(st.position) == 1) {
+                        driv_champ_wins.push({'driver' : dr.forename + " " + dr.surname});
+                    }
+                });
+            }
+        });
+    });
+    console.log(driv_champ_wins);
+
+    var driv_champ_count = d3.nest()
+        .key(function(d) {
+            return d.driver;
+        })
+        .rollup(function(d) {
+            return d.length;
+        })
+        .entries(driv_champ_wins)
+        .sort(function(a, b) {return d3.descending(a.value, b.value); });
+
+    var driv_top_10 = driv_champ_count.slice(0, 10);
+
+    var shownChamp = 0;
+    driv_top_10.forEach(d => {
+        shownChamp += d.value;
+    });
+    
+    driv_top_10.push({'key' : 'others', 'value' : driv_champ_wins.length - shownChamp});
+
+    plotDrivChamps(driv_top_10);
+
+}
+
+function plotDrivChamps(champions) {
+    //console.log(champions);
+
+    var radius = Math.min(dSWidth, dSHeight) / 2;
+
+    console.log(radius);
+
+    var drChampPlot = d3.select("#drChampPlot")
+        .append("svg")
+        .attr("width", Math.min(dSWidth,dSHeight)/2)
+        .attr("height", Math.min(dSWidth,dSHeight)/2)
+        .append("g")
+        .attr("transform", "translate(" + Math.min(dSWidth, dSHeight) / 4 + "," + Math.min(dSWidth, dSHeight) / 4 + ")");
+
+    var pie = d3.pie()
+        .sort(null)
+        .value(function(d) {return d.value; });
+
+    //console.log(champions);
+
+    var data_ready = pie(champions);
+
+    //console.log(data_ready);
+
+    var arc = d3.arc()
+        .innerRadius(radius * 0.5)
+        .outerRadius(radius * 0.8);
+
+    var outerArc = d3.arc()
+        .innerRadius(radius * 0.9)
+        .outerRadius(radius * 0.9);
+
+    drChampPlot.selectAll('allSlices')
+        .data(data_ready)
+        .enter()
+        .append('path')
+        .attr('d', arc)
+        .attr('fill', function(d) { 
+            console.log(d);
+            return color(d.data.key)})
+        .attr("stroke", "white")
+        .style("stroke-width", "2px")
+        .style("opacity", 0.7);
+
+    drChampPlot.selectAll('allPolylines')
+        .data(data_ready)
+        .enter()
+        .append('polyline')
+        .attr("stroke", "black")
+        .style("fill", "none")
+        .attr("stroke-width", 1)
+        .attr('points', function(d) {
+            var posA = arc.centroid(d) // line insertion in the slice
+            var posB = outerArc.centroid(d) // line break: we use the other arc generator that has been built only for that
+            var posC = outerArc.centroid(d); // Label position = almost the same as posB
+            var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2 // we need the angle to see if the X position will be at the extreme right or extreme left
+            posC[0] = radius * 0.95 * (midangle < Math.PI ? 1 : -1); // multiply by 1 or -1 to put it on the right or on the left
+            return [posA, posB, posC]
+        });
+
+    drChampPlot.selectAll('allLabels')
+        .data(data_ready)
+        .enter()
+        .append('text')
+        .text(function(d) { 
+            //console.log(d);
+            return d.data.key; })
+        .attr('transform', function(d) {
+            var pos = outerArc.centroid(d);
+            var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
+            pos[0] = radius * 0.99 * (midangle < Math.PI ? 1 : -1);
+            return 'translate(' + pos + ')';
+        })
+        .style('text-anchor', function(d) {
+            var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
+            return (midangle < Math.PI ? 'start' : 'end')
+        });
+}
