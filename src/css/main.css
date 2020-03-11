@@ -30,7 +30,7 @@ html, body, #viewsContainer {
     height: 0%;
 }
 
-#mapView,  #racesView {
+#mapView,  #racesView, #constructorsPlotContainer, #driversPlotContainer {
     width: 50%;
     height: 50%;
     float: left;
@@ -74,7 +74,7 @@ html, body, #viewsContainer {
     fill: orange;
 }
 
-.tooltipForDr {
+.tooltipForDr, .tooltipForCo {
     position: absolute;
     text-align: center;
     width: auto;

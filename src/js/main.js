@@ -4,6 +4,8 @@ var races = dataset.concat("/races.csv");
 var drivers = dataset.concat("/drivers.csv");
 var results = dataset.concat("/results.csv");
 var driver_standings = dataset.concat("/driver_standings.csv");
+var constructors = dataset.concat("/constructors.csv");
+var constructor_standings = dataset.concat("/constructor_standings.csv");
 
 var width = window.innerWidth / 2,
     height = window.innerHeight / 2;
@@ -43,29 +45,10 @@ var raceId;
 var res = [];
 var driv_rank = [];
 var season_drivers = [];
+var season_races = [];
+var racesForYear = [];
 
 var year = $("#yearSelect").val();
-
-var isZoomMap = false;
-function zoomMap() {
-    projection.fitSize(width, height);
-}
-$("#onlyMap").on("click", function() {
-    if (!isZoomMap) {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        $("#racesView").addClass("scale-out");
-        $("#mapView").removeClass("scale-out");
-        zoomMap();
-    } else {
-        width = window.innerWidth / 2;
-        height = window.innerHeight / 2;
-        zoomMap();
-        $("#mapView").removeClass("scale-out");
-        $("#racesView").removeClass("scale-out");
-    }
-    isZoomMap = !isZoomMap;
-});
 
 $("#homeButton").on("click", function() {
     $("#infoContainer").addClass("scale-out");

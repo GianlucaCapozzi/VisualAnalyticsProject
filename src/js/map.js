@@ -35,7 +35,7 @@ function processRacesByYear(err, circ, rac) {
     driv_rank = [];
     season_drivers = [];
     rac.forEach(r => {
-        //console.log("YEAR: " + r.year);
+        racesForYear.push({'year' : r.year, 'raceId' : r.raceId});
         if(r.year == year) {
             circ.forEach(c => {
                 if(r.circuitId === c.circuitId) {
@@ -61,8 +61,8 @@ $("#yearSelect").on("change", function() {
     racesIdForRank = [];
     driv_rank = [];
     season_drivers = [];
+    season_races = [];
     let year = $("#yearSelect").val();
-    console.log("YEAR: " + year);
 
     d3.queue()
         .defer(d3.csv, circuits)
@@ -86,9 +86,9 @@ $("#yearSelect").on("change", function() {
             }
         });
         updateData();
-        console.log(racesIdForRank);
     }
-
+    d3.select("#racesView").selectAll("*").remove();
+    getRaces();
 });
 
 function updateData() {
