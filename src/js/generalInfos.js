@@ -1,9 +1,11 @@
 var driver_wins = [];
-var marginInfo = {top: 30, right: 0, bottom: 30, left: 50};
+var marginInfo = {top: 10, right: 10, bottom: 10, left: 10};
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 
-var dSWidth = 400 - marginInfo.left - marginInfo.right;
-var dSHeight = 400 - marginInfo.top - marginInfo.bottom;
+var dSWidth = $("#mapView").width() - marginInfo.left - marginInfo.right;
+var dSHeight = $("#mapView").height() - marginInfo.top - marginInfo.bottom;
+
+console.log(dSWidth);
 
 function processRaceResults(err, drvs, rsts) {
     driver_wins = [];
@@ -242,15 +244,15 @@ function plotDrivChamps(champions) {
 
     var radius = Math.min(dSWidth, dSHeight) / 2;
 
-    console.log(radius);
+    //console.log(radius);
 
     d3.select("#drChampPlot").append("h5").text("Most drivers' championship winners");
     var drChampPlot = d3.select("#drChampPlot")
-        .append("div")
-        .classed("svg-container", true)
         .append("svg")
+        .attr("width", dSWidth)
+        .attr("height", dSHeight)
         .append("g")
-        .attr("transform", "translate(" + 1.5*radius + "," + 1.5*radius+ ")");
+        .attr("transform", "translate(" + dSWidth/2 + "," + dSHeight/2+ ")");
 
 
     var pie = d3.pie()

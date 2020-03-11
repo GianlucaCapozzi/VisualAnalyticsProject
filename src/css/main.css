@@ -36,29 +36,23 @@ html, body, #viewsContainer {
     float: left;
 }
 
+.grid-container {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: auto auto auto;
+}
 
-#constructorsPlot, #driversPlot, #drChampPlot {
+#g_4, #g_5, #g_6, #gr_1, #gr_2, #gr_3, #gr_4 {
+    padding: 20px;
+    font-size: 30px;
+    text-align: center;
+}
+
+#constructorsPlot, #driversPlot, #drChampPlot, #g_4, #g_5, #g_6 {
     display: block;
-    width: 50%;
     overflow: auto;
-    height: 50%;
     float: left;
     padding: 10px;
-}
-
-.svg-container {
-    display: inline-block;
-    position: relative;
-    width: 50%;
-    padding-bottom: 50%; /* aspect ratio */
-    vertical-align: top;
-    overflow: hidden;
-}
-.svg-content-responsive {
-    display: inline-block;
-    position: absolute;
-    top: 10px;
-    left: 0;
 }
 
 .modal {
