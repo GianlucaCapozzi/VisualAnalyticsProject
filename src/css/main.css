@@ -37,12 +37,11 @@ html, body, #viewsContainer {
 }
 
 
-#constructorsPlotContainer, #driversPlotContainer, #driversChampsContainer {
+#constructorsPlot, #driversPlot, #driversChamps {
     width: 50%;
     overflow: auto;
     height: 50%;
     float: left;
-    
 }
 
 .modal {
