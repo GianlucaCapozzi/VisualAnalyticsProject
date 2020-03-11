@@ -1,4 +1,4 @@
-var marginPlot = {top: 10, right: 100, bottom: 30, left: 40}
+var marginPlot = {top: 30, right: 100, bottom: 30, left: 40}
 
 function processStanding(err, drvs, stnds) {
     driv_rank = [];
@@ -75,7 +75,7 @@ function makePlot() {
     // text label for the x axis
     scatPlot.append("text")
         .attr("x", sWidth/2)
-        .attr("y", sHeight + marginPlot.top + 20)
+        .attr("y", sHeight + marginPlot.top)
         .style("text-anchor", "middle")
         .text("Races");
 
@@ -100,6 +100,7 @@ function makePlot() {
             .data(driv_rank)
             .enter()
             .append("path")
+            .attr("class", function(d) { return d.key; })
             .attr("d", function(d){ return line(d.values) } )
             .attr("stroke", function(d){ return color(d.key) })
             .style("stroke-width", 4)
@@ -130,7 +131,7 @@ function makePlot() {
             .attr("transform", function(d) { return "translate(" + x(d.value.race) + "," + y(d.value.position) + ")"; }) // Put the text at the position of the last point
             .attr("x", 12) // shift the text a bit more right
             .text(function(d) { return d.name; })
-            .style("fill", function(d){ return color(d.name) })
+            .style("fill", function(d){ return color(d.name); })
             .style("font-size", 15);
 
 }
