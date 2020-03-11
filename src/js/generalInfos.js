@@ -1,9 +1,9 @@
 var driver_wins = [];
-var marginInfo = {top: 10, right: 20, bottom: 30, left: 30};
+var marginInfo = {top: 20, right: 0, bottom: 0, left: 30};
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 
-var dSWidth = window.innerWidth/2 - marginInfo.left - marginInfo.right;
-var dSHeight = window.innerHeight/2 - marginInfo.top - marginInfo.bottom;
+var dSWidth = $("#mapView").width() * 0.8 - marginInfo.left - marginInfo.right;
+var dSHeight = $("#mapView").height() * 0.8 - marginInfo.top - marginInfo.bottom;
 
 function processRaceResults(err, drvs, rsts) {
     driver_wins = [];
@@ -44,6 +44,7 @@ function plotBestDrivers(bestDrivers) {
     var y = d3.scaleLinear()
         .range([dSHeight, 0]);
 
+    d3.select("#driversPlot").append("h5").text("Most successful drivers");
     var bestDPlot = d3.select("#driversPlot")
         .append("svg")
         .attr("width", dSWidth + marginInfo.left + marginInfo.right)
@@ -53,6 +54,18 @@ function plotBestDrivers(bestDrivers) {
 
     x.domain(bestDrivers.map(function(d) { return d.key; }));
     y.domain([0, d3.max(bestDrivers, function(d) { return d.value; })]);
+
+    bestDPlot.append("g")
+        .attr("transform", "translate(0," + dSHeight + ")")
+        .call(d3.axisBottom(x))
+        .selectAll("text")
+        .style("text-anchor", "end")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", "rotate(-90)");
+
+    bestDPlot.append("g")
+        .call(d3.axisLeft(y));
 
     bestDPlot.selectAll("bar")
         .data(bestDrivers)
@@ -70,18 +83,6 @@ function plotBestDrivers(bestDrivers) {
                 .html(d.value + " victories");
         })
         .on("mouseout", function(d){ tooltipForDrivPlot.style("display", "none");});
-
-    bestDPlot.append("g")
-        .attr("transform", "translate(0," + dSHeight + ")")
-        .call(d3.axisBottom(x))
-        .selectAll("text")
-        .style("text-anchor", "end")
-        .attr("dx", "-.8em")
-        .attr("dy", ".15em")
-        .attr("transform", "rotate(-90)");
-
-    bestDPlot.append("g")
-        .call(d3.axisLeft(y));
 }
 
 var constructor_wins = [];
@@ -126,6 +127,7 @@ function plotConstructors(constructorWins) {
         var y = d3.scaleLinear()
             .range([dSHeight, 0]);
 
+        d3.select("#constructorsPlot").append("h5").text("Most successful constructors");
         var bestCPlot = d3.select("#constructorsPlot")
             .append("svg")
             .attr("width", dSWidth + marginInfo.left + marginInfo.right)
@@ -228,7 +230,7 @@ function processDriversChampionships(err, drivs, stands) {
     driv_top_10.forEach(d => {
         shownChamp += d.value;
     });
-    
+
     driv_top_10.push({'key' : 'others', 'value' : driv_champ_wins.length - shownChamp});
 
     plotDrivChamps(driv_top_10);
@@ -242,16 +244,13 @@ function plotDrivChamps(champions) {
 
     console.log(radius);
 
-
-    d3.select("#driverChampPlot").append("h3").text("Driver's world championship winners");
-
-    var drChampPlot = d3.select("#driverChampPlot")
+    d3.select("#drChampPlot").append("h5").text("Most drivers' championship winners");
+    var drChampPlot = d3.select("#drChampPlot")
         .append("svg")
-        .attr("width", '100%')
-        .attr("height", '100%')
-        .attr('viewBox','0 0 '+Math.min(dSWidth,dSHeight) +' '+Math.min(dSWidth,dSHeight) )
+        .attr("width", radius * 2)
+        .attr("height", radius * 2)
         .append("g")
-        .attr("transform", "translate(" + dSWidth / 2 + "," + dSHeight / 2 + ")");
+        .attr("transform", "translate(" + radius + "," + radius + ")");
 
     var pie = d3.pie()
         .sort(null)
@@ -276,7 +275,7 @@ function plotDrivChamps(champions) {
         .enter()
         .append('path')
         .attr('d', arc)
-        .attr('fill', function(d) { 
+        .attr('fill', function(d) {
             console.log(d);
             return color(d.data.key)})
         .attr("stroke", "white")
@@ -303,7 +302,7 @@ function plotDrivChamps(champions) {
         .data(data_ready)
         .enter()
         .append('text')
-        .text(function(d) { 
+        .text(function(d) {
             //console.log(d);
             return d.data.key; })
         .attr('transform', function(d) {
