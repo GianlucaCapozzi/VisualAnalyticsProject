@@ -37,11 +37,28 @@ html, body, #viewsContainer {
 }
 
 
-#constructorsPlot, #driversPlot, #driversChamps {
+#constructorsPlot, #driversPlot, #drChampPlot {
+    display: block;
     width: 50%;
     overflow: auto;
     height: 50%;
     float: left;
+    padding: 10px;
+}
+
+.svg-container {
+    display: inline-block;
+    position: relative;
+    width: 50%;
+    padding-bottom: 50%; /* aspect ratio */
+    vertical-align: top;
+    overflow: hidden;
+}
+.svg-content-responsive {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    left: 0;
 }
 
 .modal {

@@ -1,9 +1,9 @@
 var driver_wins = [];
-var marginInfo = {top: 20, right: 0, bottom: 0, left: 30};
+var marginInfo = {top: 30, right: 0, bottom: 30, left: 50};
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 
-var dSWidth = $("#mapView").width() * 0.8 - marginInfo.left - marginInfo.right;
-var dSHeight = $("#mapView").height() * 0.8 - marginInfo.top - marginInfo.bottom;
+var dSWidth = 400 - marginInfo.left - marginInfo.right;
+var dSHeight = 400 - marginInfo.top - marginInfo.bottom;
 
 function processRaceResults(err, drvs, rsts) {
     driver_wins = [];
@@ -246,11 +246,12 @@ function plotDrivChamps(champions) {
 
     d3.select("#drChampPlot").append("h5").text("Most drivers' championship winners");
     var drChampPlot = d3.select("#drChampPlot")
+        .append("div")
+        .classed("svg-container", true)
         .append("svg")
-        .attr("width", radius * 2)
-        .attr("height", radius * 2)
         .append("g")
-        .attr("transform", "translate(" + radius + "," + radius + ")");
+        .attr("transform", "translate(" + 1.5*radius + "," + 1.5*radius+ ")");
+
 
     var pie = d3.pie()
         .sort(null)
