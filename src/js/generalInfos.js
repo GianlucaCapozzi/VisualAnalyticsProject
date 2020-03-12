@@ -5,6 +5,8 @@ var color = d3.scaleOrdinal(d3.schemeCategory20);
 var dSWidth = $("#mapView").width() * 0.6 - marginInfo.left - marginInfo.right;
 var dSHeight = $("#mapView").height() * 0.6 - marginInfo.top - marginInfo.bottom;
 
+var data_count = [];
+
 function processRaceResults(err, drvs, rsts) {
     driver_wins = [];
     rsts.forEach(grandPrix => {
@@ -15,7 +17,7 @@ function processRaceResults(err, drvs, rsts) {
         });
     });
 
-    var data_count = d3.nest()
+    data_count = d3.nest()
         .key(function(d){
             return d.driver;
         })
@@ -24,7 +26,7 @@ function processRaceResults(err, drvs, rsts) {
         })
         .entries(driver_wins)
         .sort(function(a, b) {return d3.descending(a.value, b.value)});
-    plotBestDrivers(data_count.slice(0, 10));
+    plotBestDrivers(data_count.slice(0, 10), "");
 }
 
 
@@ -33,7 +35,7 @@ d3.queue()
     .defer(d3.csv, results)
     .await(processRaceResults);
 
-function plotBestDrivers(bestDrivers) {
+function plotBestDrivers(bestDrivers, selDriver) {
 
     var tooltipForDrivPlot = d3.select("#driversPlot").append("div").attr("class", "tooltipForDr");
 
@@ -43,6 +45,12 @@ function plotBestDrivers(bestDrivers) {
         .padding(0.1);
     var y = d3.scaleLinear()
         .range([dSHeight, 0]);
+
+    var topDrivers = [];
+    
+    bestDrivers.forEach(d => {
+        topDrivers.push(d.key);
+    });
 
     d3.select("#driversPlot").append("h5").text("Most successful drivers");
     var bestDPlot = d3.select("#driversPlot")
@@ -76,6 +84,16 @@ function plotBestDrivers(bestDrivers) {
         .attr("y", function(d) { return y(d.value); })
         .attr("height", function(d) { return dSHeight - y(d.value); })
         .style("fill", function(d){ return color(d.key) })
+        .style("opacity", function(d) {
+            if(selDriver === "") { return 1; }
+            if(!topDrivers.includes(selDriver)) { return 1; }
+            if(d.key === selDriver) {
+                return 1;
+            }
+            else {
+                return 0.3;
+            }
+        })
         .on("mouseover", function(d) {
             tooltipForDrivPlot
                 .style("left", d3.event.pageX - 50 + "px")
@@ -280,11 +298,18 @@ function plotDrivChamps(champions) {
         .style("stroke-width", "2px")
         .style("opacity", 0.7)
         .on("mouseover", function(d) {
-            tooltipForDrivChampsPlot
-                .style("display", "block")
+            drChampPlot.append("text")
+                .attr("text-anchor", "middle")
+                .attr("class", "champLab")
                 .html(d.value);
         })
-        .on("mouseout", function(d){ tooltipForDrivChampsPlot.style("display", "none");});;
+        .on("mouseout", function(d) {
+            drChampPlot.selectAll(".champLab").remove();
+        })
+        .on("click", function(d) {
+            d3.select("#driversPlot").selectAll("*").remove();
+            plotBestDrivers(data_count.slice(0, 10), d.data.key);
+        })
 
     drChampPlot.selectAll('allPolylines')
         .data(data_ready)
