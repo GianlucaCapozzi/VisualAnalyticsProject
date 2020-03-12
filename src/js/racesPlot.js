@@ -1,5 +1,5 @@
 var allDrivers = [];
-var marginRacePlot = {top: 30, right: 150, bottom: 30, left: 40}
+var marginRacePlot = {top: 40, right: 180, bottom: 50, left: 60}
 
 function processRaces(err, drvs, rsts) {
     season_races = [];
@@ -67,13 +67,15 @@ function makeRacesPlot() {
 
     var yAxis = d3.axisLeft(y)
                 .tickFormat(d3.format('d'))
-                .ticks(season_races.length);
+                .ticks(season_races.length)
+                .tickFormat(function(d) { return (d == season_races.length + 1) ? "R" : d; });
 
     x.domain([0, racesIdForRank.length]);
     y.domain([0, season_races.length + 1]);
 
     // Add the x axis
     scatPlot.append("g")
+            .style("font", "20px f1font")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + sHeight + ")")
             .call(xAxis);
@@ -81,12 +83,15 @@ function makeRacesPlot() {
     // text label for the x axis
     scatPlot.append("text")
         .attr("x", sWidth/2)
-        .attr("y", sHeight + marginRacePlot.top + 20)
+        .attr("y", sHeight + marginRacePlot.top + 10)
         .style("text-anchor", "middle")
+        .style("fill", "red")
+        .style("font", "20px f1font")
         .text("Races");
 
     // Add the y axis
     scatPlot.append("g")
+            .style("font", "20px f1font")
             .attr("class", "y axis")
             .call(yAxis);
 
@@ -96,6 +101,8 @@ function makeRacesPlot() {
         .attr("x", 0 - sHeight / 2)
         .attr("dy", "1em")
         .style("text-anchor", "middle")
+        .style("fill", "red")
+        .style("font", "20px f1font")
         .text("Position");
 
     // Add the lines
@@ -106,7 +113,7 @@ function makeRacesPlot() {
             .data(season_races)
             .enter()
             .append("path")
-            .attr("class", function(d){ return d.key.split(" ")[0] + " otherDrivers" })
+            .attr("class", function(d){ return d.key.replace(" ", "") + " otherDrivers" })
             .attr("d", function(d){ return line(d.values) } )
             .attr("stroke", function(d){ return color(d.key) })
             .style("stroke-width", 4)
@@ -118,14 +125,14 @@ function makeRacesPlot() {
                 .enter()
                 .append('g')
                 .style("fill", function(d){ return color(d.key) })
-                .attr("class", function(d){ return d.key.split(" ")[0] + " otherDrivers" })
+                .attr("class", function(d){ return d.key.replace(" ", "") + " otherDrivers" })
                 .selectAll("myPoints")
                 .data(function(d){ return d.values })
                 .enter()
                 .append("circle")
                 .attr("cx", function(d) { return x(+d.race) } )
                 .attr("cy", function(d) { return y(+d.position) } )
-                .attr("r", 3.5)
+                .attr("r", 8)
                 .attr("stroke", "white");
 
     // Add a legend at the end of each line
@@ -134,7 +141,7 @@ function makeRacesPlot() {
             .enter()
             .append('g')
             .append("text")
-            .attr("class", function(d){ return d.key.split(" ")[0] + " otherDrivers" })
+            .attr("class", function(d){ return d.key.replace(" ", "") + " otherDrivers" })
             .datum(function(d) { return {name: d.key, value: d.values[d.values.length - 1]}; }) // keep only the last value of each time series
             .attr("transform", function(d) { return "translate(" + x(d.value.race) + "," + y(d.value.position) + ")"; }) // Put the text at the position of the last point
             .attr("x", 12) // shift the text a bit more right
@@ -143,27 +150,26 @@ function makeRacesPlot() {
             .style("font-size", 15);
 
     // Add a legend (interactive)
-    var startx = 0, counter = 0;
-    scatPlot.selectAll("myLegend")
+    var legend = d3.select("#racesView").append("div");
+    legend.append("h5").text("Drivers:").style("width", "100%").attr("class", "center-align");
+    var legendContainer = legend.append("div").attr("class", "legend-grid");
+    legendContainer.selectAll("myLegend")
             .data(season_races)
             .enter()
-            .append('g')
-            .append("text")
-            .attr('x', function(d,i){
-                if (counter % 2 == 0) console.log("Odd");
-                return startx;})
-            .attr('y', function(d,i){ return -20;})
+            .append("h6")
+            .style("float", "left")
+            .style("margin-right", "5px")
+            .style("color", function(d){ return color(d.key) })
             .text(function(d) { return d.key; })
-            .style("fill", function(d){ return color(d.key) })
             .style("font-size", 15)
             .on("click", function(d){
                 d3.selectAll(".otherDrivers").transition().style("opacity", 0);
-                d3.selectAll("." + d.key.split(" ")[0]).transition().style("opacity", 1);
+                d3.selectAll("." + d.key.replace(" ", "")).transition().style("opacity", 1);
             });
 
     // Show only first driver
     d3.selectAll(".otherDrivers").transition().style("opacity", 0);
-    d3.selectAll("." + allDrivers[0].split(" ")[0]).transition().style("opacity", 1);
+    d3.selectAll("." + allDrivers[0].replace(" ", "")).transition().style("opacity", 1);
 
 }
 

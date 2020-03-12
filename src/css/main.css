@@ -58,6 +58,12 @@ html, body, #viewsContainer {
     text-align: center;
 }
 
+.legend-grid {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: auto auto auto auto;
+}
+
 #constructorsPlot, #driversPlot, #drChampPlot, #g_4, #g_5, #g_6 {
     display: block;
     overflow: auto;

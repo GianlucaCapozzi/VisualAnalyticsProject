@@ -1,4 +1,4 @@
-var marginPlot = {top: 30, right: 150, bottom: 30, left: 40}
+var marginPlot = {top: 40, right: 150, bottom: 40, left: 50}
 
 function processStanding(err, drvs, stnds) {
     driv_rank = [];
@@ -68,7 +68,8 @@ function makePlot() {
 
     // Add the x axis
     scatPlot.append("g")
-            .attr("class", "x axis")
+            .style("font-size", "20px")
+            .attr("class", "x-axis")
             .attr("transform", "translate(0," + sHeight + ")")
             .call(xAxis);
 
@@ -77,11 +78,13 @@ function makePlot() {
         .attr("x", sWidth/2)
         .attr("y", sHeight + marginPlot.top)
         .style("text-anchor", "middle")
+        .style("fill", "red")
         .text("Races");
 
     // Add the y axis
     scatPlot.append("g")
-            .attr("class", "y axis")
+            .style("font-size", "20px")
+            .attr("class", "y-axis")
             .call(yAxis);
 
     scatPlot.append("text")
@@ -90,6 +93,7 @@ function makePlot() {
         .attr("x", 0 - sHeight / 2)
         .attr("dy", "1em")
         .style("text-anchor", "middle")
+        .style("fill", "red")
         .text("Position");
 
     // Add the lines
@@ -118,7 +122,7 @@ function makePlot() {
                 .append("circle")
                 .attr("cx", function(d) { return x(d.race) } )
                 .attr("cy", function(d) { return y(d.position) } )
-                .attr("r", 3.5)
+                .attr("r", 5)
                 .attr("stroke", "white");
 
     // Add a legend at the end of each line

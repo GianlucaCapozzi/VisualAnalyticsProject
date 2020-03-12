@@ -1,5 +1,5 @@
 var driver_wins = [];
-var marginInfo = {top: 10, right: 10, bottom: 10, left: 10};
+var marginInfo = {top: 10, right: 10, bottom: 10, left: 30};
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 
 var dSWidth = $("#mapView").width() * 0.6 - marginInfo.left - marginInfo.right;
@@ -47,7 +47,7 @@ function plotBestDrivers(bestDrivers, selDriver) {
         .range([dSHeight, 0]);
 
     var topDrivers = [];
-    
+
     bestDrivers.forEach(d => {
         topDrivers.push(d.key);
     });
@@ -64,6 +64,7 @@ function plotBestDrivers(bestDrivers, selDriver) {
     y.domain([0, d3.max(bestDrivers, function(d) { return d.value; })]);
 
     bestDPlot.append("g")
+        .style("font-size", "20px")
         .attr("transform", "translate(0," + dSHeight + ")")
         .call(d3.axisBottom(x))
         .selectAll("text")
@@ -73,6 +74,7 @@ function plotBestDrivers(bestDrivers, selDriver) {
         .attr("transform", "rotate(-90)");
 
     bestDPlot.append("g")
+        .style("font-size", "20px")
         .call(d3.axisLeft(y));
 
     bestDPlot.selectAll("bar")
@@ -174,6 +176,7 @@ function plotConstructors(constructorWins) {
             .on("mouseout", function(d){ tooltipForConsPlot.style("display", "none");});
 
         bestCPlot.append("g")
+            .style("font-size", "20px")
             .attr("transform", "translate(0," + dSHeight + ")")
             .call(d3.axisBottom(x))
             .selectAll("text")
@@ -183,6 +186,7 @@ function plotConstructors(constructorWins) {
             .attr("transform", "rotate(-90)");
 
         bestCPlot.append("g")
+            .style("font-size", "20px")
             .call(d3.axisLeft(y));
 }
 

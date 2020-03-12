@@ -54,9 +54,15 @@ $("#homeButton").on("click", function() {
     $("#viewsContainer").removeClass("scale-out");
     $("#viewsContainer").width("100%");
     $("#viewsContainer").height("100%");
+    $("#home-thing-3").removeClass("scale-out");
+    $("#home-thing-2").removeClass("scale-out");
+    $("#home-thing-1").removeClass("scale-out");
 });
 
 $("#infoButton").on("click", function() {
+    $("#home-thing-1").addClass("scale-out");
+    $("#home-thing-2").addClass("scale-out");
+    $("#home-thing-3").addClass("scale-out");
     $("#viewsContainer").addClass("scale-out");
     $("#viewsContainer").width("0%");
     $("#viewsContainer").height("0%");
