@@ -5,8 +5,6 @@ var color = d3.scaleOrdinal(d3.schemeCategory20);
 var dSWidth = $("#mapView").width() * 0.6 - marginInfo.left - marginInfo.right;
 var dSHeight = $("#mapView").height() * 0.6 - marginInfo.top - marginInfo.bottom;
 
-console.log(dSWidth);
-
 function processRaceResults(err, drvs, rsts) {
     driver_wins = [];
     rsts.forEach(grandPrix => {
@@ -184,13 +182,10 @@ function getLastRaces(err, GPs) {
     for (i = 1950; i < 2020; i++) {
         GPs.forEach(gp => {
             if(parseInt(gp.year) === i) {
-                //console.log(i);
                 gpsByYear.push(+gp.raceId);
             }
         });
-        //console.log(gpsByYear);
         gpsByYear.sort(d3.descending);
-        //console.log(gpsByYear);
         lastRacesId.push(gpsByYear[0]);
         gpsByYear = [];
     }
@@ -202,7 +197,6 @@ d3.queue()
     .await(processDriversChampionships);
 
 function processDriversChampionships(err, drivs, stands) {
-    //console.log(lastRacesId);
     lastRacesId.forEach(lastRace => {
         stands.forEach(st => {
             if(parseInt(st.raceId) == lastRace) {
@@ -214,7 +208,6 @@ function processDriversChampionships(err, drivs, stands) {
             }
         });
     });
-    console.log(driv_champ_wins);
 
     var driv_champ_count = d3.nest()
         .key(function(d) {
@@ -240,11 +233,15 @@ function processDriversChampionships(err, drivs, stands) {
 }
 
 function plotDrivChamps(champions) {
-    //console.log(champions);
 
     var radius = Math.min(dSWidth, dSHeight) / 2;
 
-    //console.log(radius);
+    var tooltipForDrivChampsPlot = d3.select("#drChampPlot")
+                                    .append("div")
+                                    .attr("class", "tooltipForDrC")
+                                    .attr("id", "A")
+                                    .style('top', radius * 1.4 + 'px')
+                                    .style('right', radius * 1.5 + 'px');
 
     d3.select("#drChampPlot").append("h5").text("Most drivers' championship winners");
     var drChampPlot = d3.select("#drChampPlot")
@@ -278,12 +275,16 @@ function plotDrivChamps(champions) {
         .enter()
         .append('path')
         .attr('d', arc)
-        .attr('fill', function(d) {
-            console.log(d);
-            return color(d.data.key)})
+        .attr('fill', function(d) {return color(d.data.key)})
         .attr("stroke", "white")
         .style("stroke-width", "2px")
-        .style("opacity", 0.7);
+        .style("opacity", 0.7)
+        .on("mouseover", function(d) {
+            tooltipForDrivChampsPlot
+                .style("display", "block")
+                .html(d.value);
+        })
+        .on("mouseout", function(d){ tooltipForDrivChampsPlot.style("display", "none");});;
 
     drChampPlot.selectAll('allPolylines')
         .data(data_ready)
