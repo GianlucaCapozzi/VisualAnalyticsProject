@@ -1,5 +1,5 @@
 var allDrivers = [];
-var marginRacePlot = {top: 40, right: 180, bottom: 50, left: 60}
+var marginRacePlot = {top: 40, right: 10, bottom: 50, left: 60}
 
 function processRaces(err, drvs, rsts) {
     season_races = [];
@@ -44,7 +44,7 @@ function getRaces() {
 
 function makeRacesPlot() {
 
-    var sWidth = $("#racesView").width() * 0.65;
+    var sWidth = $("#racesView").width() * 0.8;
     var sHeight = $("#racesView").height() * 0.65;
 
     d3.select("#racesView").append("h5").text("Races results");
@@ -136,7 +136,7 @@ function makeRacesPlot() {
                 .attr("stroke", "white");
 
     // Add a legend at the end of each line
-    scatPlot.selectAll("myLabels")
+    /*scatPlot.selectAll("myLabels")
             .data(season_races)
             .enter()
             .append('g')
@@ -147,7 +147,7 @@ function makeRacesPlot() {
             .attr("x", 12) // shift the text a bit more right
             .text(function(d) { return d.name; })
             .style("fill", function(d){ return color(d.name) })
-            .style("font-size", 15);
+            .style("font-size", 15);*/
 
     // Add a legend (interactive)
     var legend = d3.select("#racesView").append("div");

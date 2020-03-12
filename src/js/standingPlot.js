@@ -1,4 +1,4 @@
-var marginPlot = {top: 40, right: 150, bottom: 40, left: 50}
+var marginPlot = {top: 50, right: 150, bottom: 50, left: 70}
 
 function processStanding(err, drvs, stnds) {
     driv_rank = [];
@@ -68,7 +68,7 @@ function makePlot() {
 
     // Add the x axis
     scatPlot.append("g")
-            .style("font-size", "20px")
+            .style("font", "20px f1font")
             .attr("class", "x-axis")
             .attr("transform", "translate(0," + sHeight + ")")
             .call(xAxis);
@@ -78,12 +78,13 @@ function makePlot() {
         .attr("x", sWidth/2)
         .attr("y", sHeight + marginPlot.top)
         .style("text-anchor", "middle")
+        .style("font", "20px f1font")
         .style("fill", "red")
         .text("Races");
 
     // Add the y axis
     scatPlot.append("g")
-            .style("font-size", "20px")
+            .style("font", "20px f1font")
             .attr("class", "y-axis")
             .call(yAxis);
 
@@ -93,6 +94,7 @@ function makePlot() {
         .attr("x", 0 - sHeight / 2)
         .attr("dy", "1em")
         .style("text-anchor", "middle")
+        .style("font", "20px f1font")
         .style("fill", "red")
         .text("Position");
 
