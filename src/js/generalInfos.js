@@ -85,13 +85,13 @@ function plotBestDrivers(bestDrivers, selDriver) {
         .attr("height", function(d) { return dSHeight - y(d.value); })
         .style("fill", function(d){ return color(d.key) })
         .style("opacity", function(d) {
-            if(selDriver === "") { return 1; }
+            if(selDriver === "") { return 1.5; }
             if(!topDrivers.includes(selDriver)) { return 1; }
             if(d.key === selDriver) {
-                return 1;
+                return 1.5;
             }
             else {
-                return 0.3;
+                return 0.1;
             }
         })
         .on("mouseover", function(d) {
