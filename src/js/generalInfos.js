@@ -37,8 +37,6 @@ d3.queue()
 
 function plotBestDrivers(bestDrivers, selDriver) {
 
-    var tooltipForDrivPlot = d3.select("#driversPlot").append("div").attr("class", "tooltipForDr");
-
     // set the ranges
     var x = d3.scaleBand()
         .range([0, dSWidth])
@@ -72,9 +70,6 @@ function plotBestDrivers(bestDrivers, selDriver) {
         .attr("dy", ".15em")
         .attr("transform", "rotate(-90)");
 
-    bestDPlot.append("g")
-        .call(d3.axisLeft(y));
-
     bestDPlot.selectAll("bar")
         .data(bestDrivers)
         .enter().append("rect")
@@ -84,6 +79,8 @@ function plotBestDrivers(bestDrivers, selDriver) {
         .attr("y", function(d) { return y(d.value); })
         .attr("height", function(d) { return dSHeight - y(d.value); })
         .style("fill", function(d){ return color(d.key) })
+        .transition()
+        .duration(1000)
         .style("opacity", function(d) {
             if(selDriver === "") { return 1.5; }
             if(!topDrivers.includes(selDriver)) { return 1; }
@@ -93,14 +90,36 @@ function plotBestDrivers(bestDrivers, selDriver) {
             else {
                 return 0.1;
             }
-        })
-        .on("mouseover", function(d) {
-            tooltipForDrivPlot
-                .style("left", d3.event.pageX - 50 + "px")
-                .style("display", "inline-block")
-                .html(d.value + " victories");
-        })
-        .on("mouseout", function(d){ tooltipForDrivPlot.style("display", "none");});
+        });
+        
+        bestDPlot.selectAll("barText")
+            .data(bestDrivers)
+            .enter()
+            .append("text")
+            .text(function(d) { 
+                return d.value;
+            })
+            .attr("text-anchor", "middle")
+            .attr("x", function(d) {
+                return x(d.key) + x.bandwidth()/2;
+            })
+            .attr("y", function(d) {
+                return y(d.value);
+            })
+            .style("font-size", "12px")
+            .transition()
+            .duration(1000)
+            .style("opacity", function(d) {
+                if(selDriver === "") { return 1.5; }
+                if(!topDrivers.includes(selDriver)) { return 1; }
+                if(d.key === selDriver) {
+                    return 1.5;
+                }
+                else {
+                    return 0.1;
+                }
+            });
+            
 }
 
 var constructor_wins = [];
@@ -136,8 +155,6 @@ d3.queue()
 
 function plotConstructors(constructorWins) {
 
-        var tooltipForConsPlot = d3.select("#constructorsPlot").append("div").attr("class", "tooltipForCo");
-
         // set the ranges
         var x = d3.scaleBand()
             .range([0, dSWidth])
@@ -164,14 +181,7 @@ function plotConstructors(constructorWins) {
             .attr("width", x.bandwidth())
             .attr("y", function(d) { return y(d.value); })
             .attr("height", function(d) { return dSHeight - y(d.value); })
-            .style("fill", function(d){ return color(d.key) })
-            .on("mouseover", function(d) {
-                tooltipForConsPlot
-                    .style("left", d3.event.pageX - 50 + "px")
-                    .style("display", "inline-block")
-                    .html(d.value + " victories");
-            })
-            .on("mouseout", function(d){ tooltipForConsPlot.style("display", "none");});
+            .style("fill", function(d){ return color(d.key) });
 
         bestCPlot.append("g")
             .attr("transform", "translate(0," + dSHeight + ")")
@@ -182,8 +192,21 @@ function plotConstructors(constructorWins) {
             .attr("dy", ".15em")
             .attr("transform", "rotate(-90)");
 
-        bestCPlot.append("g")
-            .call(d3.axisLeft(y));
+        bestCPlot.selectAll("barCText")
+            .data(constructorWins)
+            .enter()
+            .append("text")
+            .text(function(d) { 
+                return d.value;
+            })
+            .attr("text-anchor", "middle")
+            .attr("x", function(d) {
+                return x(d.key) + x.bandwidth()/2;
+            })
+            .attr("y", function(d) {
+                return y(d.value);
+            })
+            .style("font-size", "12px")
 }
 
 
@@ -254,13 +277,6 @@ function plotDrivChamps(champions) {
 
     var radius = Math.min(dSWidth, dSHeight) / 2;
 
-    var tooltipForDrivChampsPlot = d3.select("#drChampPlot")
-                                    .append("div")
-                                    .attr("class", "tooltipForDrC")
-                                    .attr("id", "A")
-                                    .style('top', radius * 1.4 + 'px')
-                                    .style('right', radius * 1.5 + 'px');
-
     d3.select("#drChampPlot").append("h5").text("Most drivers' championship winners");
     var drChampPlot = d3.select("#drChampPlot")
         .append("svg")
@@ -301,6 +317,7 @@ function plotDrivChamps(champions) {
             drChampPlot.append("text")
                 .attr("text-anchor", "middle")
                 .attr("class", "champLab")
+                .style("font-size", "32px")
                 .html(d.value);
         })
         .on("mouseout", function(d) {
