@@ -29,7 +29,6 @@ html, body, #viewsContainer {
 #infoContainer {
     width: 0%;
     height: 0%;
-    background-color: #eeeeee;
 }
 
 .grid-container-home {
@@ -52,19 +51,13 @@ html, body, #viewsContainer {
     grid-template-columns: auto auto auto;
 }
 
-#g_4, #g_5, #g_6, #gr_1, #gr_2 {
-    padding: 20px;
-    font-size: 30px;
-    text-align: center;
-}
-
 .legend-grid {
     display: grid;
     grid-gap: 10px;
     grid-template-columns: auto auto auto auto;
 }
 
-#constructorsPlot, #driversPlot, #drChampPlot, #g_4, #g_5, #g_6 {
+#constructorsPlot, #driversPlot, #drChampPlot, #csChampPlot, #g_3, #g_6, {
     display: block;
     overflow: auto;
     float: left;

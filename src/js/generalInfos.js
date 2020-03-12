@@ -212,7 +212,6 @@ function plotConstructors(constructorWins) {
 }
 
 
-var driv_champ_wins = [];
 
 var lastRacesId = [];
 
@@ -233,6 +232,8 @@ function getLastRaces(err, GPs) {
         gpsByYear = [];
     }
 }
+
+var driv_champ_wins = [];
 
 d3.queue()
     .defer(d3.csv, drivers)
