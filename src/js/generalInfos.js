@@ -50,6 +50,17 @@ function plotBestDrivers(bestDrivers, selDriver) {
         topDrivers.push(d.key);
     });
 
+    var bestDriverCont = d3.select("#bestDriver");
+
+    bestDriverCont.append("h5")
+        .text(bestDrivers[0].key);
+    bestDriverCont.append("h5")
+        .attr('class', 'text')
+        .text(bestDrivers[0].value + " victories");
+
+    $("#bestDriver").append("<img id='theImage' src='../images/mcs.jpg' />");
+
+
     d3.select("#driversPlot").append("h5").text("Most successful drivers");
     var bestDPlot = d3.select("#driversPlot")
         .append("svg")
@@ -62,7 +73,7 @@ function plotBestDrivers(bestDrivers, selDriver) {
     y.domain([0, d3.max(bestDrivers, function(d) { return d.value; })]);
 
     bestDPlot.append("g")
-        .style("font", "20px f1font")
+        .style("font", "14px f1font")
         .attr("transform", "translate(0," + dSHeight + ")")
         .call(d3.axisBottom(x))
         .selectAll("text")
@@ -144,6 +155,7 @@ function processConstructorResults(err, cons, rsts) {
         })
         .entries(constructor_wins)
         .sort(function(a, b) {return d3.descending(a.value, b.value)});
+    
 
     plotConstructors(cons_count.slice(0, 10))
 }
@@ -185,7 +197,7 @@ function plotConstructors(constructorWins) {
             .style("fill", function(d){ return color(d.key) });
 
         bestCPlot.append("g")
-            .style("font", "20px f1font")
+            .style("font", "14px f1font")
             .attr("transform", "translate(0," + dSHeight + ")")
             .call(d3.axisBottom(x))
             .selectAll("text")
@@ -327,6 +339,7 @@ function plotDrivChamps(champions) {
         })
         .on("click", function(d) {
             d3.select("#driversPlot").selectAll("*").remove();
+            d3.select("#bestDriver").selectAll("*").remove();
             plotBestDrivers(data_count.slice(0, 10), d.data.key);
         })
 
