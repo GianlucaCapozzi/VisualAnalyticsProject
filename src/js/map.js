@@ -1,3 +1,5 @@
+    var width = $("#mapView").width(),
+    height = $("#mapView").height();
 
 var active = d3.select(null);
 

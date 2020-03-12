@@ -1,4 +1,5 @@
 var allDrivers = [];
+var marginRacePlot = {top: 30, right: 150, bottom: 30, left: 40}
 
 function processRaces(err, drvs, rsts) {
     season_races = [];
@@ -43,16 +44,16 @@ function getRaces() {
 
 function makeRacesPlot() {
 
-    var sWidth = $("#racesView").width() * 0.8;
-    var sHeight = $("#racesView").height() * 0.8;
+    var sWidth = $("#racesView").width() * 0.65;
+    var sHeight = $("#racesView").height() * 0.65;
 
     d3.select("#racesView").append("h5").text("Races results");
     var scatPlot = d3.select("#racesView")
                     .append("svg")
-                    .attr("width", sWidth + marginPlot.left + marginPlot.right)
-                    .attr("height", sHeight + marginPlot.top + marginPlot.bottom)
+                    .attr("width", sWidth + marginRacePlot.left + marginRacePlot.right)
+                    .attr("height", sHeight + marginRacePlot.top + marginRacePlot.bottom)
                     .append("g")
-                    .attr("transform", "translate(" + marginPlot.left + "," + marginPlot.top + ")");
+                    .attr("transform", "translate(" + marginRacePlot.left + "," + marginRacePlot.top + ")");
 
     var color = d3.scaleOrdinal(d3.schemeCategory20);
 
@@ -80,7 +81,7 @@ function makeRacesPlot() {
     // text label for the x axis
     scatPlot.append("text")
         .attr("x", sWidth/2)
-        .attr("y", sHeight + marginPlot.top + 20)
+        .attr("y", sHeight + marginRacePlot.top + 20)
         .style("text-anchor", "middle")
         .text("Races");
 
@@ -91,7 +92,7 @@ function makeRacesPlot() {
 
     scatPlot.append("text")
         .attr("transform", "rotate(-90)")
-        .attr("y", 0 - marginPlot.left)
+        .attr("y", 0 - marginRacePlot.left)
         .attr("x", 0 - sHeight / 2)
         .attr("dy", "1em")
         .style("text-anchor", "middle")
@@ -142,14 +143,16 @@ function makeRacesPlot() {
             .style("font-size", 15);
 
     // Add a legend (interactive)
-    var half = 0;
+    var startx = 0, counter = 0;
     scatPlot.selectAll("myLegend")
             .data(season_races)
             .enter()
             .append('g')
             .append("text")
-            .attr('x', function(d,i){ return 0 + i*60})
-            .attr('y', -20)
+            .attr('x', function(d,i){
+                if (counter % 2 == 0) console.log("Odd");
+                return startx;})
+            .attr('y', function(d,i){ return -20;})
             .text(function(d) { return d.key; })
             .style("fill", function(d){ return color(d.key) })
             .style("font-size", 15)

@@ -2,8 +2,8 @@ var driver_wins = [];
 var marginInfo = {top: 10, right: 10, bottom: 10, left: 10};
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 
-var dSWidth = $("#mapView").width() - marginInfo.left - marginInfo.right;
-var dSHeight = $("#mapView").height() - marginInfo.top - marginInfo.bottom;
+var dSWidth = $("#mapView").width() * 0.6 - marginInfo.left - marginInfo.right;
+var dSHeight = $("#mapView").height() * 0.6 - marginInfo.top - marginInfo.bottom;
 
 console.log(dSWidth);
 

@@ -1,4 +1,4 @@
-var marginPlot = {top: 30, right: 120, bottom: 30, left: 40}
+var marginPlot = {top: 30, right: 150, bottom: 30, left: 40}
 
 function processStanding(err, drvs, stnds) {
     driv_rank = [];
@@ -38,7 +38,7 @@ function getStanding() {
 
 function makePlot() {
 
-    var sWidth = $("#standingPlot").width();
+    var sWidth = $("#standingPlot").width() * 0.7;
     var sHeight = window.innerHeight/2;
 
     d3.select("#standingPlot").append("h5").text("General Standing");
