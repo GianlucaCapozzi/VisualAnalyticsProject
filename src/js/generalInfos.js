@@ -6,13 +6,16 @@ var dSWidth = $("#mapView").width() * 0.6 - marginInfo.left - marginInfo.right;
 var dSHeight = $("#mapView").height() * 0.6 - marginInfo.top - marginInfo.bottom;
 
 var data_count = [];
+var driver_urls = {};
 
 function processRaceResults(err, drvs, rsts) {
     driver_wins = [];
     rsts.forEach(grandPrix => {
         drvs.forEach(driv => {
             if(driv.driverId === grandPrix.driverId && +grandPrix.position == 1) {
-                driver_wins.push({'driver' : driv.forename + " " + driv.surname});
+                let driverName = driv.forename + " " + driv.surname;
+                driver_wins.push({'driver' : driverName});
+                driver_urls[driverName] = driv.url;
             }
         });
     });
@@ -50,8 +53,30 @@ function plotBestDrivers(bestDrivers, selDriver) {
         topDrivers.push(d.key);
     });
 
+    var bestDriverCont = d3.select("#bestDriver");
+    bestDriverCont.attr("class", "center-align")
+
+    bestDriverCont.append("h5")
+        .text(bestDrivers[0].key);
+    bestDriverCont.append("h5")
+        .attr('class', 'text')
+        .text(bestDrivers[0].value + " victories");
+
+    let driverWiki = driver_urls[bestDrivers[0].key].split('/');
+    let urlRequest = "https://cors-anywhere.herokuapp.com/https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&titles=" + driverWiki[driverWiki.length - 1];
+    d3.json(urlRequest, function(err, mydata) {
+        var firstObj = Object.values(mydata.query.pages)[0];
+        let urlImage = firstObj.original.source;
+        //$("#bestDriver").append("<img id='theImage' src='" + urlImage + "' />");
+        bestDriverCont.append("img")
+            .attr("src", urlImage)
+            .attr("width", 200)
+            .attr("height", 200);
+    });
+
+
     d3.select("#driversPlot").append("h5").text("Most successful drivers");
-    var bestDPlot = d3.select("#driversPlot")
+    var bestDPlot = d3.select("#driversPlot").attr("class", "center-align")
         .append("svg")
         .attr("width", dSWidth + marginInfo.left + marginInfo.right)
         .attr("height", dSWidth + marginInfo.top + marginInfo.bottom)
@@ -62,7 +87,7 @@ function plotBestDrivers(bestDrivers, selDriver) {
     y.domain([0, d3.max(bestDrivers, function(d) { return d.value; })]);
 
     bestDPlot.append("g")
-        .style("font", "20px f1font")
+        .style("font", "14px f1font")
         .attr("transform", "translate(0," + dSHeight + ")")
         .call(d3.axisBottom(x))
         .selectAll("text")
@@ -145,6 +170,7 @@ function processConstructorResults(err, cons, rsts) {
         .entries(constructor_wins)
         .sort(function(a, b) {return d3.descending(a.value, b.value)});
 
+
     plotConstructors(cons_count.slice(0, 10))
 }
 
@@ -164,7 +190,7 @@ function plotConstructors(constructorWins) {
             .range([dSHeight, 0]);
 
         d3.select("#constructorsPlot").append("h5").text("Most successful constructors");
-        var bestCPlot = d3.select("#constructorsPlot")
+        var bestCPlot = d3.select("#constructorsPlot").attr("class", "center-align")
             .append("svg")
             .attr("width", dSWidth + marginInfo.left + marginInfo.right)
             .attr("height", dSWidth + marginInfo.top + marginInfo.bottom)
@@ -185,7 +211,7 @@ function plotConstructors(constructorWins) {
             .style("fill", function(d){ return color(d.key) });
 
         bestCPlot.append("g")
-            .style("font", "20px f1font")
+            .style("font", "14px f1font")
             .attr("transform", "translate(0," + dSHeight + ")")
             .call(d3.axisBottom(x))
             .selectAll("text")
@@ -281,7 +307,7 @@ function plotDrivChamps(champions) {
     var radius = Math.min(dSWidth, dSHeight) / 2;
 
     d3.select("#drChampPlot").append("h5").text("Most drivers' championship winners");
-    var drChampPlot = d3.select("#drChampPlot")
+    var drChampPlot = d3.select("#drChampPlot").attr("class", "center-align")
         .append("svg")
         .attr("width", dSWidth)
         .attr("height", dSHeight)
@@ -328,6 +354,7 @@ function plotDrivChamps(champions) {
         })
         .on("click", function(d) {
             d3.select("#driversPlot").selectAll("*").remove();
+            d3.select("#bestDriver").selectAll("*").remove();
             plotBestDrivers(data_count.slice(0, 10), d.data.key);
         })
 

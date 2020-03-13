@@ -48,7 +48,7 @@ function makeRacesPlot() {
     var sHeight = $("#racesView").height() * 0.65;
 
     d3.select("#racesView").append("h5").text("Races results");
-    var scatPlot = d3.select("#racesView")
+    var scatPlot = d3.select("#racesView").attr("class", "center-align")
                     .append("svg")
                     .attr("width", sWidth + marginRacePlot.left + marginRacePlot.right)
                     .attr("height", sHeight + marginRacePlot.top + marginRacePlot.bottom)

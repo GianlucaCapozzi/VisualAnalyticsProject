@@ -42,7 +42,7 @@ function makePlot() {
     var sHeight = window.innerHeight/2;
 
     d3.select("#standingPlot").append("h5").text("General Standing");
-    var scatPlot = d3.select("#standingPlot")
+    var scatPlot = d3.select("#standingPlot").attr("class", "center-align")
                     .append("svg")
                     .attr("width", sWidth + marginPlot.left + marginPlot.right)
                     .attr("height", sHeight + marginPlot.top + marginPlot.bottom)

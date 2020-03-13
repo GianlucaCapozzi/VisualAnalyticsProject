@@ -11,15 +11,6 @@
     color: #ff0000
 }
 
-.dot {
-    stroke: #000;
-}
-
-.line {
-    fill: none;
-    stroke-width: 2px;
-}
-
 html, body, #viewsContainer {
     font-family: f1font;
     width: 100%;
@@ -29,6 +20,10 @@ html, body, #viewsContainer {
 #infoContainer {
     width: 0%;
     height: 0%;
+}
+
+#firstMenuButton {
+    margin-top: 20px;
 }
 
 .grid-container-home {
@@ -57,7 +52,7 @@ html, body, #viewsContainer {
     grid-template-columns: auto auto auto auto;
 }
 
-#constructorsPlot, #driversPlot, #drChampPlot, #csChampPlot, #g_3, #g_6, {
+#constructorsPlot, #driversPlot, #drChampPlot, #csChampPlot, #bestDriver, #bestConstructor, {
     display: block;
     overflow: auto;
     float: left;
