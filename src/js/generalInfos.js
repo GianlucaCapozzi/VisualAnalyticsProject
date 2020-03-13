@@ -392,3 +392,134 @@ function plotDrivChamps(champions) {
             return (midangle < Math.PI ? 'start' : 'end')
         });
 }
+
+
+// Best constructors wins
+var cons_champ_wins = [];
+
+d3.queue()
+    .defer(d3.csv, constructors)
+    .defer(d3.csv, constructor_standings)
+    .await(processConstructorsChampionships);
+
+function processConstructorsChampionships(err, consts, stands) {
+    lastRacesId.forEach(lastRace => {
+        stands.forEach(st => {
+            if(parseInt(st.raceId) == lastRace) {
+                consts.forEach(con => {
+                    if(con.constructorId === st.constructorId && parseInt(st.position) == 1) {
+                        cons_champ_wins.push({'constructor' : con.name});
+                    }
+                });
+            }
+        });
+    });
+
+    var cons_champ_count = d3.nest()
+        .key(function(d) {
+            return d.constructor;
+        })
+        .rollup(function(d) {
+            return d.length;
+        })
+        .entries(cons_champ_wins)
+        .sort(function(a, b) {return d3.descending(a.value, b.value); });
+
+    var cons_top_10 = cons_champ_count.slice(0, 10);
+
+    var shownChamp = 0;
+    cons_top_10.forEach(d => {
+        shownChamp += d.value;
+    });
+
+    cons_top_10.push({'key' : 'others', 'value' : cons_champ_wins.length - shownChamp});
+
+    plotConsChamps(cons_top_10);
+
+}
+
+function plotConsChamps(champions) {
+
+    var radius = Math.min(dSWidth, dSHeight) / 2;
+
+    d3.select("#csChampPlot").append("h5").text("Most constructors' championship winners");
+    var csChampPlot = d3.select("#csChampPlot").attr("class", "center-align")
+        .append("svg")
+        .attr("width", dSWidth)
+        .attr("height", dSHeight)
+        .append("g")
+        .attr("transform", "translate(" + dSWidth/2 + "," + dSHeight/2+ ")");
+
+
+    var pie = d3.pie()
+        .sort(null)
+        .value(function(d) {return d.value; });
+
+    //console.log(champions);
+
+    var data_ready = pie(champions);
+
+    //console.log(data_ready);
+
+    var arc = d3.arc()
+        .innerRadius(radius * 0.5)
+        .outerRadius(radius * 0.8);
+
+    var outerArc = d3.arc()
+        .innerRadius(radius * 0.9)
+        .outerRadius(radius * 0.9);
+
+    csChampPlot.selectAll('allSlices')
+        .data(data_ready)
+        .enter()
+        .append('path')
+        .attr('d', arc)
+        .attr('fill', function(d) {return color(d.data.key)})
+        .attr("stroke", "white")
+        .style("stroke-width", "2px")
+        .style("opacity", 0.7)
+        .on("mouseover", function(d) {
+            csChampPlot.append("text")
+                .attr("text-anchor", "middle")
+                .attr("class", "champLab")
+                .style("font-size", "32px")
+                .html(d.value);
+        })
+        .on("mouseout", function(d) {
+            csChampPlot.selectAll(".champLab").remove();
+        });
+
+    csChampPlot.selectAll('allPolylines')
+        .data(data_ready)
+        .enter()
+        .append('polyline')
+        .attr("stroke", "black")
+        .style("fill", "none")
+        .attr("stroke-width", 1)
+        .attr('points', function(d) {
+            var posA = arc.centroid(d) // line insertion in the slice
+            var posB = outerArc.centroid(d) // line break: we use the other arc generator that has been built only for that
+            var posC = outerArc.centroid(d); // Label position = almost the same as posB
+            var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2 // we need the angle to see if the X position will be at the extreme right or extreme left
+            posC[0] = radius * 0.95 * (midangle < Math.PI ? 1 : -1); // multiply by 1 or -1 to put it on the right or on the left
+            return [posA, posB, posC]
+        });
+
+    csChampPlot.selectAll('allLabels')
+        .data(data_ready)
+        .enter()
+        .append('text')
+        .text(function(d) {
+            //console.log(d);
+            return d.data.key; })
+        .attr('transform', function(d) {
+            var pos = outerArc.centroid(d);
+            var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
+            pos[0] = radius * 0.99 * (midangle < Math.PI ? 1 : -1);
+            return 'translate(' + pos + ')';
+        })
+        .style('text-anchor', function(d) {
+            var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
+            return (midangle < Math.PI ? 'start' : 'end')
+        });
+}
