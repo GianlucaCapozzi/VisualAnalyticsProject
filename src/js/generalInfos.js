@@ -8,6 +8,8 @@ var dSHeight = $("#mapView").height() * 0.6 - marginInfo.top - marginInfo.bottom
 var data_count = [];
 var driver_urls = {};
 
+var urlImageRequest = "https://cors-anywhere.herokuapp.com/https://it.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&pilicense=any&titles=";
+
 function processRaceResults(err, drvs, rsts) {
     driver_wins = [];
     rsts.forEach(grandPrix => {
@@ -39,12 +41,13 @@ function processRaceResults(err, drvs, rsts) {
         .attr('class', 'text')
         .text(data_count[0].value + " victories");
 
-    let driverWiki = driver_urls[data_count[0].key].split('/');
-    let urlRequest = "https://cors-anywhere.herokuapp.com/https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&titles=" + driverWiki[driverWiki.length - 1];
-    d3.json(urlRequest, function(err, mydata) {
+    let driverName = data_count[0].key;
+    d3.json(urlImageRequest + driverName, function(err, mydata) {
         var firstObj = Object.values(mydata.query.pages)[0];
         let urlImage = firstObj.original.source;
-        bestDriverCont.append("img")
+        bestDriverCont.append("a")
+            .attr("href", driver_urls[driverName])
+            .append("img")
             .attr("src", urlImage)
             .attr("width", 300)
             .attr("height", 300);
@@ -144,7 +147,7 @@ function plotBestDrivers(bestDrivers, selDriver) {
 }
 
 var constructor_wins = [];
-var constructor_urls = [];
+var constructor_urls = {};
 
 function processConstructorResults(err, cons, rsts) {
     constructor_wins = [];
@@ -176,13 +179,13 @@ function processConstructorResults(err, cons, rsts) {
         .attr('class', 'text')
         .text(cons_count[0].value + " victories");
 
-    let constructorWiki = constructor_urls[cons_count[0].key].split('/');
-    let urlRequest = "https://cors-anywhere.herokuapp.com/https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&titles=" + constructorWiki[constructorWiki.length - 1];
-    d3.json(urlRequest, function(err, mydata) {
+    let constructorName = cons_count[0].key;
+    d3.json(urlImageRequest + constructorName, function(err, mydata) {
         var firstObj = Object.values(mydata.query.pages)[0];
-        console.log(firstObj);
         let urlImage = firstObj.original.source;
-        bestConstructorDiv.append("img")
+        bestConstructorDiv.append("a")
+            .attr("href", constructor_urls[constructorName])
+            .append("img")
             .attr("src", urlImage)
             .attr("width", 200)
             .attr("height", 200);
