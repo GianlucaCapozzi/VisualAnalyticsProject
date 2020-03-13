@@ -131,20 +131,17 @@ function plotBestDrivers(bestDrivers, selDriver) {
         })
         .style("font-size", "20px")
         .style("opacity", function(d) {
-            if(selDriver === "") { return 1.5; }
+            if(selDriver === "") { return 1; }
             if(!topDrivers.includes(selDriver)) { return 1; }
-            if(d.key === selDriver) {
-                return 1.5;
-            }
-            else {
-                return 0.1;
-            }
+            if(d.key === selDriver) { return 1.5; }
+            else { return 0.1; }
         });
 
 }
 
 var constructor_wins = [];
 var constructor_urls = [];
+var cons_count = [];
 
 function processConstructorResults(err, cons, rsts) {
     constructor_wins = [];
@@ -157,7 +154,7 @@ function processConstructorResults(err, cons, rsts) {
         });
     });
 
-    var cons_count = d3.nest()
+    cons_count = d3.nest()
         .key(function(d){
             return d.constructor;
         })
@@ -189,7 +186,7 @@ function processConstructorResults(err, cons, rsts) {
     });
 
 
-    plotConstructors(cons_count.slice(0, 10))
+    plotConstructors(cons_count.slice(0, 10), "");
 }
 
 
@@ -198,7 +195,7 @@ d3.queue()
     .defer(d3.csv, results)
     .await(processConstructorResults);
 
-function plotConstructors(constructorWins) {
+function plotConstructors(constructorWins, selCons) {
 
         // set the ranges
         var x = d3.scaleBand()
@@ -206,6 +203,12 @@ function plotConstructors(constructorWins) {
             .padding(0.1);
         var y = d3.scaleLinear()
             .range([dSHeight, 0]);
+
+        var topTeams = [];
+
+        constructorWins.forEach(d => {
+            topTeams.push(d.key);
+        })
 
         d3.select("#constructorsPlot").append("h5").text("Most successful constructors");
         var bestCPlot = d3.select("#constructorsPlot").attr("class", "center-align")
@@ -226,7 +229,13 @@ function plotConstructors(constructorWins) {
             .attr("width", x.bandwidth())
             .attr("y", function(d) { return y(d.value); })
             .attr("height", function(d) { return dSHeight - y(d.value); })
-            .style("fill", function(d){ return color(d.key) });
+            .style("fill", function(d){ return color(d.key) })
+            .style("opacity", function(d) {
+                if(selCons === "") { return 1; }
+                if(!topTeams.includes(selCons)) { return 1; }
+                if(d.key === selCons) { return 1.5; }
+                else { return 0.1; }
+            });
 
         bestCPlot.append("g")
             .style("font", "14px f1font")
@@ -252,7 +261,13 @@ function plotConstructors(constructorWins) {
             .attr("y", function(d) {
                 return y(d.value);
             })
-            .style("font-size", "20px");
+            .style("font-size", "20px")
+            .style("opacity", function(d) {
+                if(selCons === "") { return 1; }
+                if(!topTeams.includes(selCons)) { return 1; }
+                if(d.key === selCons) { return 1.5; }
+                else { return 0.1; }
+            });
 
 }
 
@@ -412,6 +427,7 @@ function plotDrivChamps(champions) {
             pos[0] = radius * 0.99 * (midangle < Math.PI ? 1 : -1);
             return 'translate(' + pos + ')';
         })
+        .attr("font-size", "12px")
         .style('text-anchor', function(d) {
             var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
             return (midangle < Math.PI ? 'start' : 'end')
@@ -519,6 +535,11 @@ function plotConsChamps(champions) {
         })
         .on("mouseout", function(d) {
             csChampPlot.selectAll(".champLab").remove();
+        })
+        .on("click", function(d) {
+            d3.select("#constructorsPlot").selectAll("*").remove();
+            //console.log(d.data.key);
+            plotConstructors(cons_count.slice(0, 10), d.data.key);
         });
 
     csChampPlot.selectAll('allPolylines')
@@ -550,6 +571,7 @@ function plotConsChamps(champions) {
             pos[0] = radius * 0.99 * (midangle < Math.PI ? 1 : -1);
             return 'translate(' + pos + ')';
         })
+        .attr("font-size", "12px")
         .style('text-anchor', function(d) {
             var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
             return (midangle < Math.PI ? 'start' : 'end')
