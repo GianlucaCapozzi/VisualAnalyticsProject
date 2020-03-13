@@ -47,6 +47,7 @@ function processRaceResults(err, drvs, rsts) {
         let urlImage = firstObj.original.source;
         bestDriverCont.append("a")
             .attr("href", driver_urls[driverName])
+            .attr("target", "_blank")
             .append("img")
             .attr("src", urlImage)
             .attr("width", 300)
@@ -185,6 +186,7 @@ function processConstructorResults(err, cons, rsts) {
         let urlImage = firstObj.original.source;
         bestConstructorDiv.append("a")
             .attr("href", constructor_urls[constructorName])
+            .attr("target", "_blank")
             .append("img")
             .attr("src", urlImage)
             .attr("width", 200)
