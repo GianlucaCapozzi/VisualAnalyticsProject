@@ -144,12 +144,8 @@ function plotBestDrivers(bestDrivers, selDriver) {
 }
 
 var constructor_wins = [];
-<<<<<<< HEAD
-var constructor_urls = [];
 var cons_count = [];
-=======
 var constructor_urls = {};
->>>>>>> 29c9953ec8c2095f6ea8a792a1d9328ac3ed4145
 
 function processConstructorResults(err, cons, rsts) {
     constructor_wins = [];
