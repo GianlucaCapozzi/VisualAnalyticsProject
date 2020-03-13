@@ -29,6 +29,27 @@ function processRaceResults(err, drvs, rsts) {
         })
         .entries(driver_wins)
         .sort(function(a, b) {return d3.descending(a.value, b.value)});
+
+    var bestDriverCont = d3.select("#bestDriver");
+    bestDriverCont.attr("class", "center-align");
+
+    bestDriverCont.append("h5")
+        .text(data_count[0].key);
+    bestDriverCont.append("h5")
+        .attr('class', 'text')
+        .text(data_count[0].value + " victories");
+
+    let driverWiki = driver_urls[data_count[0].key].split('/');
+    let urlRequest = "https://cors-anywhere.herokuapp.com/https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&titles=" + driverWiki[driverWiki.length - 1];
+    d3.json(urlRequest, function(err, mydata) {
+        var firstObj = Object.values(mydata.query.pages)[0];
+        let urlImage = firstObj.original.source;
+        bestDriverCont.append("img")
+            .attr("src", urlImage)
+            .attr("width", 300)
+            .attr("height", 300);
+    });
+
     plotBestDrivers(data_count.slice(0, 10), "");
 }
 
@@ -52,28 +73,6 @@ function plotBestDrivers(bestDrivers, selDriver) {
     bestDrivers.forEach(d => {
         topDrivers.push(d.key);
     });
-
-    var bestDriverCont = d3.select("#bestDriver");
-    bestDriverCont.attr("class", "center-align")
-
-    bestDriverCont.append("h5")
-        .text(bestDrivers[0].key);
-    bestDriverCont.append("h5")
-        .attr('class', 'text')
-        .text(bestDrivers[0].value + " victories");
-
-    let driverWiki = driver_urls[bestDrivers[0].key].split('/');
-    let urlRequest = "https://cors-anywhere.herokuapp.com/https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&titles=" + driverWiki[driverWiki.length - 1];
-    d3.json(urlRequest, function(err, mydata) {
-        var firstObj = Object.values(mydata.query.pages)[0];
-        let urlImage = firstObj.original.source;
-        //$("#bestDriver").append("<img id='theImage' src='" + urlImage + "' />");
-        bestDriverCont.append("img")
-            .attr("src", urlImage)
-            .attr("width", 200)
-            .attr("height", 200);
-    });
-
 
     d3.select("#driversPlot").append("h5").text("Most successful drivers");
     var bestDPlot = d3.select("#driversPlot").attr("class", "center-align")
@@ -105,8 +104,6 @@ function plotBestDrivers(bestDrivers, selDriver) {
         .attr("y", function(d) { return y(d.value); })
         .attr("height", function(d) { return dSHeight - y(d.value); })
         .style("fill", function(d){ return color(d.key) })
-        .transition()
-        .duration(1000)
         .style("opacity", function(d) {
             if(selDriver === "") { return 1.5; }
             if(!topDrivers.includes(selDriver)) { return 1; }
@@ -118,37 +115,36 @@ function plotBestDrivers(bestDrivers, selDriver) {
             }
         });
 
-        bestDPlot.selectAll("barText")
-            .data(bestDrivers)
-            .enter()
-            .append("text")
-            .text(function(d) {
-                return d.value;
-            })
-            .attr("text-anchor", "middle")
-            .attr("x", function(d) {
-                return x(d.key) + x.bandwidth()/2;
-            })
-            .attr("y", function(d) {
-                return y(d.value);
-            })
-            .style("font-size", "20px")
-            .transition()
-            .duration(1000)
-            .style("opacity", function(d) {
-                if(selDriver === "") { return 1.5; }
-                if(!topDrivers.includes(selDriver)) { return 1; }
-                if(d.key === selDriver) {
-                    return 1.5;
-                }
-                else {
-                    return 0.1;
-                }
-            });
+    bestDPlot.selectAll("barText")
+        .data(bestDrivers)
+        .enter()
+        .append("text")
+        .text(function(d) {
+            return d.value;
+        })
+        .attr("text-anchor", "middle")
+        .attr("x", function(d) {
+            return x(d.key) + x.bandwidth()/2;
+        })
+        .attr("y", function(d) {
+            return y(d.value);
+        })
+        .style("font-size", "20px")
+        .style("opacity", function(d) {
+            if(selDriver === "") { return 1.5; }
+            if(!topDrivers.includes(selDriver)) { return 1; }
+            if(d.key === selDriver) {
+                return 1.5;
+            }
+            else {
+                return 0.1;
+            }
+        });
 
 }
 
 var constructor_wins = [];
+var constructor_urls = [];
 
 function processConstructorResults(err, cons, rsts) {
     constructor_wins = [];
@@ -156,6 +152,7 @@ function processConstructorResults(err, cons, rsts) {
         cons.forEach(c => {
             if(c.constructorId === race.constructorId && +race.position == 1) {
                 constructor_wins.push({'constructor' : c.name});
+                constructor_urls[c.name] = c.url;
             }
         });
     });
@@ -169,6 +166,27 @@ function processConstructorResults(err, cons, rsts) {
         })
         .entries(constructor_wins)
         .sort(function(a, b) {return d3.descending(a.value, b.value)});
+
+    var bestConstructorDiv = d3.select("#bestConstructor")
+    bestConstructorDiv.attr("class", "center-align");
+
+    bestConstructorDiv.append("h5")
+        .text(cons_count[0].key);
+    bestConstructorDiv.append("h5")
+        .attr('class', 'text')
+        .text(cons_count[0].value + " victories");
+
+    let constructorWiki = constructor_urls[cons_count[0].key].split('/');
+    let urlRequest = "https://cors-anywhere.herokuapp.com/https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&titles=" + constructorWiki[constructorWiki.length - 1];
+    d3.json(urlRequest, function(err, mydata) {
+        var firstObj = Object.values(mydata.query.pages)[0];
+        console.log(firstObj);
+        let urlImage = firstObj.original.source;
+        bestConstructorDiv.append("img")
+            .attr("src", urlImage)
+            .attr("width", 200)
+            .attr("height", 200);
+    });
 
 
     plotConstructors(cons_count.slice(0, 10))
@@ -234,7 +252,8 @@ function plotConstructors(constructorWins) {
             .attr("y", function(d) {
                 return y(d.value);
             })
-            .style("font-size", "20px")
+            .style("font-size", "20px");
+
 }
 
 
@@ -354,9 +373,9 @@ function plotDrivChamps(champions) {
         })
         .on("click", function(d) {
             d3.select("#driversPlot").selectAll("*").remove();
-            d3.select("#bestDriver").selectAll("*").remove();
             plotBestDrivers(data_count.slice(0, 10), d.data.key);
         })
+
 
     drChampPlot.selectAll('allPolylines')
         .data(data_ready)
@@ -379,8 +398,14 @@ function plotDrivChamps(champions) {
         .enter()
         .append('text')
         .text(function(d) {
-            //console.log(d);
-            return d.data.key; })
+            if(d.data.key != "others") {
+                var nameSurn = d.data.key.split(" ");
+                return nameSurn[0][0] + ". " + nameSurn[1];
+            }
+            else {
+                return d.data.key;
+            }
+        })
         .attr('transform', function(d) {
             var pos = outerArc.centroid(d);
             var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
@@ -391,6 +416,13 @@ function plotDrivChamps(champions) {
             var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
             return (midangle < Math.PI ? 'start' : 'end')
         });
+
+    var bestDriverCont = d3.select("#bestDriver");
+    bestDriverCont.attr("class", "center-align")
+
+    bestDriverCont.append("h5")
+        .text(champions[0].value + " world champions");
+
 }
 
 
