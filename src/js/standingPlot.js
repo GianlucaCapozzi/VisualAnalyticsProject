@@ -69,7 +69,7 @@ function makePlot() {
     // Add the x axis
     scatPlot.append("g")
             .style("font", "20px f1font")
-            .attr("class", "x-axis")
+            .attr("class", "x-axis axis")
             .attr("transform", "translate(0," + sHeight + ")")
             .call(xAxis);
 
@@ -85,7 +85,7 @@ function makePlot() {
     // Add the y axis
     scatPlot.append("g")
             .style("font", "20px f1font")
-            .attr("class", "y-axis")
+            .attr("class", "y-axis axis")
             .call(yAxis);
 
     scatPlot.append("text")

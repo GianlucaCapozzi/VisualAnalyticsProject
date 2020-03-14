@@ -18,9 +18,9 @@ var onCloseModal = function() {
 
 $(document).ready(function(){
     $('select').formSelect();
-    $('.dropdown-trigger').dropdown();
     $('.sidenav').sidenav({edge: 'right'});
     $('.modal').modal({dismissible: false, onCloseEnd: onCloseModal});
+    $(".dropdown-content>li>a").css("color", "red");
 });
 
 $("#sidenav-trigger").on("click", function(event) {
@@ -31,8 +31,6 @@ for (let i = 2019; i > 1950; i--) {
     let year = "<option value=" + i + ">" + i + "</option>";
     $("#yearSelect").append(year);
 }
-
-$(".dropdown-content>li>a").css("color", "red");
 
 var countries_with_circ = [];
 var tracks = [];
@@ -51,6 +49,8 @@ $("#homeButton").on("click", function() {
     $("#infoContainer").addClass("scale-out");
     $("#infoContainer").width("0%");
     $("#infoContainer").height("0%");
+    $("#pca-thing-1").addClass("scale-out");
+    $("#pca-thing-2").addClass("scale-out");
     $("#pcaContainer").addClass("scale-out");
     $("#pcaContainer").width("0%");
     $("#pcaContainer").height("0%");
@@ -66,6 +66,8 @@ $("#infoButton").on("click", function() {
     $("#home-thing-1").addClass("scale-out");
     $("#home-thing-2").addClass("scale-out");
     $("#home-thing-3").addClass("scale-out");
+    $("#pca-thing-1").addClass("scale-out");
+    $("#pca-thing-2").addClass("scale-out");
     $("#viewsContainer").addClass("scale-out");
     $("#viewsContainer").width("0%");
     $("#viewsContainer").height("0%");
@@ -90,4 +92,38 @@ $("#pcaButton").on("click", function() {
     $("#pcaContainer").removeClass("scale-out");
     $("#pcaContainer").width("100%");
     $("#pcaContainer").height("100%");
+    $("#pca-thing-2").removeClass("scale-out");
+    $("#pca-thing-1").removeClass("scale-out");
 });
+
+var driverNationalities = [];
+var constructorNationalities = [];
+
+function populate(err, drvs, cons) {
+    driverNationalities = [];
+    constructorNationalities = [];
+    drvs.forEach(driver => {
+        if (!driverNationalities.includes(driver.nationality)) driverNationalities.push(driver.nationality);
+    });
+    driverNationalities.forEach(nationality => {
+        let nat = "<option value=" + nationality + ">" + nationality + "</option>";
+        $("#pcaDriverSelect").append(nat);
+    });
+    $('#pcaDriverSelect').formSelect();
+    cons.forEach(constructor => {
+        if (!constructorNationalities.includes(constructor.nationality)) constructorNationalities.push(constructor.nationality);
+    });
+    constructorNationalities.forEach(nationality => {
+        let nat = "<option value=" + nationality + ">" + nationality + "</option>";
+        $("#pcaConstructorSelect").append(nat);
+    });
+    $('#pcaConstructorSelect').formSelect();
+}
+
+d3.queue()
+    .defer(d3.csv, drivers)
+    .defer(d3.csv, constructors)
+    .await(populate);
+
+    d3.selectAll(".x.axis line")
+        .style("stroke","red");
