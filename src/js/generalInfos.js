@@ -91,6 +91,7 @@ function plotBestDrivers(bestDrivers, selDriver) {
 
     bestDPlot.append("g")
         .style("font", "14px f1font")
+        .attr("class", "axis")
         .attr("transform", "translate(0," + dSHeight + ")")
         .call(d3.axisBottom(x))
         .selectAll("text")
@@ -133,7 +134,7 @@ function plotBestDrivers(bestDrivers, selDriver) {
         .attr("y", function(d) {
             return y(d.value);
         })
-        .style("font-size", "20px")
+        .attr("class", "barText")
         .style("opacity", function(d) {
             if(selDriver === "") { return 1; }
             if(!topDrivers.includes(selDriver)) { return 1; }
@@ -244,6 +245,7 @@ function plotConstructors(constructorWins, selCons) {
 
         bestCPlot.append("g")
             .style("font", "14px f1font")
+            .attr("class", "axis")
             .attr("transform", "translate(0," + dSHeight + ")")
             .call(d3.axisBottom(x))
             .selectAll("text")
@@ -266,7 +268,7 @@ function plotConstructors(constructorWins, selCons) {
             .attr("y", function(d) {
                 return y(d.value);
             })
-            .style("font-size", "20px")
+            .attr("class", "barText")
             .style("opacity", function(d) {
                 if(selCons === "") { return 1; }
                 if(!topTeams.includes(selCons)) { return 1; }
@@ -385,7 +387,6 @@ function plotDrivChamps(champions) {
             drChampPlot.append("text")
                 .attr("text-anchor", "middle")
                 .attr("class", "champLab")
-                .style("font-size", "32px")
                 .html(d.value);
         })
         .on("mouseout", function(d) {
@@ -401,7 +402,7 @@ function plotDrivChamps(champions) {
         .data(data_ready)
         .enter()
         .append('polyline')
-        .attr("stroke", "black")
+        .attr("stroke", "#fff")
         .style("fill", "none")
         .attr("stroke-width", 1)
         .attr('points', function(d) {
@@ -426,13 +427,13 @@ function plotDrivChamps(champions) {
                 return d.data.key;
             }
         })
+        .attr("class", "donut-label")
         .attr('transform', function(d) {
             var pos = outerArc.centroid(d);
             var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
             pos[0] = radius * 0.99 * (midangle < Math.PI ? 1 : -1);
             return 'translate(' + pos + ')';
         })
-        .attr("font-size", "12px")
         .style('text-anchor', function(d) {
             var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
             return (midangle < Math.PI ? 'start' : 'end')
@@ -535,7 +536,6 @@ function plotConsChamps(champions) {
             csChampPlot.append("text")
                 .attr("text-anchor", "middle")
                 .attr("class", "champLab")
-                .style("font-size", "32px")
                 .html(d.value);
         })
         .on("mouseout", function(d) {
@@ -551,7 +551,7 @@ function plotConsChamps(champions) {
         .data(data_ready)
         .enter()
         .append('polyline')
-        .attr("stroke", "black")
+        .attr("stroke", "#fff")
         .style("fill", "none")
         .attr("stroke-width", 1)
         .attr('points', function(d) {
@@ -576,7 +576,7 @@ function plotConsChamps(champions) {
             pos[0] = radius * 0.99 * (midangle < Math.PI ? 1 : -1);
             return 'translate(' + pos + ')';
         })
-        .attr("font-size", "12px")
+        .attr("class", "donut-label")
         .style('text-anchor', function(d) {
             var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
             return (midangle < Math.PI ? 'start' : 'end')

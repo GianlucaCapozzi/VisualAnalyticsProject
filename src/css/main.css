@@ -1,5 +1,5 @@
 /* Selector style */
-.select-wrapper input.select-dropdown {
+input.select-dropdown {
     color: #ffffff;
 }
 
@@ -7,19 +7,19 @@
     background-color: #222222;
 }
 
-.option {
-    color: #ff0000
-}
-
 html, body, #viewsContainer {
     font-family: f1font;
     width: 100%;
     height: 100%;
+    background: #222222;
+    color: #ffffff;
 }
 
 #infoContainer, #pcaContainer {
     width: 0%;
     height: 0%;
+    background: #222222;
+    color: #ffffff;
 }
 
 #firstMenuButton {
@@ -31,6 +31,8 @@ html, body, #viewsContainer {
     grid-gap: 10px;
     grid-template-columns: 55% 45%;
     grid-template-rows: auto auto;
+    background: #222222;
+    color: #ffffff;
 }
 
 #mapView,  #racesView, #gr_1, #gr_2, #resTable, #standingPlot {
@@ -38,18 +40,32 @@ html, body, #viewsContainer {
     overflow: auto;
     float: left;
     padding: 10px;
+    background: #222222;
+    color: #ffffff;
 }
 
-.grid-container {
+.grid-container-info {
     display: grid;
     grid-gap: 10px;
     grid-template-columns: auto auto auto;
+    background: #222222;
+    color: #ffffff;
+}
+
+.grid-container-pca {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: auto auto;
+    background: #222222;
+    color: #ffffff;
 }
 
 .legend-grid {
     display: grid;
     grid-gap: 10px;
     grid-template-columns: auto auto auto auto;
+    background: #222222;
+    color: #ffffff;
 }
 
 #constructorsPlot, #driversPlot, #drChampPlot, #csChampPlot, #bestDriver, #bestConstructor, {
@@ -62,17 +78,14 @@ html, body, #viewsContainer {
 .modal {
     width: 100% !important;
     height: 100% !important;
+    background: #222222;
+    color: #ffffff;
 }
 
-#modalContainer {
-    width: 100% !important;
-}
-
-.bar {
-    fill: steelblue;
-}
-.bar:hover {
-    fill: orange;
+#modalContainer, .modal-footer, .modal-footer>a {
+    background: #222222;
+    background-color: #222222;
+    color: #ffffff;
 }
 
 .tooltipForDr, .tooltipForCo {
@@ -105,4 +118,33 @@ html, body, #viewsContainer {
 @font-face {
     font-family: 'f1font';
     src: url("../F1FontFiles/Formula1-Regular.otf");
+}
+
+::selection {
+  background-color: : #fff;
+  color: red;
+}
+
+.axis, .axis text {
+    fill: #fff;
+    font-size: 20px;
+}
+
+.axis line {
+    stroke: red;
+}
+
+.barText {
+    fill: #fff;
+    font-size: 20px;
+}
+
+.drivLab, .champLab {
+    fill: #fff;
+    font-size: 32px;
+}
+
+.donut-label {
+    fill: #fff;
+    font-size: 12px;
 }
