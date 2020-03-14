@@ -13,6 +13,32 @@ is_first_pos = mergedRacQual['position'] == 1
 poles = mergedRacQual[is_first_pos]
 #print(poles)
 
+mergedPolesCirc = poles.merge(circuits, on="circuitId").filter(["name", "circuitId", "year", "q1", "q2", "q3"])
+#print(mergedPolesCirc.iloc[0, :])
+
+mergeRows = mergedPolesCirc.shape[0]
+
+#print(mergeRows)
+notQ3 = 0
+
+for i in range(0, mergedPolesCirc.shape[0]):
+    if (mergedPolesCirc.iloc[i, 5] == "\\N"):
+        if(mergedPolesCirc.iloc[i, 4] != "\\N"):
+            mergedPolesCirc.iloc[i, 5] = mergedPolesCirc.iloc[i, 4]
+        else:
+            mergedPolesCirc.iloc[i, 5] = mergedPolesCirc.iloc[i, 3]
+        #print(mergedPolesCirc.iloc[i, 4])
+    #if (mergedPolesCirc.iloc[i, 4] == "\\N"):
+    #    notQ3 = notQ3 + 1
+#print(notQ3)
+
+bestLaps = mergedPolesCirc.filter(["name", "circuitId", "year", "q3"])
+bestLaps = bestLaps.dropna(how='any',axis=0)
+
+print(bestLaps)
+
+bestLaps.to_csv("bestLaps.csv")
+
 def convertInSeconds(time):
     if time == '\\N':
         return 0
@@ -20,22 +46,18 @@ def convertInSeconds(time):
     values = values.strip().split(":")
     return float(values[0])*60 + float(values[1])
 
-mergedPolesCirc = poles.merge(circuits, on="circuitId").filter(["name", "circuitId", "year", "q1", "q2", "q3"])
-mergedPolesCirc["q1"] = mergedPolesCirc["q1"].apply(convertInSeconds)
-#mergedPolesCirc["q2"] = mergedPolesCirc["q2"].apply(convertInSeconds)
-#mergedPolesCirc["q3"] = mergedPolesCirc["q3"].apply(convertInSeconds)
-#print(mergedPolesCirc)
-
-#mergedPolesCirc.to_csv("bestLaps.csv", sep="\t")
+bestLaps["q3"] = bestLaps["q3"].apply(convertInSeconds)
+#bestLaps["q2"] = bestLaps["q2"].apply(convertInSeconds)
+#bestLaps["q3"] = bestLaps["q3"].apply(convertInSeconds)
 
 from sklearn.preprocessing import StandardScaler
-features = ['circuitId', 'year', 'q1']
+features = ['circuitId', 'year', 'q3']
 
 # Separating out the features
-x = mergedPolesCirc.loc[:, features].values
+x = bestLaps.loc[:, features].values
 
 # Separating out the target
-y = mergedPolesCirc.loc[:,['name']].values
+y = bestLaps.loc[:,['name']].values
 
 # Standardizing the features
 x = StandardScaler().fit_transform(x)
@@ -45,24 +67,11 @@ pca = PCA(n_components=2)
 principalComponents = pca.fit_transform(x)
 principalDf = pd.DataFrame(data = principalComponents, columns = ['principal component 1', 'principal component 2'])
 
-print(principalDf)
+#print(principalDf)
 
-finalDf = pd.concat([principalDf, mergedPolesCirc[['name']]], axis = 1)
+finalDf = pd.concat([principalDf, bestLaps[['name']]], axis = 1)
+finalDf = finalDf.dropna(how='any',axis=0)
 
 print(finalDf)
 
-fig = plt.figure(figsize = (8,8))
-ax = fig.add_subplot(1,1,1)
-ax.set_xlabel('Principal Component 1', fontsize = 15)
-ax.set_ylabel('Principal Component 2', fontsize = 15)
-ax.set_title('2 component PCA', fontsize = 20)
-targets = finalDf["name"]
-colors = ['r', 'g', 'b']
-for target, color in zip(targets,colors):
-    indicesToKeep = finalDf['name'] == target
-    ax.scatter(finalDf.loc[indicesToKeep, 'principal component 1']
-               , finalDf.loc[indicesToKeep, 'principal component 2']
-               , c = color
-               , s = 50)
-ax.legend(targets)
-ax.grid()
+finalDf.to_csv("pcaDataset.csv")
