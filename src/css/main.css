@@ -17,7 +17,7 @@ html, body, #viewsContainer {
     height: 100%;
 }
 
-#infoContainer {
+#infoContainer, #pcaContainer {
     width: 0%;
     height: 0%;
 }

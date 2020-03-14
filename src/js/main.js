@@ -51,15 +51,15 @@ $("#homeButton").on("click", function() {
     $("#infoContainer").addClass("scale-out");
     $("#infoContainer").width("0%");
     $("#infoContainer").height("0%");
+    $("#pcaContainer").addClass("scale-out");
+    $("#pcaContainer").width("0%");
+    $("#pcaContainer").height("0%");
     $("#viewsContainer").removeClass("scale-out");
     $("#viewsContainer").width("100%");
     $("#viewsContainer").height("100%");
     $("#home-thing-3").removeClass("scale-out");
     $("#home-thing-2").removeClass("scale-out");
     $("#home-thing-1").removeClass("scale-out");
-    $("#pcaContainer").addClass("scale-out");
-    $("#pcaContainer").width("0%");
-    $("#pcaContainer").height("0%");
 });
 
 $("#infoButton").on("click", function() {
@@ -69,16 +69,15 @@ $("#infoButton").on("click", function() {
     $("#viewsContainer").addClass("scale-out");
     $("#viewsContainer").width("0%");
     $("#viewsContainer").height("0%");
-    $("#infoContainer").removeClass("scale-out");
-    $("#infoContainer").width("100%");
-    $("#infoContainer").height("100%");
     $("#pcaContainer").addClass("scale-out");
     $("#pcaContainer").width("0%");
     $("#pcaContainer").height("0%");
+    $("#infoContainer").removeClass("scale-out");
+    $("#infoContainer").width("100%");
+    $("#infoContainer").height("100%");
 });
 
 $("#pcaButton").on("click", function() {
-    console.log("AOOOOOO");
     $("#home-thing-1").addClass("scale-out");
     $("#home-thing-2").addClass("scale-out");
     $("#home-thing-3").addClass("scale-out");
