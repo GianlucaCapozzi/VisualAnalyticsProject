@@ -23,6 +23,10 @@ $(document).ready(function(){
     $(".dropdown-content>li>a").css("color", "red");
 });
 
+$(".brand-logo").on("click", function() {
+    $("#homeButton").trigger("click");
+});
+
 $("#sidenav-trigger").on("click", function(event) {
      $('.sidenav').sidenav('open');
 });
