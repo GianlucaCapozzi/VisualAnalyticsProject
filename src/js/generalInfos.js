@@ -10,6 +10,9 @@ var driver_urls = {};
 
 var urlImageRequest = "https://cors-anywhere.herokuapp.com/https://it.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&pilicense=any&titles=";
 
+var drInfo = [];
+
+
 function processRaceResults(err, drvs, rsts) {
     driver_wins = [];
     rsts.forEach(grandPrix => {
@@ -18,9 +21,12 @@ function processRaceResults(err, drvs, rsts) {
                 let driverName = driv.forename + " " + driv.surname;
                 driver_wins.push({'driver' : driverName});
                 driver_urls[driverName] = driv.url;
+                drInfo[driverName] = [driv.dob, driv.nationality]
             }
         });
     });
+
+    console.log(drInfo)
 
     data_count = d3.nest()
         .key(function(d){
@@ -121,6 +127,21 @@ function plotBestDrivers(bestDrivers, selDriver) {
             else {
                 return 0.1;
             }
+        })
+        .on("mouseover", function(d) {
+            // Add tooltip
+            $(".tooltip")
+                        .css("transition", "1s")
+                        .css("left", d3.event.pageX + "px")
+                        .css("top", d3.event.pageY + "px")
+                        .css("opacity", 1)
+                        .css("display", "inline-block")
+                        .html(d.key + "<br/> Date of Birth: " + drInfo[d.key][0] + "<br/> Nationality: " + drInfo[d.key][1]);
+        })
+        .on("mouseout", function(d) {
+            $(".tooltip")
+                        .css("transition", "1s")
+                        .css("opacity", 0);
         });
 
     bestDPlot.selectAll("barText")
@@ -150,6 +171,7 @@ function plotBestDrivers(bestDrivers, selDriver) {
 var constructor_wins = [];
 var cons_count = [];
 var constructor_urls = {};
+var cons_info = []
 
 function processConstructorResults(err, cons, rsts) {
     constructor_wins = [];
@@ -158,6 +180,7 @@ function processConstructorResults(err, cons, rsts) {
             if(c.constructorId === race.constructorId && +race.position == 1) {
                 constructor_wins.push({'constructor' : c.name});
                 constructor_urls[c.name] = c.url;
+                cons_info[c.name] = c.nationality;
             }
         });
     });
@@ -247,6 +270,21 @@ function plotConstructors(constructorWins, selCons) {
                 if(!topTeams.includes(selCons)) { return 1; }
                 if(d.key === selCons) { return 1.5; }
                 else { return 0.1; }
+            })
+            .on("mouseover", function(d) {
+                // Add tooltip
+                $(".tooltip")
+                            .css("transition", "1s")
+                            .css("left", d3.event.pageX + "px")
+                            .css("top", d3.event.pageY + "px")
+                            .css("opacity", 1)
+                            .css("display", "inline-block")
+                            .html(d.key + "<br/>Nationality: " + cons_info[d.key]);
+            })
+            .on("mouseout", function(d) {
+                $(".tooltip")
+                            .css("transition", "1s")
+                            .css("opacity", 0);
             });
 
         bestCPlot.append("g")
@@ -450,7 +488,7 @@ function plotDrivChamps(champions) {
     bestDriverCont.attr("class", "center-align")
 
     bestDriverCont.append("h5")
-        .text(champions[0].value + " world champions");
+        .text(champions[0].value + " world championships");
 
 }
 
@@ -589,4 +627,10 @@ function plotConsChamps(champions) {
             var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
             return (midangle < Math.PI ? 'start' : 'end')
         });
+
+    var bestConstructorDiv = d3.select("#bestConstructor")
+    bestConstructorDiv.attr("class", "center-align").classed("svg-container", true);
+
+    bestConstructorDiv.append("h5")
+        .text(champions[0].value + " world championships");
 }
