@@ -1,13 +1,15 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort,send_from_directory,send_file,jsonify
+from flask_cors import CORS, cross_origin
 import pandas as pd
 
 import json
 
 #1. Declare application
 application = Flask(__name__)
+CORS(application, resources={r"/getPcaData" : {"origins": "*"}})
 
 
-@application.route("/getPcaData")
+@application.route("/getPcaData", methods=['GET'])
 def getData():
     nationality = request.args.get('nationality')
     drivers = pd.read_csv("drivers.csv").filter(["driverId", "nationality"])
@@ -83,9 +85,10 @@ def getData():
 
     print(finalDf)
 
-    dsToJson = finalDf.to_json("pcaDataset.json", orient='records')
+    dsToJson = finalDf.to_json(orient='records')
 
     return dsToJson
+
 
 if __name__ == "__main__":
     application.run()

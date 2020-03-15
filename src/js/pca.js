@@ -31,7 +31,7 @@ d3.queue()
     .await(populate);
 
 var currentDriverNationality = "British", currentConstructorNationality = "British";
-function readDriverPca(err, pcaData) {
+function readDriverPca(pcaData) {
     var isCurrentDriverNationality = {x:[], y:[], mode: "markers", type: "scatter", name: currentDriverNationality,  marker: {color: "red"}};
     var notCurrentDriverNationality = {x:[], y:[], mode: "markers", type: "scatter", name: "not " + currentDriverNationality,  marker: {color: "blue"}};
     pcaData.forEach(nat => {
@@ -52,16 +52,35 @@ function readDriverPca(err, pcaData) {
     Plotly.newPlot("pcaDriverPlot", dataToPlot, layout, {scrollZoom: true, responsive: true});
 }
 
-function loadDriverPca() {
-    d3.queue().defer(d3.json, pcaData).await(readDriverPca);
-}
 
-loadDriverPca();
+//loadDriverPca();
 
 $("#pcaDriverSelect").on("change", function() {
     d3.select("#pcaDriverPlot").selectAll("*").remove();
     currentDriverNationality = $("#pcaDriverSelect").val();
-    loadDriverPca();
+
+    var settings = {
+        'cache': false,
+        "crossDomain": true,
+        "method": "GET",
+        url: pcaUrl + currentDriverNationality,
+        headers: {
+            "accept": "application/json",
+            "Access-Control-Allow-Origin":"*"
+        }
+    }
+
+    $.ajax(settings).done(function(response) {
+        console.log(JSON.parse(response));
+        //console.log(response);
+        readDriverPca(JSON.parse(response));
+    })
+
+    //$.get(pcaUrl + currentDriverNationality, function(gdata, status) {
+        //JSON.parse(gdata);
+        //console.log(gdata);
+    //});
+    //loadDriverPca();
 });
 
 $("#pcaConstructorSelect").on("change", function() {
