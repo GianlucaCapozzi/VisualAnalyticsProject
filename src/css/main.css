@@ -13,6 +13,7 @@ html, body, #viewsContainer {
     height: 100%;
     background: #222222;
     color: #ffffff;
+    overflow: hidden;
 }
 
 #infoContainer, #pcaContainer {
@@ -20,6 +21,7 @@ html, body, #viewsContainer {
     height: 0%;
     background: #222222;
     color: #ffffff;
+    overflow: hidden;
 }
 
 #firstMenuButton {
@@ -35,9 +37,9 @@ html, body, #viewsContainer {
     color: #ffffff;
 }
 
-#mapView,  #racesView, #gr_1, #gr_2, #resTable, #standingPlot {
+#mapView,  #racesView, #gr_1, #racesPlotLegendView, #resTable, #standingPlot {
     display: block;
-    overflow: auto;
+    overflow: hidden;
     float: left;
     padding: 10px;
     background: #222222;
@@ -70,7 +72,7 @@ html, body, #viewsContainer {
 
 #constructorsPlot, #driversPlot, #drChampPlot, #csChampPlot, #bestDriver, #bestConstructor, {
     display: block;
-    overflow: auto;
+    overflow: hidden;
     float: left;
     padding: 10px;
 }

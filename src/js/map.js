@@ -1,5 +1,6 @@
-var width = $("#mapView").width(),
-    height = $("#mapView").height();
+var map = d3.select("#mapView");
+var width = map.node().getBoundingClientRect().width;
+    var height = width / 2;
 
 var active = d3.select(null);
 
@@ -12,8 +13,8 @@ var zoom = d3.zoom().on("zoom", zoomed);
 var path = d3.geoPath().projection(projection);
 
 var svg = d3.select("#mapView").append("svg")
-    .attr("width", width)
-    .attr("height", height)
+.attr("preserveAspectRatio", "xMinYMin meet")
+.attr("viewBox", "0 0 " + width + " " + height)
     .on("click", stopped, true);
 
 var rect = svg.append("rect")
@@ -56,7 +57,7 @@ function processRacesByYear(err, circ, rac, res) {
             res.forEach(rs => {
                 if(rs.raceId === r.raceId) {
                     //console.log("POS ORD: " + rs.positionOrder + " race: " + rs.raceId);
-                    if(parseInt(rs.grid) >= locMax) { 
+                    if(parseInt(rs.grid) >= locMax) {
                         locMax = parseInt(rs.grid);
                     }
                 }
@@ -89,7 +90,7 @@ $("#yearSelect").on("change", function() {
         .await(processRacesByYear);
 
     function processRacesByYear(err, circ, rac, res) {
-       
+
         rac.forEach(r => {
             if(r.year == year) {
                 circ.forEach(c => {
@@ -107,7 +108,7 @@ $("#yearSelect").on("change", function() {
                 res.forEach(rs => {
                     if(rs.raceId === r.raceId) {
                         //console.log("POS ORD: " + rs.positionOrder + " race: " + rs.raceId);
-                        if(parseInt(rs.positionOrder) >= locMax) { 
+                        if(parseInt(rs.positionOrder) >= locMax) {
                             locMax = parseInt(rs.positionOrder);
                         }
                     }

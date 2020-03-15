@@ -33,7 +33,7 @@ function processRaceResults(err, drvs, rsts) {
         .sort(function(a, b) {return d3.descending(a.value, b.value)});
 
     var bestDriverCont = d3.select("#bestDriver");
-    bestDriverCont.attr("class", "center-align");
+    bestDriverCont.attr("class", "center-align").classed("svg-container", true);
 
     bestDriverCont.append("h5")
         .text(data_count[0].key);
@@ -173,7 +173,7 @@ function processConstructorResults(err, cons, rsts) {
         .sort(function(a, b) {return d3.descending(a.value, b.value)});
 
     var bestConstructorDiv = d3.select("#bestConstructor")
-    bestConstructorDiv.attr("class", "center-align");
+    bestConstructorDiv.attr("class", "center-align").classed("svg-container", true);
 
     bestConstructorDiv.append("h5")
         .text(cons_count[0].key);
