@@ -79,10 +79,13 @@ function plotBestDrivers(bestDrivers, selDriver) {
     });
 
     d3.select("#driversPlot").append("h5").text("Most successful drivers");
-    var bestDPlot = d3.select("#driversPlot").attr("class", "center-align")
+    var bestDPlot = d3.select("#driversPlot").attr("class", "center-align").classed("svg-container", true)
         .append("svg")
-        .attr("width", dSWidth + marginInfo.left + marginInfo.right)
-        .attr("height", dSWidth + marginInfo.top + marginInfo.bottom)
+        //.attr("width", dSWidth + marginInfo.left + marginInfo.right)
+        //.attr("height", dSWidth + marginInfo.top + marginInfo.bottom)
+        .attr("preserveAspectRatio", "xMinYMin meet")
+        .attr("viewBox", "0 0 " + (dSWidth + marginInfo.left + marginInfo.right) + " " + (dSWidth + marginInfo.top + marginInfo.bottom))
+        .classed("svg-content-responsive", true)
         .append("g")
         .attr("transform", "translate(" + marginInfo.left + "," + marginInfo.top + ")");
 
@@ -217,10 +220,13 @@ function plotConstructors(constructorWins, selCons) {
         })
 
         d3.select("#constructorsPlot").append("h5").text("Most successful constructors");
-        var bestCPlot = d3.select("#constructorsPlot").attr("class", "center-align")
+        var bestCPlot = d3.select("#constructorsPlot").attr("class", "center-align").classed("svg-container", true)
             .append("svg")
-            .attr("width", dSWidth + marginInfo.left + marginInfo.right)
-            .attr("height", dSWidth + marginInfo.top + marginInfo.bottom)
+            //.attr("width", dSWidth + marginInfo.left + marginInfo.right)
+            //.attr("height", dSWidth + marginInfo.top + marginInfo.bottom)
+            .attr("preserveAspectRatio", "xMinYMin meet")
+            .attr("viewBox", "0 0 " + (dSWidth + marginInfo.left + marginInfo.right) + " " + (dSWidth + marginInfo.top + marginInfo.bottom))
+            .classed("svg-content-responsive", true)
             .append("g")
             .attr("transform", "translate(" + marginInfo.left + "," + marginInfo.top + ")");
 
@@ -244,7 +250,7 @@ function plotConstructors(constructorWins, selCons) {
             });
 
         bestCPlot.append("g")
-            .style("font", "14px f1font")
+            .style("font", "f1font")
             .attr("class", "axis")
             .attr("transform", "translate(0," + dSHeight + ")")
             .call(d3.axisBottom(x))
@@ -348,10 +354,11 @@ function plotDrivChamps(champions) {
     var radius = Math.min(dSWidth, dSHeight) / 2;
 
     d3.select("#drChampPlot").append("h5").text("Most drivers' championship winners");
-    var drChampPlot = d3.select("#drChampPlot").attr("class", "center-align")
+    var drChampPlot = d3.select("#drChampPlot").attr("class", "center-align").classed("svg-container", true)
         .append("svg")
-        .attr("width", dSWidth)
-        .attr("height", dSHeight)
+        .attr("preserveAspectRatio", "xMinYMin meet")
+        .attr("viewBox", "0 0 " + dSWidth + " " + dSHeight)
+        .classed("svg-content-responsive", true)
         .append("g")
         .attr("transform", "translate(" + dSWidth/2 + "," + dSHeight/2+ ")");
 
@@ -497,10 +504,11 @@ function plotConsChamps(champions) {
     var radius = Math.min(dSWidth, dSHeight) / 2;
 
     d3.select("#csChampPlot").append("h5").text("Most constructors' championship winners");
-    var csChampPlot = d3.select("#csChampPlot").attr("class", "center-align")
+    var csChampPlot = d3.select("#csChampPlot").attr("class", "center-align").classed("svg-container", true)
         .append("svg")
-        .attr("width", dSWidth)
-        .attr("height", dSHeight)
+        .attr("preserveAspectRatio", "xMinYMin meet")
+        .attr("viewBox", "0 0 " + dSWidth + " " + dSHeight)
+        .classed("svg-content-responsive", true)
         .append("g")
         .attr("transform", "translate(" + dSWidth/2 + "," + dSHeight/2+ ")");
 
