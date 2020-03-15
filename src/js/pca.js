@@ -1,8 +1,8 @@
 var driverNationalities = [];
 var constructorNationalities = [];
 
-var driversUrl = "http://127.0.0.1:5000/getDriversData?nationality=";
-var constructorsUrl = "http://127.0.0.1:5000/getConstructorsData?nationality=";
+var driversUrl = "https://formulatour.herokuapp.com/getDriversData?nationality=";
+var constructorsUrl = "https://formulatour.herokuapp.com/getConstructorsData?nationality=";
 var pcaData = dataset.concat("/pcaDataset.json");
 
 function populate(err, drvs, cons) {
