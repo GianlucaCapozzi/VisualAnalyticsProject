@@ -1,5 +1,7 @@
 var allDrivers = [];
 var marginRacePlot = {top: 40, right: 10, bottom: 50, left: 60}
+var racesPlotWidth = $("#racesView").width();
+var racesPlotHeight = $("#racesView").height();
 
 function processRaces(err, drvs, rsts) {
     season_races = [];
@@ -31,7 +33,6 @@ function processRaces(err, drvs, rsts) {
         }
         season_races[i].values = season_races[i].values.sort(function(a,b) {return d3.ascending(a.race,b.race);});
     }
-    console.log(season_races)
 
     makeRacesPlot();
 }
@@ -45,16 +46,17 @@ function getRaces() {
 
 function makeRacesPlot() {
 
-    console.log(maxDrivers);
-
     var sWidth = $("#racesView").width() * 0.8;
     var sHeight = $("#racesView").height() * 0.65;
 
     d3.select("#racesView").append("h5").text("Races results");
-    var scatPlot = d3.select("#racesView").attr("class", "center-align")
+    var scatPlot = d3.select("#racesView").attr("class", "center-align").classed("svg-container", true)
                     .append("svg")
-                    .attr("width", sWidth + marginRacePlot.left + marginRacePlot.right)
-                    .attr("height", sHeight + marginRacePlot.top + marginRacePlot.bottom)
+                    //.attr("width", sWidth + marginRacePlot.left + marginRacePlot.right)
+                    //.attr("height", sHeight + marginRacePlot.top + marginRacePlot.bottom)
+                    .attr("preserveAspectRatio", "xMinYMin meet")
+                    .attr("viewBox", "0 0 " + (racesPlotWidth + marginRacePlot.left + marginRacePlot.right) + " " + (racesPlotHeight + marginRacePlot.top + marginRacePlot.bottom))
+                    .classed("svg-content-responsive", true)
                     .append("g")
                     .attr("transform", "translate(" + marginRacePlot.left + "," + marginRacePlot.top + ")");
 
@@ -153,7 +155,7 @@ function makeRacesPlot() {
             .style("font-size", 15);*/
 
     // Add a legend (interactive)
-    var legend = d3.select("#racesView").append("div");
+    var legend = d3.select("#racesPlotLegendView");
     legend.append("h5").text("Drivers:").style("width", "100%").attr("class", "center-align");
     var legendContainer = legend.append("div").attr("class", "legend-grid");
     legendContainer.selectAll("myLegend")

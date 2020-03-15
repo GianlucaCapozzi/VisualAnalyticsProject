@@ -13,6 +13,7 @@ html, body, #viewsContainer {
     height: 100%;
     background: #222222;
     color: #ffffff;
+    overflow: hidden;
 }
 
 #infoContainer, #pcaContainer {
@@ -20,6 +21,7 @@ html, body, #viewsContainer {
     height: 0%;
     background: #222222;
     color: #ffffff;
+    overflow: hidden;
 }
 
 #firstMenuButton {
@@ -35,9 +37,9 @@ html, body, #viewsContainer {
     color: #ffffff;
 }
 
-#mapView,  #racesView, #gr_1, #gr_2, #resTable, #standingPlot {
+#mapView,  #racesView, #gr_1, #racesPlotLegendView, #resTable, #standingPlot {
     display: block;
-    overflow: auto;
+    overflow: hidden;
     float: left;
     padding: 10px;
     background: #222222;
@@ -70,7 +72,7 @@ html, body, #viewsContainer {
 
 #constructorsPlot, #driversPlot, #drChampPlot, #csChampPlot, #bestDriver, #bestConstructor, {
     display: block;
-    overflow: auto;
+    overflow: hidden;
     float: left;
     padding: 10px;
 }
@@ -127,7 +129,7 @@ html, body, #viewsContainer {
 
 .axis, .axis text {
     fill: #fff;
-    font-size: 20px;
+    font-size: 16px;
 }
 
 .axis line {
@@ -151,4 +153,19 @@ html, body, #viewsContainer {
 
 #pcaDriverPlot {
     width: 100%;
+}
+
+.svg-container {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%; /* aspect ratio */
+    vertical-align: top;
+    overflow: hidden;
+}
+.svg-content-responsive {
+    display: inline-block;
+    position: absolute;
+    top: 30px;
+    left: 0;
 }
