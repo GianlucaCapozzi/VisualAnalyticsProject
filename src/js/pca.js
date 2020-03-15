@@ -94,8 +94,6 @@ $("#pcaDriverSelect").on("change", function() {
     }
 
     $.ajax(settings).done(function(response) {
-        console.log(JSON.parse(response));
-        //console.log(response);
         readDriverPca(JSON.parse(response));
     })
 
@@ -117,8 +115,6 @@ $("#pcaConstructorSelect").on("change", function() {
     }
 
     $.ajax(settings).done(function(response) {
-        console.log(JSON.parse(response));
-        //console.log(response);
         readConstructorPca(JSON.parse(response));
     })
     //loadConstructorPca();

@@ -3,6 +3,7 @@ from flask_cors import CORS, cross_origin
 import pandas as pd
 
 import json
+datasetPath = "src/formula-1-race-data/"
 
 #1. Declare application
 application = Flask(__name__)
@@ -12,9 +13,9 @@ CORS(application, resources={r"/getDriversData" : {"origins": "*"}, r"/getConstr
 @application.route("/getDriversData", methods=['GET'])
 def getDriversData():
     nationality = request.args.get('nationality')
-    drivers = pd.read_csv("drivers.csv").filter(["driverId", "nationality"])
+    drivers = pd.read_csv(datasetPath + "drivers.csv").filter(["driverId", "nationality"])
 
-    results = pd.read_csv("results.csv").merge(drivers, on="driverId").filter(["driverId", "nationality", "position"])
+    results = pd.read_csv(datasetPath + "results.csv").merge(drivers, on="driverId").filter(["driverId", "nationality", "position"])
 
     #print(results)
 
@@ -92,9 +93,9 @@ def getDriversData():
 @application.route("/getConstructorsData", methods=['GET'])
 def getConstructorsData():
     nationality = request.args.get('nationality')
-    
-    constructors = pd.read_csv("constructors.csv").filter(["constructorId", "nationality"])
-    results = pd.read_csv("results.csv").merge(constructors, on="constructorId").filter(["constructorId", "nationality", "position"])
+
+    constructors = pd.read_csv(datasetPath + "constructors.csv").filter(["constructorId", "nationality"])
+    results = pd.read_csv(datasetPath + "results.csv").merge(constructors, on="constructorId").filter(["constructorId", "nationality", "position"])
 
     #print(results)
 
