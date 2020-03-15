@@ -49,13 +49,14 @@
             <div class="grid-item" id="csChampPlot"></div>
         </div>
 
-        <div id="pcaContainer" class="scale-transition scale-out grid-container-pca">
+        <div id="pcaContainer" class="scale-transition scale-out grid-container-pca center-align">
             <div class="grid-item" id="pcaDriver">PCA Driver
                 <div class="row">
                     <div class="input-field col s12">
                         <select id="pcaDriverSelect"></select>
                     </div>
                 </div>
+                <div id="pcaDriverPlot"></div>
             </div>
             <div class="grid-item" id="pcaConstructor"> PCA Constructor
                 <div class="row">
@@ -63,6 +64,7 @@
                         <select id="pcaConstructorSelect"></select>
                     </div>
                 </div>
+                <div id="pcaConstructorPlot"></div>
             </div>
         </div>
 
@@ -100,12 +102,14 @@
         <script src="src/js/d3.js"></script>
         <script src="src/js/d3-scale-chromatic.js"></script> <!-- Color Scale -->
         <script src="src/js/topojson.js"></script>
+        <script src="src/js/plotly.js"></script>
         <script src="src/js/main.js"></script>
         <script src="src/js/map.js"></script>
         <script src="src/js/racesPlot.js"></script>
         <script src="src/js/table.js"></script>
         <script src="src/js/standingPlot.js"></script>
         <script src="src/js/generalInfos.js"></script>
+        <script src="src/js/pca.js"></script>
 
     </body>
 </html>

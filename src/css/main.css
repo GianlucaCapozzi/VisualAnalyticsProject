@@ -55,7 +55,7 @@ html, body, #viewsContainer {
 .grid-container-pca {
     display: grid;
     grid-gap: 10px;
-    grid-template-columns: auto auto;
+    grid-template-columns: 50% 50%;
     background: #222222;
     color: #ffffff;
 }
@@ -147,4 +147,8 @@ html, body, #viewsContainer {
 .donut-label {
     fill: #fff;
     font-size: 12px;
+}
+
+#pcaDriverPlot {
+    width: 100%;
 }
