@@ -4,7 +4,11 @@ nationality = "British"
 
 drivers = pd.read_csv("drivers.csv").filter(["driverId", "nationality"])
 
-results = pd.read_csv("results.csv").merge(drivers, on="driverId").filter(["driverId", "nationality", "position"])
+constructors = pd.read_csv("constructors.csv").filter(["constructorId", "nationality"])
+
+#results = pd.read_csv("results.csv").merge(drivers, on="driverId").filter(["driverId", "nationality", "position"])
+
+results = pd.read_csv("results.csv").merge(constructors, on="constructorId").filter(["constructorId", "nationality", "position"])
 
 #print(results)
 
@@ -14,7 +18,7 @@ victories = results[is_first_pos]
 is_podium = results['position'].isin(['1', '2', '3'])
 podiums = results[is_podium]
 
-#print(podiums)
+#print(victories)
 
 count_pod = {}
 num_rows_vict = victories.shape[0]
@@ -73,6 +77,7 @@ principalDf = pd.DataFrame(data = principalComponents, columns = ['pc1', 'pc2'])
 
 finalDf = pd.concat([principalDf, nat_df[['Nationality']]], axis = 1)
 
-print(finalDf)
+#print(finalDf)
 
-finalDf.to_json("pcaDataset.json", orient='records')
+#finalDf.to_json("pcaDataset.json", orient='records')
+
