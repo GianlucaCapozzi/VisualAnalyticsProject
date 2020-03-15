@@ -72,7 +72,7 @@ function readConstructorPca(pcaData) {
         title: "",
         showlegend: true
     };
-    Plotly.newPlot("pcaDriverPlot", dataToPlot, layout, {scrollZoom: true, responsive: true});
+    Plotly.newPlot("pcaConstructorPlot", dataToPlot, layout, {scrollZoom: true, responsive: true});
 }
 
 
