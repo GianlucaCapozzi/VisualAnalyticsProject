@@ -27,10 +27,7 @@ function processRaces(err, drvs, rsts) {
         let values = season_races[i].values;
         for(let j = 0; j < values.length; j++) {
             let pos = values[j].position;
-            if (pos == "\\N") {
-                //console.log(pos);
-                values[j].position = maxDrivers + 1;
-            }
+            if (pos == "\\N") values[j].position = maxDrivers + 1;
         }
         season_races[i].values = season_races[i].values.sort(function(a,b) {return d3.ascending(a.race,b.race);});
     }
