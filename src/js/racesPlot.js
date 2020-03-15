@@ -27,10 +27,14 @@ function processRaces(err, drvs, rsts) {
         let values = season_races[i].values;
         for(let j = 0; j < values.length; j++) {
             let pos = values[j].position;
-            if (pos == "\\N") values[j].position = season_races.length + 1;
+            if (pos == "\\N") {
+                //console.log(pos);
+                values[j].position = maxDrivers + 1;
+            }
         }
         season_races[i].values = season_races[i].values.sort(function(a,b) {return d3.ascending(a.race,b.race);});
     }
+    console.log(season_races)
 
     makeRacesPlot();
 }
@@ -43,6 +47,8 @@ function getRaces() {
 }
 
 function makeRacesPlot() {
+
+    console.log(maxDrivers);
 
     var sWidth = $("#racesView").width() * 0.8;
     var sHeight = $("#racesView").height() * 0.65;
@@ -67,11 +73,11 @@ function makeRacesPlot() {
 
     var yAxis = d3.axisLeft(y)
                 .tickFormat(d3.format('d'))
-                .ticks(season_races.length)
-                .tickFormat(function(d) { return (d == season_races.length + 1) ? "R" : d; });
+                .ticks(maxDrivers)
+                .tickFormat(function(d) { return (d == maxDrivers + 1) ? "R" : d; });
 
     x.domain([0, racesIdForRank.length]);
-    y.domain([0, season_races.length + 1]);
+    y.domain([0, maxDrivers + 1]);
 
     // Add the x axis
     scatPlot.append("g")

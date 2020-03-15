@@ -46,6 +46,7 @@ var driv_rank = [];
 var season_drivers = [];
 var season_races = [];
 var racesForYear = [];
+var maxDrivers = 0;
 
 var year = $("#yearSelect").val();
 

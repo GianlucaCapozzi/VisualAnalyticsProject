@@ -1,4 +1,4 @@
-    var width = $("#mapView").width(),
+var width = $("#mapView").width(),
     height = $("#mapView").height();
 
 var active = d3.select(null);
@@ -27,15 +27,17 @@ var g = svg.append("g");
 d3.queue()
         .defer(d3.csv, circuits)
         .defer(d3.csv, races)
+        .defer(d3.csv, results)
         .await(processRacesByYear);
 
-function processRacesByYear(err, circ, rac) {
+function processRacesByYear(err, circ, rac, res) {
     countries_with_circ = [];
     tracks = [];
     racesId = [];
     racesIdForRank = [];
     driv_rank = [];
     season_drivers = [];
+    maxDrivers = 0;
     rac.forEach(r => {
         racesForYear.push({'year' : r.year, 'raceId' : r.raceId});
         if(r.year == year) {
@@ -50,8 +52,21 @@ function processRacesByYear(err, circ, rac) {
                     }
                 }
             });
+            var locMax = 0;
+            res.forEach(rs => {
+                if(rs.raceId === r.raceId) {
+                    //console.log("POS ORD: " + rs.positionOrder + " race: " + rs.raceId);
+                    if(parseInt(rs.grid) >= locMax) { 
+                        locMax = parseInt(rs.grid);
+                    }
+                }
+            });
+            if(locMax >= maxDrivers) {
+                maxDrivers = locMax;
+            }
         }
     });
+    //console.log("MAX DRIVERS: "+ maxDrivers);
     updateData();
 }
 
@@ -64,14 +79,17 @@ $("#yearSelect").on("change", function() {
     driv_rank = [];
     season_drivers = [];
     season_races = [];
+    maxDrivers = 0;
     let year = $("#yearSelect").val();
 
     d3.queue()
         .defer(d3.csv, circuits)
         .defer(d3.csv, races)
+        .defer(d3.csv, results)
         .await(processRacesByYear);
 
-    function processRacesByYear(err, circ, rac) {
+    function processRacesByYear(err, circ, rac, res) {
+       
         rac.forEach(r => {
             if(r.year == year) {
                 circ.forEach(c => {
@@ -85,8 +103,21 @@ $("#yearSelect").on("change", function() {
                         }
                     }
                 });
+                var locMax = 0;
+                res.forEach(rs => {
+                    if(rs.raceId === r.raceId) {
+                        //console.log("POS ORD: " + rs.positionOrder + " race: " + rs.raceId);
+                        if(parseInt(rs.positionOrder) >= locMax) { 
+                            locMax = parseInt(rs.positionOrder);
+                        }
+                    }
+                });
+                if(locMax >= maxDrivers) {
+                    maxDrivers = locMax;
+                }
             }
         });
+        //console.log("MAX DRIVERS: " + maxDrivers);
         updateData();
     }
     d3.select("#racesView").selectAll("*").remove();
