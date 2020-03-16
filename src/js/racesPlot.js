@@ -1,4 +1,3 @@
-var allDrivers = [];
 var marginRacePlot = {top: 30, right: 10, bottom: 70, left: 60}
 var racesPlotWidth = $("#racesView").width() - marginRacePlot.left - marginRacePlot.right;
 var racesPlotHeight = $("#racesView").height() - marginRacePlot.top - marginRacePlot.bottom;
@@ -8,7 +7,6 @@ var firstRound = 0;
 
 function processRaces(err, drvs, rsts) {
     season_races = [];
-    allDrivers = [];
     firstRound = d3.min(racesIdForRank) - 1;
     rsts.forEach(race => {
         if (racesIdForRank.includes(+race.raceId)) {
@@ -16,7 +14,6 @@ function processRaces(err, drvs, rsts) {
                 if(driver.driverId === race.driverId) {
                     let driverName = driver.forename + " " + driver.surname;
                     season_races.push({ 'driver' : driverName, 'race' : race.raceId - firstRound, 'position' : race.position });
-                    if(!allDrivers.includes(driverName)) allDrivers.push(driverName);
                 }
             });
         }
@@ -183,6 +180,7 @@ function makeRacesPlot() {
     var legend = d3.select("#racesPlotLegendView");
     legend.append("h5").text("Drivers:").style("width", "100%").attr("class", "center-align");
     var legendContainer = legend.append("div").attr("class", "legend-grid");
+    var drivers = [];
     legendContainer.selectAll("myLegend")
             .data(season_races)
             .enter()
@@ -190,7 +188,7 @@ function makeRacesPlot() {
             .style("float", "left")
             .style("margin-right", "5px")
             .style("color", function(d){ return color(d.key) })
-            .text(function(d) { return d.key; })
+            .text(function(d) { drivers.push(d.key); return d.key; })
             .style("font-size", 15)
             .on("click", function(d){
                 d3.selectAll(".otherDrivers").transition().style("opacity", 0);
@@ -199,7 +197,7 @@ function makeRacesPlot() {
 
     // Show only first driver
     d3.selectAll(".otherDrivers").transition().style("opacity", 0);
-    d3.selectAll("." + allDrivers[0].replace(" ", "")).transition().style("opacity", 1);
+    d3.selectAll("." + drivers[0].replace(" ", "")).transition().style("opacity", 1);
 
 }
 

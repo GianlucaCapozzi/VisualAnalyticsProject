@@ -1,5 +1,5 @@
 var driver_wins = [];
-var marginInfo = {top: 50, right: 50, bottom: 0, left: 50};
+var marginInfo = {top: 50, right: 50, bottom: 50, left: 50};
 var color = d3.scaleOrdinal(d3.schemePaired);
 
 var drivWidth = $("#racesView").width() * 40 / 45 - marginInfo.left - marginInfo.right;
@@ -50,11 +50,8 @@ function processRaceResults(err, drvs, rsts) {
     var bestDriverCont = d3.select("#bestDriver");
     bestDriverCont.attr("class", "center-align").classed("svg-container", true);
 
-    bestDriverCont.append("h5")
-        .text(data_count[0].key);
-    bestDriverCont.append("h5")
-        .attr('class', 'text')
-        .text(data_count[0].value + " victories");
+    bestDriverCont.append("h5").text(data_count[0].key);
+    bestDriverCont.append("h5").attr('class', 'text').text(data_count[0].value + " victories");
 
     let driverName = data_count[0].key;
     d3.json(urlImageRequest + driverName, function(err, mydata) {
@@ -86,7 +83,7 @@ function getDrivInfo(driv) {
                         cs.forEach(c => {
                             if(r.constructorId === c.constructorId && r.driverId === d.driverId) {
                                 if(!drInfo[driv][2].includes(c.name)) {
-                                    drInfo[driv][2].push(c.name); 
+                                    drInfo[driv][2].push(c.name);
                                 }
                                 drInfo[driv][3] += 1;
                                 if(+r.position == 1 || +r.position == 2 || +r.position == 3) {
@@ -246,16 +243,11 @@ function processConstructorResults(err, cons, rsts) {
         getConsInfo(c.key);
     });
 
-    console.log(consInfo);
-
     var bestConstructorDiv = d3.select("#bestConstructor")
     bestConstructorDiv.attr("class", "center-align").classed("svg-container", true);
 
-    bestConstructorDiv.append("h5")
-        .text(cons_count[0].key);
-    bestConstructorDiv.append("h5")
-        .attr('class', 'text')
-        .text(cons_count[0].value + " victories");
+    bestConstructorDiv.append("h5").text(cons_count[0].key);
+    bestConstructorDiv.append("h5").attr('class', 'text').text(cons_count[0].value + " victories");
 
     let constructorName = cons_count[0].key;
     d3.json(urlImageRequest + constructorName, function(err, mydata) {
@@ -572,10 +564,9 @@ function plotDrivChamps(champions) {
         });
 
     var bestDriverCont = d3.select("#bestDriver");
-    bestDriverCont.attr("class", "center-align")
+    bestDriverCont.attr("class", "center-align").classed("svg-container", true);
 
-    bestDriverCont.append("h5")
-        .text(champions[0].value + " world championships");
+    bestDriverCont.append("h5").text(champions[0].value + " world championships");
 
 }
 
@@ -717,7 +708,5 @@ function plotConsChamps(champions) {
 
     var bestConstructorDiv = d3.select("#bestConstructor")
     bestConstructorDiv.attr("class", "center-align").classed("svg-container", true);
-
-    bestConstructorDiv.append("h5")
-        .text(champions[0].value + " world championships");
+    bestConstructorDiv.append("h5").text(champions[0].value + " world championships");
 }
