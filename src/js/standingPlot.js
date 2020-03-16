@@ -1,8 +1,11 @@
 var marginPlot = {top: 50, right: 150, bottom: 50, left: 70}
 
+var firstRound = 0;
+
 function processStanding(err, drvs, stnds) {
     driv_rank = [];
-    var firstRound = d3.min(racesIdForRank) - 1;
+    circ_names = [];
+    firstRound = d3.min(racesIdForRank) - 1;
     racesIdForRank.forEach( rId => {
         //console.log(rId);
         stnds.forEach(stand => {
@@ -15,6 +18,8 @@ function processStanding(err, drvs, stnds) {
             }
         });
     });
+
+    console.log(tracks);
 
     // Group by pilots
     driv_rank = d3.nest()
@@ -103,41 +108,57 @@ function makePlot() {
                   .x(function(d) { return x(+d.race) })
                   .y(function(d) { return y(+d.position) })
     scatPlot.selectAll("lines")
-            .data(driv_rank)
-            .enter()
-            .append("path")
-            .attr("class", function(d) { return d.key; })
-            .attr("d", function(d){ return line(d.values) } )
-            .attr("stroke", function(d){ return color(d.key) })
-            .style("stroke-width", 4)
-            .style("fill", "none");
+        .data(driv_rank)
+        .enter()
+        .append("path")
+        .attr("class", function(d) { return d.key; })
+        .attr("d", function(d){ return line(d.values) } )
+        .attr("stroke", function(d){ return color(d.key) })
+        .style("stroke-width", 4)
+        .style("fill", "none");
 
     // Add the points
     scatPlot.selectAll("dots")
-                .data(driv_rank)
-                .enter()
-                .append('g')
-                .style("fill", function(d){ return color(d.key) })
-                .selectAll("myPoints")
-                .data(function(d){ return d.values })
-                .enter()
-                .append("circle")
-                .attr("cx", function(d) { return x(d.race) } )
-                .attr("cy", function(d) { return y(d.position) } )
-                .attr("r", 5)
-                .attr("stroke", "white");
+        .data(driv_rank)
+        .enter()
+        .append('g')
+        .style("fill", function(d){ return color(d.key) })
+        .selectAll("myPoints")
+        .data(function(d){ return d.values })
+        .enter()
+        .append("circle")
+        .attr("cx", function(d) { return x(d.race) } )
+        .attr("cy", function(d) { return y(d.position) } )
+        .attr("r", 5)
+        .attr("stroke", "white")
+        .on("mouseover", function(d) {
+            //console.log(tracks[d.race + firstRound])
+            // Add tooltip
+            $(".tooltip")
+                .css("transition", "1s")
+                .css("left", d3.event.pageX + "px")
+                .css("top", d3.event.pageY + "px")
+                .css("opacity", 1)
+                .css("display", "inline-block")
+                .html(tracks[d.race + firstRound]);
+        })
+        .on("mouseout", function(d) {
+            $(".tooltip")
+                .css("transition", "1s")
+                .css("opacity", 0);
+        });
 
     // Add a legend at the end of each line
     scatPlot.selectAll("myLabels")
-            .data(driv_rank)
-            .enter()
-            .append('g')
-            .append("text")
-            .datum(function(d) { return {name: d.key, value: d.values[d.values.length - 1]}; }) // keep only the last value of each time series
-            .attr("transform", function(d) { return "translate(" + x(d.value.race) + "," + y(d.value.position) + ")"; }) // Put the text at the position of the last point
-            .attr("x", 12) // shift the text a bit more right
-            .text(function(d) { return d.name; })
-            .style("fill", function(d){ return color(d.name); })
-            .style("font-size", 15);
+        .data(driv_rank)
+        .enter()
+        .append('g')
+        .append("text")
+        .datum(function(d) { return {name: d.key, value: d.values[d.values.length - 1]}; }) // keep only the last value of each time series
+        .attr("transform", function(d) { return "translate(" + x(d.value.race) + "," + y(d.value.position) + ")"; }) // Put the text at the position of the last point
+        .attr("x", 12) // shift the text a bit more right
+        .text(function(d) { return d.name; })
+        .style("fill", function(d){ return color(d.name); })
+        .style("font-size", 15);
 
 }

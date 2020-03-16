@@ -219,7 +219,7 @@ function plotBestDrivers(bestDrivers, selDriver) {
 var constructor_wins = [];
 var cons_count = [];
 var constructor_urls = {};
-var cons_info = []
+var consInfo = []
 
 function processConstructorResults(err, cons, rsts) {
     constructor_wins = [];
@@ -228,7 +228,6 @@ function processConstructorResults(err, cons, rsts) {
             if(c.constructorId === race.constructorId && +race.position == 1) {
                 constructor_wins.push({'constructor' : c.name});
                 constructor_urls[c.name] = c.url;
-                cons_info[c.name] = c.nationality;
             }
         });
     });
@@ -242,6 +241,12 @@ function processConstructorResults(err, cons, rsts) {
         })
         .entries(constructor_wins)
         .sort(function(a, b) {return d3.descending(a.value, b.value)});
+
+    cons_count.slice(0, 10).forEach(c => {
+        getConsInfo(c.key);
+    });
+
+    console.log(consInfo);
 
     var bestConstructorDiv = d3.select("#bestConstructor")
     bestConstructorDiv.attr("class", "center-align").classed("svg-container", true);
@@ -267,6 +272,31 @@ function processConstructorResults(err, cons, rsts) {
 
 
     plotConstructors(cons_count.slice(0, 10), "");
+}
+
+function getConsInfo(constr) {
+    var lastProcRace = "";
+    d3.queue()
+        .defer(d3.csv, results)
+        .defer(d3.csv, constructors)
+        .await(function(err, rs, cs) {
+            cs.forEach(c => {
+                if(c.name === constr) {
+                    consInfo[constr] = [c.nationality, 0, 0];
+                    rs.forEach(r => {
+                        if(r.constructorId == c.constructorId) {
+                            if(r.raceId != lastProcRace) {
+                                consInfo[constr][1] += 1;
+                                lastProcRace = r.raceId
+                            }
+                            if(+r.position == 1 || +r.position == 2 || +r.position == 3) {
+                                consInfo[constr][2] += 1;
+                            }
+                        }
+                    });
+                }
+            });
+        });
 }
 
 
@@ -302,12 +332,12 @@ function plotConstructors(constructorWins, selCons) {
         x.domain(constructorWins.map(function(d) { return d.key; }));
 
         var gXAxis = bestCPlot.append("g")
-                .style("font", "f1font")
                 .attr("class", "axis")
                 .call(d3.axisBottom(x));
 
         gXAxis.selectAll("text")
                 .style("text-anchor", "end")
+                .style("font", "14px f1font")
                 .attr("dx", "-.8em")
                 .attr("dy", ".15em")
                 .attr("transform", "rotate(-90)");
@@ -347,7 +377,7 @@ function plotConstructors(constructorWins, selCons) {
                             .css("top", d3.event.pageY + "px")
                             .css("opacity", 1)
                             .css("display", "inline-block")
-                            .html(d.key + "<br/>Nationality: " + cons_info[d.key]);
+                            .html("<h5>" + d.key + "</h5>" + "<br/>Nationality: " + consInfo[d.key][0] + "<br/>Races: " + consInfo[d.key][1] + "<br/>Podiums: " + consInfo[d.key][2]);
             })
             .on("mouseout", function(d) {
                 $(".tooltip")

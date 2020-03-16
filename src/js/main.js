@@ -43,6 +43,7 @@ var racesIdForRank = []; // Array for compute drivers' ranking
 var raceId;
 var res = [];
 var driv_rank = [];
+var circ_names = [];
 var season_drivers = [];
 var season_races = [];
 var racesForYear = [];

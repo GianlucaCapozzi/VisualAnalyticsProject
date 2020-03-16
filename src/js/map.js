@@ -47,7 +47,7 @@ function processRacesByYear(err, circ, rac, res) {
                     if(!tracks.includes(c.name)) {
                         //console.log(c.name);
                         countries_with_circ.push(c.country);
-                        tracks.push(c.name);
+                        tracks[r.raceId] = c.name;
                         racesId[c.name] = r.raceId;
                         racesIdForRank.push(+r.raceId);
                     }
@@ -68,6 +68,7 @@ function processRacesByYear(err, circ, rac, res) {
         }
     });
     //console.log("MAX DRIVERS: "+ maxDrivers);
+    //console.log(tracks)
     updateData();
 }
 
@@ -78,6 +79,7 @@ $("#yearSelect").on("change", function() {
     racesId = [];
     racesIdForRank = [];
     driv_rank = [];
+    circ_names = [];
     season_drivers = [];
     season_races = [];
     maxDrivers = 0;
@@ -98,7 +100,7 @@ $("#yearSelect").on("change", function() {
                         if(!tracks.includes(c.name)) {
                             //console.log(c.name);
                             countries_with_circ.push(c.country);
-                            tracks.push(c.name);
+                            tracks[r.raceId] = c.name;
                             racesId[c.name] = r.raceId;
                             racesIdForRank.push(+r.raceId);
                         }
@@ -205,7 +207,7 @@ function clicked(d) {
                             .css("transition", "1s")
                             .css("left", d3.event.pageX + "px")
                             .css("top", d3.event.pageY + "px")
-                            .css("opacity", .9)
+                            .css("opacity", 1)
                             .css("display", "inline-block")
                             .html(d.name);
             })

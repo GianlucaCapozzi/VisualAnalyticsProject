@@ -4,10 +4,12 @@ var racesPlotWidth = $("#racesView").width() - marginRacePlot.left - marginRaceP
 var racesPlotHeight = $("#racesView").height() - marginRacePlot.top - marginRacePlot.bottom;
 var aspect = racesPlotWidth / racesPlotHeight;
 
+var firstRound = 0;
+
 function processRaces(err, drvs, rsts) {
     season_races = [];
     allDrivers = [];
-    var firstRound = d3.min(racesIdForRank) - 1;
+    firstRound = d3.min(racesIdForRank) - 1;
     rsts.forEach(race => {
         if (racesIdForRank.includes(+race.raceId)) {
             drvs.forEach(driver => {
@@ -122,30 +124,46 @@ function makeRacesPlot() {
                   .x(function(d) { return x(+d.race) })
                   .y(function(d) { return y(+d.position) })
     scatPlot.selectAll("lines")
-            .data(season_races)
-            .enter()
-            .append("path")
-            .attr("class", function(d){ return d.key.replace(" ", "") + " otherDrivers" })
-            .attr("d", function(d){ return line(d.values) } )
-            .attr("stroke", function(d){ return color(d.key) })
-            .style("stroke-width", 4)
-            .style("fill", "none");
+        .data(season_races)
+        .enter()
+        .append("path")
+        .attr("class", function(d){ return d.key.replace(" ", "") + " otherDrivers" })
+        .attr("d", function(d){ return line(d.values) } )
+        .attr("stroke", function(d){ return color(d.key) })
+        .style("stroke-width", 4)
+        .style("fill", "none");
 
     // Add the points
     scatPlot.selectAll("dots")
-                .data(season_races)
-                .enter()
-                .append('g')
-                .style("fill", function(d){ return color(d.key) })
-                .attr("class", function(d){ return d.key.replace(" ", "") + " otherDrivers" })
-                .selectAll("myPoints")
-                .data(function(d){ return d.values })
-                .enter()
-                .append("circle")
-                .attr("cx", function(d) { return x(+d.race) } )
-                .attr("cy", function(d) { return y(+d.position) } )
-                .attr("r", 8)
-                .attr("stroke", "white");
+        .data(season_races)
+        .enter()
+        .append('g')
+        .style("fill", function(d){ return color(d.key) })
+        .attr("class", function(d){ return d.key.replace(" ", "") + " otherDrivers" })
+        .selectAll("myPoints")
+        .data(function(d){ return d.values })
+        .enter()
+        .append("circle")
+        .attr("cx", function(d) { return x(+d.race) } )
+        .attr("cy", function(d) { return y(+d.position) } )
+        .attr("r", 8)
+        .attr("stroke", "white")
+        .on("mouseover", function(d) {
+            //console.log(tracks[d.race + firstRound])
+            // Add tooltip
+            $(".tooltip")
+                .css("transition", "1s")
+                .css("left", d3.event.pageX + "px")
+                .css("top", d3.event.pageY + "px")
+                .css("opacity", 1)
+                .css("display", "inline-block")
+                .html(tracks[d.race + firstRound]);
+        })
+        .on("mouseout", function(d) {
+            $(".tooltip")
+                .css("transition", "1s")
+                .css("opacity", 0);
+        });
 
     // Add a legend at the end of each line
     /*scatPlot.selectAll("myLabels")
