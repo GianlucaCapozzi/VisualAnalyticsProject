@@ -51,6 +51,7 @@ html, body, #viewsContainer {
     display: grid;
     grid-gap: 10px;
     grid-template-columns: 20% 40% 40%;
+    grid-template-rows: 50% 50%;
     background: #222222;
     color: #ffffff;
 }

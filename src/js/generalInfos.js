@@ -1,9 +1,15 @@
 var driver_wins = [];
-var marginInfo = {top: 30, right: 10, bottom: 10, left: 30};
+var marginInfo = {top: 50, right: 50, bottom: 0, left: 50};
 var color = d3.scaleOrdinal(d3.schemePaired);
 
-var dSWidth = $("#mapView").width() * 0.6 - marginInfo.left - marginInfo.right;
-var dSHeight = $("#mapView").height() * 0.6 - marginInfo.top - marginInfo.bottom;
+var drivWidth = $("#racesView").width() * 40 / 45 - marginInfo.left - marginInfo.right;
+var drivHeight = $("#racesView").height() - marginInfo.top - marginInfo.bottom;
+
+var consWidth = $("#racesView").width() * 40 / 45 - marginInfo.left - marginInfo.right;;
+var consHeight = $("#racesView").height() - marginInfo.top - marginInfo.bottom;;
+
+var dSWidth = $("#racesView").width() * 40 / 45 - marginInfo.left - marginInfo.right;
+var dSHeight = $("#racesView").height() - marginInfo.top - marginInfo.bottom;
 
 var data_count = [];
 var driver_urls = {};
@@ -25,8 +31,6 @@ function processRaceResults(err, drvs, rsts) {
             }
         });
     });
-
-    console.log(drInfo)
 
     data_count = d3.nest()
         .key(function(d){
@@ -73,10 +77,8 @@ function plotBestDrivers(bestDrivers, selDriver) {
 
     // set the ranges
     var x = d3.scaleBand()
-        .range([0, dSWidth])
+        .range([0, drivWidth])
         .padding(0.1);
-    var y = d3.scaleLinear()
-        .range([dSHeight, 0]);
 
     var topDrivers = [];
 
@@ -87,27 +89,38 @@ function plotBestDrivers(bestDrivers, selDriver) {
     d3.select("#driversPlot").append("h5").text("Most successful drivers");
     var bestDPlot = d3.select("#driversPlot").attr("class", "center-align").classed("svg-container", true)
         .append("svg")
-        //.attr("width", dSWidth + marginInfo.left + marginInfo.right)
-        //.attr("height", dSWidth + marginInfo.top + marginInfo.bottom)
+        //.attr("width", drivWidth + marginInfo.left + marginInfo.right)
+        //.attr("height", drivWidth + marginInfo.top + marginInfo.bottom)
         .attr("preserveAspectRatio", "xMinYMin meet")
-        .attr("viewBox", "0 0 " + (dSWidth + marginInfo.left + marginInfo.right) + " " + (dSWidth + marginInfo.top + marginInfo.bottom))
+        .attr("viewBox", "0 0 " + (drivWidth + marginInfo.left + marginInfo.right) + " " + (drivWidth + marginInfo.top + marginInfo.bottom))
         .classed("svg-content-responsive", true)
         .append("g")
         .attr("transform", "translate(" + marginInfo.left + "," + marginInfo.top + ")");
 
     x.domain(bestDrivers.map(function(d) { return d.key; }));
-    y.domain([0, d3.max(bestDrivers, function(d) { return d.value; })]);
 
-    bestDPlot.append("g")
+    var gXAxis = bestDPlot.append("g")
         .style("font", "14px f1font")
         .attr("class", "axis")
-        .attr("transform", "translate(0," + dSHeight + ")")
-        .call(d3.axisBottom(x))
-        .selectAll("text")
+        .call(d3.axisBottom(x));
+
+    gXAxis.selectAll("text")
         .style("text-anchor", "end")
         .attr("dx", "-.8em")
         .attr("dy", ".15em")
         .attr("transform", "rotate(-90)");
+
+    // Find the maxLabel height, adjust the height accordingly and transform the x axis.
+    var maxWidth = 0;
+    gXAxis.selectAll("text").each(function () {
+    	var boxWidth = this.getBBox().width;
+    	if (boxWidth > maxWidth) maxWidth = boxWidth;
+    });
+    if (selDriver === "") drivHeight = drivHeight - maxWidth;
+    gXAxis.attr("transform", "translate(0," + drivHeight + ")");
+
+    var y = d3.scaleLinear().range([drivHeight, 0]);
+    y.domain([0, d3.max(bestDrivers, function(d) { return d.value; })]);
 
     bestDPlot.selectAll("bar")
         .data(bestDrivers)
@@ -116,7 +129,7 @@ function plotBestDrivers(bestDrivers, selDriver) {
         .attr("x", function(d) { return x(d.key); })
         .attr("width", x.bandwidth())
         .attr("y", function(d) { return y(d.value); })
-        .attr("height", function(d) { return dSHeight - y(d.value); })
+        .attr("height", function(d) { return drivHeight - y(d.value); })
         .style("fill", function(d){ return color(d.key) })
         .style("opacity", function(d) {
             if(selDriver === "") { return 1.5; }
@@ -231,10 +244,8 @@ function plotConstructors(constructorWins, selCons) {
 
         // set the ranges
         var x = d3.scaleBand()
-            .range([0, dSWidth])
+            .range([0, consWidth])
             .padding(0.1);
-        var y = d3.scaleLinear()
-            .range([dSHeight, 0]);
 
         var topTeams = [];
 
@@ -245,15 +256,37 @@ function plotConstructors(constructorWins, selCons) {
         d3.select("#constructorsPlot").append("h5").text("Most successful constructors");
         var bestCPlot = d3.select("#constructorsPlot").attr("class", "center-align").classed("svg-container", true)
             .append("svg")
-            //.attr("width", dSWidth + marginInfo.left + marginInfo.right)
-            //.attr("height", dSWidth + marginInfo.top + marginInfo.bottom)
+            //.attr("width", consWidth + marginInfo.left + marginInfo.right)
+            //.attr("height", consWidth + marginInfo.top + marginInfo.bottom)
             .attr("preserveAspectRatio", "xMinYMin meet")
-            .attr("viewBox", "0 0 " + (dSWidth + marginInfo.left + marginInfo.right) + " " + (dSWidth + marginInfo.top + marginInfo.bottom))
+            .attr("viewBox", "0 0 " + (consWidth + marginInfo.left + marginInfo.right) + " " + (consWidth + marginInfo.top + marginInfo.bottom))
             .classed("svg-content-responsive", true)
             .append("g")
             .attr("transform", "translate(" + marginInfo.left + "," + marginInfo.top + ")");
 
         x.domain(constructorWins.map(function(d) { return d.key; }));
+
+        var gXAxis = bestCPlot.append("g")
+                .style("font", "f1font")
+                .attr("class", "axis")
+                .call(d3.axisBottom(x));
+
+        gXAxis.selectAll("text")
+                .style("text-anchor", "end")
+                .attr("dx", "-.8em")
+                .attr("dy", ".15em")
+                .attr("transform", "rotate(-90)");
+
+        // Find the maxLabel height, adjust the height accordingly and transform the x axis.
+        var maxWidth = 0;
+        gXAxis.selectAll("text").each(function () {
+        	var boxWidth = this.getBBox().width;
+        	if (boxWidth > maxWidth) maxWidth = boxWidth;
+        });
+        if (selCons === "") consHeight = consHeight - maxWidth;
+        gXAxis.attr("transform", "translate(0," + consHeight + ")");
+
+        var y = d3.scaleLinear().range([consHeight, 0]);
         y.domain([0, d3.max(constructorWins, function(d) { return d.value; })]);
 
         bestCPlot.selectAll("bar")
@@ -263,7 +296,7 @@ function plotConstructors(constructorWins, selCons) {
             .attr("x", function(d) { return x(d.key); })
             .attr("width", x.bandwidth())
             .attr("y", function(d) { return y(d.value); })
-            .attr("height", function(d) { return dSHeight - y(d.value); })
+            .attr("height", function(d) { return consHeight - y(d.value); })
             .style("fill", function(d){ return color(d.key) })
             .style("opacity", function(d) {
                 if(selCons === "") { return 1; }
@@ -286,17 +319,6 @@ function plotConstructors(constructorWins, selCons) {
                             .css("transition", "1s")
                             .css("opacity", 0);
             });
-
-        bestCPlot.append("g")
-            .style("font", "f1font")
-            .attr("class", "axis")
-            .attr("transform", "translate(0," + dSHeight + ")")
-            .call(d3.axisBottom(x))
-            .selectAll("text")
-            .style("text-anchor", "end")
-            .attr("dx", "-.8em")
-            .attr("dy", ".15em")
-            .attr("transform", "rotate(-90)");
 
         bestCPlot.selectAll("barCText")
             .data(constructorWins)

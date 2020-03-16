@@ -1,6 +1,6 @@
 var map = d3.select("#mapView");
 var width = map.node().getBoundingClientRect().width;
-    var height = width / 2;
+var height = map.node().getBoundingClientRect().height;
 
 var active = d3.select(null);
 
