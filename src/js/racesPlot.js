@@ -1,7 +1,8 @@
 var allDrivers = [];
-var marginRacePlot = {top: 40, right: 10, bottom: 50, left: 60}
-var racesPlotWidth = $("#racesView").width();
-var racesPlotHeight = $("#racesView").height();
+var marginRacePlot = {top: 30, right: 10, bottom: 70, left: 60}
+var racesPlotWidth = $("#racesView").width() - marginRacePlot.left - marginRacePlot.right;
+var racesPlotHeight = $("#racesView").height() - marginRacePlot.top - marginRacePlot.bottom;
+var aspect = racesPlotWidth / racesPlotHeight;
 
 function processRaces(err, drvs, rsts) {
     season_races = [];
@@ -46,9 +47,6 @@ function getRaces() {
 
 function makeRacesPlot() {
 
-    var sWidth = $("#racesView").width() * 0.8;
-    var sHeight = $("#racesView").height() * 0.65;
-
     d3.select("#racesView").append("h5").text("Races results");
     var scatPlot = d3.select("#racesView").attr("class", "center-align").classed("svg-container", true)
                     .append("svg")
@@ -57,14 +55,23 @@ function makeRacesPlot() {
                     .attr("preserveAspectRatio", "xMinYMin meet")
                     .attr("viewBox", "0 0 " + (racesPlotWidth + marginRacePlot.left + marginRacePlot.right) + " " + (racesPlotHeight + marginRacePlot.top + marginRacePlot.bottom))
                     .classed("svg-content-responsive", true)
+                    .call(resize)
                     .append("g")
                     .attr("transform", "translate(" + marginRacePlot.left + "," + marginRacePlot.top + ")");
 
+    d3.select(window).on('resize.' + d3.select("#racesView").attr('id'), resize);
+
+    function resize() {
+        const w = parseInt(d3.select("#racesView").style('width'));
+        d3.select("#racesView").selectAll("svg").attr('width', w);
+        d3.select("#racesView").selectAll("svg").attr('height', Math.round(w / aspect));
+    }
+
     var color = d3.scaleOrdinal(d3.schemeCategory20);
 
-    var x = d3.scaleLinear().range([0, sWidth]);
+    var x = d3.scaleLinear().range([0, racesPlotWidth]);
 
-    var y = d3.scaleLinear().range([sHeight, 0]);
+    var y = d3.scaleLinear().range([racesPlotHeight, 0]);
 
     var xAxis = d3.axisBottom(x)
                     .tickFormat(d3.format('d'))
@@ -82,13 +89,13 @@ function makeRacesPlot() {
     scatPlot.append("g")
             .style("font", "20px f1font")
             .attr("class", "x-axis axis")
-            .attr("transform", "translate(0," + sHeight + ")")
+            .attr("transform", "translate(0," + racesPlotHeight + ")")
             .call(xAxis);
 
     // text label for the x axis
     scatPlot.append("text")
-        .attr("x", sWidth/2)
-        .attr("y", sHeight + marginRacePlot.top + 10)
+        .attr("x", racesPlotWidth/2)
+        .attr("y", racesPlotHeight + marginRacePlot.top + 10)
         .style("text-anchor", "middle")
         .style("fill", "red")
         .style("font", "20px f1font")
@@ -103,7 +110,7 @@ function makeRacesPlot() {
     scatPlot.append("text")
         .attr("transform", "rotate(-90)")
         .attr("y", 0 - marginRacePlot.left)
-        .attr("x", 0 - sHeight / 2)
+        .attr("x", 0 - racesPlotHeight / 2)
         .attr("dy", "1em")
         .style("text-anchor", "middle")
         .style("fill", "red")

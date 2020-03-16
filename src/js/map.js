@@ -121,6 +121,7 @@ $("#yearSelect").on("change", function() {
         //console.log("MAX DRIVERS: " + maxDrivers);
         updateData();
     }
+    d3.select("#racesPlotLegendView").selectAll("*").remove();
     d3.select("#racesView").selectAll("*").remove();
     getRaces();
 });
