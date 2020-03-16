@@ -87,7 +87,7 @@ function processRaceResults(err, drvs, rsts) {
         img.src = urlImage;
     });
 
-    plotBestDrivers(data_count.slice(0, 10), "");
+    plotBestDrivers(data_count.slice(0, 10));
 }
 
 function getDrivInfo(driv) {
@@ -124,7 +124,7 @@ d3.queue()
     .defer(d3.csv, results)
     .await(processRaceResults);
 
-function plotBestDrivers(bestDrivers, selDriver) {
+function plotBestDrivers(bestDrivers) {
 
     // set the ranges
     var x = d3.scaleBand()
@@ -167,7 +167,8 @@ function plotBestDrivers(bestDrivers, selDriver) {
     	var boxWidth = this.getBBox().width;
     	if (boxWidth > maxWidth) maxWidth = boxWidth;
     });
-    if (selDriver === "") drivHeight = drivHeight - maxWidth;
+    //if (selDriver === "") drivHeight = drivHeight - maxWidth;
+    drivHeight = drivHeight - maxWidth;
     gXAxis.attr("transform", "translate(0," + drivHeight + ")");
 
     var y = d3.scaleLinear().range([drivHeight, 0]);
@@ -176,22 +177,14 @@ function plotBestDrivers(bestDrivers, selDriver) {
     bestDPlot.selectAll("bar")
         .data(bestDrivers)
         .enter().append("rect")
-        .attr("class", "bar")
+        .attr("class", function(d){ 
+            console.log(d.key)
+            return d.key.replace(" ", "") + " otherBestDrivers"; })
         .attr("x", function(d) { return x(d.key); })
         .attr("width", x.bandwidth())
         .attr("y", function(d) { return y(d.value); })
         .attr("height", function(d) { return drivHeight - y(d.value); })
         .style("fill", function(d){ return color(d.key) })
-        .style("opacity", function(d) {
-            if(selDriver === "") { return 1.5; }
-            if(!topDrivers.includes(selDriver)) { return 1; }
-            if(d.key === selDriver) {
-                return 1.5;
-            }
-            else {
-                return 0.1;
-            }
-        })
         .on("mouseover", function(d) {
             // Add tooltip
             $(".tooltip")
@@ -218,20 +211,14 @@ function plotBestDrivers(bestDrivers, selDriver) {
             return d.value;
         })
         .attr("text-anchor", "middle")
+        .attr("class", function(d){ return d.key.replace(" ", "") + " otherBestDrivers" })
+        .style("fill", "#fff")
         .attr("x", function(d) {
             return x(d.key) + x.bandwidth()/2;
         })
         .attr("y", function(d) {
             return y(d.value);
-        })
-        .attr("class", "barText")
-        .style("opacity", function(d) {
-            if(selDriver === "") { return 1; }
-            if(!topDrivers.includes(selDriver)) { return 1; }
-            if(d.key === selDriver) { return 1.5; }
-            else { return 0.1; }
         });
-
 }
 
 var constructor_wins = [];
@@ -559,8 +546,9 @@ function plotDrivChamps(champions) {
             drChampPlot.selectAll(".champLab").remove();
         })
         .on("click", function(d) {
-            d3.select("#driversPlot").selectAll("*").remove();
-            plotBestDrivers(data_count.slice(0, 10), d.data.key);
+            console.log(d.data.key);
+            d3.selectAll(".otherBestDrivers").transition().style("opacity", 0.1);
+            d3.selectAll("." + d.data.key.replace(" ", "")).transition().style("opacity", 1);
         })
 
 

@@ -76,7 +76,20 @@ function readConstructorPca(pcaData) {
 }
 
 
-//loadDriverPca();
+var settings = {
+    'cache': false,
+    "crossDomain": true,
+    "method": "GET",
+    url: driversUrl + currentDriverNationality,
+    headers: {
+        "accept": "application/json",
+        "Access-Control-Allow-Origin":"*"
+    }
+}
+
+$.ajax(settings).done(function(response) {
+    readDriverPca(JSON.parse(response));
+});
 
 $("#pcaDriverSelect").on("change", function() {
     d3.select("#pcaDriverPlot").selectAll("*").remove();
@@ -97,6 +110,21 @@ $("#pcaDriverSelect").on("change", function() {
         readDriverPca(JSON.parse(response));
     })
 
+});
+
+var settings = {
+    'cache': false,
+    "crossDomain": true,
+    "method": "GET",
+    url: constructorsUrl + currentConstructorNationality,
+    headers: {
+        "accept": "application/json",
+        "Access-Control-Allow-Origin":"*"
+    }
+}
+
+$.ajax(settings).done(function(response) {
+    readConstructorPca(JSON.parse(response));
 });
 
 $("#pcaConstructorSelect").on("change", function() {

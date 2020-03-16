@@ -33,6 +33,7 @@ function processRaces(err, drvs, rsts) {
         }
         season_races[i].values = season_races[i].values.sort(function(a,b) {return d3.ascending(a.race,b.race);});
     }
+    //console.log(season_races);
 
     makeRacesPlot();
 }
@@ -138,16 +139,14 @@ function makeRacesPlot() {
         .style("fill", function(d){ return color(d.key) })
         .attr("class", function(d){ return d.key.replace(" ", "") + " otherDrivers" })
         .selectAll("myPoints")
-        .data(function(d){ return d.values })
+        .data(function(d){ return d.values; })
         .enter()
         .append("circle")
-        .attr("cx", function(d) { return x(+d.race) } )
-        .attr("cy", function(d) { return y(+d.position) } )
+        .attr("cx", function(d) { return x(d.race) } )
+        .attr("cy", function(d) { return y(d.position) } )
         .attr("r", 8)
         .attr("stroke", "white")
         .on("mouseover", function(d) {
-            //console.log(tracks[d.race + firstRound])
-            // Add tooltip
             $(".tooltip")
                 .css("transition", "1s")
                 .css("left", d3.event.pageX + "px")
@@ -191,6 +190,7 @@ function makeRacesPlot() {
             .text(function(d) { drivers.push(d.key); return d.key; })
             .style("font-size", 15)
             .on("click", function(d){
+                //console.log(d);
                 d3.selectAll(".otherDrivers").transition().style("opacity", 0);
                 d3.selectAll("." + d.key.replace(" ", "")).transition().style("opacity", 1);
             });
