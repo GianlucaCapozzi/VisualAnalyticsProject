@@ -27,7 +27,6 @@ function processRaceResults(err, drvs, rsts) {
                 let driverName = driv.forename + " " + driv.surname;
                 driver_wins.push({'driver' : driverName});
                 driver_urls[driverName] = driv.url;
-                drInfo[driverName] = [driv.dob, driv.nationality]
             }
         });
     });
@@ -40,7 +39,13 @@ function processRaceResults(err, drvs, rsts) {
             return dr.length;
         })
         .entries(driver_wins)
-        .sort(function(a, b) {return d3.descending(a.value, b.value)});
+        .sort(function(a, b) { return d3.descending(a.value, b.value); });
+
+    data_count.slice(0, 10).forEach(d => {
+        getDrivInfo(d.key);
+    })
+
+    //console.log(drInfo);
 
     var bestDriverCont = d3.select("#bestDriver");
     bestDriverCont.attr("class", "center-align").classed("svg-container", true);
@@ -65,6 +70,34 @@ function processRaceResults(err, drvs, rsts) {
     });
 
     plotBestDrivers(data_count.slice(0, 10), "");
+}
+
+function getDrivInfo(driv) {
+    //console.log("In driv info");
+    d3.queue()
+        .defer(d3.csv, drivers)
+        .defer(d3.csv, results)
+        .defer(d3.csv, constructors)
+        .await(function(err, ds, rs, cs) {
+            ds.forEach(d => {
+                if(d.forename + " " + d.surname === driv) {
+                    drInfo[driv] = [d.dob, d.nationality, [], 0, 0];
+                    rs.forEach(r => {
+                        cs.forEach(c => {
+                            if(r.constructorId === c.constructorId && r.driverId === d.driverId) {
+                                if(!drInfo[driv][2].includes(c.name)) {
+                                    drInfo[driv][2].push(c.name); 
+                                }
+                                drInfo[driv][3] += 1;
+                                if(+r.position == 1 || +r.position == 2 || +r.position == 3) {
+                                    drInfo[driv][4] += 1;
+                                }
+                            }
+                        });
+                    });
+                }
+            });
+        });
 }
 
 
@@ -149,7 +182,9 @@ function plotBestDrivers(bestDrivers, selDriver) {
                         .css("top", d3.event.pageY + "px")
                         .css("opacity", 1)
                         .css("display", "inline-block")
-                        .html(d.key + "<br/> Date of Birth: " + drInfo[d.key][0] + "<br/> Nationality: " + drInfo[d.key][1]);
+                        .css("font-family", "f1font")
+                        .html("<h5>" + d.key + "</h5>" + "<br/> Date of Birth: " + drInfo[d.key][0] + "<br/> Nationality: " + drInfo[d.key][1] + "<br/> Teams: " + drInfo[d.key][2] +
+                                "<br/> Races: " + drInfo[d.key][3] + "<br/> Podiums: " + drInfo[d.key][4]);
         })
         .on("mouseout", function(d) {
             $(".tooltip")

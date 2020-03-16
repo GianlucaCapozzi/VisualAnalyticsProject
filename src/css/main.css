@@ -91,28 +91,14 @@ html, body, #viewsContainer {
     color: #ffffff;
 }
 
-.tooltipForDr, .tooltipForCo {
-    font-family: f1font;
+div.tooltip {
     position: absolute;
     text-align: center;
+    font-family: f1font;
     width: auto;
     height: auto;
     padding: 2px;
-    font: 20px sans-serif;
     background: lightsteelblue;
-    border: 0px;
-    border-radius: 8px;
-    pointer-events: none;
-}
-
-.tooltipForDrC {
-    font-family: f1font;
-    position: absolute;
-    text-align: center;
-    width: auto;
-    height: auto;
-    padding: 2px;
-    font: 100px sans-serif;
     border: 0px;
     border-radius: 8px;
     pointer-events: none;
