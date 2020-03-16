@@ -57,13 +57,34 @@ function processRaceResults(err, drvs, rsts) {
     d3.json(urlImageRequest + driverName, function(err, mydata) {
         var firstObj = Object.values(mydata.query.pages)[0];
         let urlImage = firstObj.original.source;
-        bestDriverCont.append("a")
-            .attr("href", driver_urls[driverName])
-            .attr("target", "_blank")
-            .append("img")
-            .attr("src", urlImage)
-            .attr("width", 300)
-            .attr("height", 300);
+        var img = new Image();
+        img.addEventListener("load", function(){
+            var imageWidth = this.naturalWidth;
+            var imageHeight = this.naturalHeight;
+            var ratio = 0;
+            var maxWidth = 300, maxHeight = 300;
+            // Check if the current width is larger than the max
+            if(imageWidth > maxWidth){
+                ratio = maxWidth / imageWidth;   // get ratio for scaling image
+                imageHeight = imageHeight * ratio;    // Reset height to match scaled image
+                imageWidth = imageWidth * ratio;    // Reset width to match scaled image
+            }
+
+            // Check if current height is larger than max
+            if(imageHeight > maxHeight){
+                ratio = maxHeight / imageHeight; // get ratio for scaling image
+                imageWidth = imageWidth * ratio;    // Reset width to match scaled image
+                imageHeight = imageHeight * ratio;    // Reset height to match scaled image
+            }
+            bestDriverCont.append("a")
+                .attr("href", driver_urls[driverName])
+                .attr("target", "_blank")
+                .append("img")
+                .attr("src", urlImage)
+                .attr("width", imageWidth)
+                .attr("height", imageHeight);
+        });
+        img.src = urlImage;
     });
 
     plotBestDrivers(data_count.slice(0, 10), "");
@@ -253,13 +274,34 @@ function processConstructorResults(err, cons, rsts) {
     d3.json(urlImageRequest + constructorName, function(err, mydata) {
         var firstObj = Object.values(mydata.query.pages)[0];
         let urlImage = firstObj.original.source;
-        bestConstructorDiv.append("a")
-            .attr("href", constructor_urls[constructorName])
-            .attr("target", "_blank")
-            .append("img")
-            .attr("src", urlImage)
-            .attr("width", 200)
-            .attr("height", 200);
+        var img = new Image();
+        img.addEventListener("load", function(){
+            var imageWidth = this.naturalWidth;
+            var imageHeight = this.naturalHeight;
+            var ratio = 0;
+            var maxWidth = 300, maxHeight = 300;
+            // Check if the current width is larger than the max
+            if(imageWidth > maxWidth){
+                ratio = maxWidth / imageWidth;   // get ratio for scaling image
+                imageHeight = imageHeight * ratio;    // Reset height to match scaled image
+                imageWidth = imageWidth * ratio;    // Reset width to match scaled image
+            }
+
+            // Check if current height is larger than max
+            if(imageHeight > maxHeight){
+                ratio = maxHeight / imageHeight; // get ratio for scaling image
+                imageWidth = imageWidth * ratio;    // Reset width to match scaled image
+                imageHeight = imageHeight * ratio;    // Reset height to match scaled image
+            }
+            bestConstructorDiv.append("a")
+                .attr("href", constructor_urls[constructorName])
+                .attr("target", "_blank")
+                .append("img")
+                .attr("src", urlImage)
+                .attr("width", imageWidth)
+                .attr("height", imageHeight);
+        });
+        img.src = urlImage;
     });
 
 
