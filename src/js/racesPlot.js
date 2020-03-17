@@ -190,14 +190,26 @@ function makeRacesPlot() {
             .text(function(d) { drivers.push(d.key); return d.key; })
             .style("font-size", 15)
             .on("click", function(d){
-                //console.log(d);
-                d3.selectAll(".otherDrivers").transition().style("opacity", 0);
-                d3.selectAll("." + d.key.replace(" ", "")).transition().style("opacity", 1);
+                console.log(d)
+                d3.selectAll(".otherDrivers")
+                    .transition()
+                    .duration(500)
+                    .style("opacity", 0);
+                d3.selectAll("." + d.key.replace(" ", ""))
+                    .transition()
+                    .duration(2000)
+                    .style("opacity", 1);
             });
 
     // Show only first driver
-    d3.selectAll(".otherDrivers").transition().style("opacity", 0);
-    d3.selectAll("." + drivers[0].replace(" ", "")).transition().style("opacity", 1);
+    d3.selectAll(".otherDrivers")
+        .transition()
+        .duration(500)
+        .style("opacity", 0);
+    d3.selectAll("." + drivers[0].replace(" ", ""))
+        .transition()
+        .duration(2000)
+        .style("opacity", 1);
 
 }
 

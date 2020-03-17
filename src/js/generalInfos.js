@@ -1,5 +1,5 @@
 var driver_wins = [];
-var marginInfo = {top: 50, right: 50, bottom: 50, left: 50};
+var marginInfo = {top: 50, right: 50, bottom: 20, left: 50};
 var color = d3.scaleOrdinal(d3.schemePaired);
 
 var drivWidth = $("#racesView").width() * 40 / 45 - marginInfo.left - marginInfo.right;
@@ -167,7 +167,7 @@ function plotBestDrivers(bestDrivers) {
     	var boxWidth = this.getBBox().width;
     	if (boxWidth > maxWidth) maxWidth = boxWidth;
     });
-    //if (selDriver === "") drivHeight = drivHeight - maxWidth;
+
     drivHeight = drivHeight - maxWidth;
     gXAxis.attr("transform", "translate(0," + drivHeight + ")");
 
@@ -177,9 +177,7 @@ function plotBestDrivers(bestDrivers) {
     bestDPlot.selectAll("bar")
         .data(bestDrivers)
         .enter().append("rect")
-        .attr("class", function(d){ 
-            console.log(d.key)
-            return d.key.replace(" ", "") + " otherBestDrivers"; })
+        .attr("class", function(d){ return d.key.replace(" ", "") + " otherBestDrivers"; })
         .attr("x", function(d) { return x(d.key); })
         .attr("width", x.bandwidth())
         .attr("y", function(d) { return y(d.value); })
@@ -201,6 +199,12 @@ function plotBestDrivers(bestDrivers) {
             $(".tooltip")
                         .css("transition", "1s")
                         .css("opacity", 0);
+        })
+        .on("click", function(d) {
+            d3.selectAll(".otherBestDrivers")
+                .transition()
+                .duration(750)
+                .style("opacity", 1);
         });
 
     bestDPlot.selectAll("barText")
@@ -292,7 +296,7 @@ function processConstructorResults(err, cons, rsts) {
     });
 
 
-    plotConstructors(cons_count.slice(0, 10), "");
+    plotConstructors(cons_count.slice(0, 10));
 }
 
 function getConsInfo(constr) {
@@ -326,7 +330,7 @@ d3.queue()
     .defer(d3.csv, results)
     .await(processConstructorResults);
 
-function plotConstructors(constructorWins, selCons) {
+function plotConstructors(constructorWins) {
 
         // set the ranges
         var x = d3.scaleBand()
@@ -369,7 +373,8 @@ function plotConstructors(constructorWins, selCons) {
         	var boxWidth = this.getBBox().width;
         	if (boxWidth > maxWidth) maxWidth = boxWidth;
         });
-        if (selCons === "") consHeight = consHeight - maxWidth;
+        
+        consHeight = consHeight - maxWidth;
         gXAxis.attr("transform", "translate(0," + consHeight + ")");
 
         var y = d3.scaleLinear().range([consHeight, 0]);
@@ -378,18 +383,12 @@ function plotConstructors(constructorWins, selCons) {
         bestCPlot.selectAll("bar")
             .data(constructorWins)
             .enter().append("rect")
-            .attr("class", "bar")
+            .attr("class", function(d){ return d.key.replace(" ", "") + " otherBestConstructors"; })
             .attr("x", function(d) { return x(d.key); })
             .attr("width", x.bandwidth())
             .attr("y", function(d) { return y(d.value); })
             .attr("height", function(d) { return consHeight - y(d.value); })
             .style("fill", function(d){ return color(d.key) })
-            .style("opacity", function(d) {
-                if(selCons === "") { return 1; }
-                if(!topTeams.includes(selCons)) { return 1; }
-                if(d.key === selCons) { return 1.5; }
-                else { return 0.1; }
-            })
             .on("mouseover", function(d) {
                 // Add tooltip
                 $(".tooltip")
@@ -404,6 +403,12 @@ function plotConstructors(constructorWins, selCons) {
                 $(".tooltip")
                             .css("transition", "1s")
                             .css("opacity", 0);
+            })
+            .on("click", function(d) {
+                d3.selectAll(".otherBestConstructors")
+                    .transition()
+                    .duration(750)
+                    .style("opacity", 1);
             });
 
         bestCPlot.selectAll("barCText")
@@ -420,13 +425,8 @@ function plotConstructors(constructorWins, selCons) {
             .attr("y", function(d) {
                 return y(d.value);
             })
-            .attr("class", "barText")
-            .style("opacity", function(d) {
-                if(selCons === "") { return 1; }
-                if(!topTeams.includes(selCons)) { return 1; }
-                if(d.key === selCons) { return 1.5; }
-                else { return 0.1; }
-            });
+            .attr("class", function(d){ return d.key.replace(" ", "") + " otherBestConstructors"; })
+            .style("fill", "#fff");
 
 }
 
@@ -546,9 +546,22 @@ function plotDrivChamps(champions) {
             drChampPlot.selectAll(".champLab").remove();
         })
         .on("click", function(d) {
-            console.log(d.data.key);
-            d3.selectAll(".otherBestDrivers").transition().style("opacity", 0.1);
-            d3.selectAll("." + d.data.key.replace(" ", "")).transition().style("opacity", 1);
+            if(!d3.selectAll("." + d.data.key.replace(" ", "")).empty()) {
+                d3.selectAll(".otherBestDrivers")
+                    .transition()
+                    .duration(750)
+                    .style("opacity", 0.1);
+                d3.selectAll("." + d.data.key.replace(" ", ""))
+                    .transition()
+                    .duration(750)
+                    .style("opacity", 1);
+            }
+            else {
+                d3.selectAll(".otherBestDrivers")
+                    .transition()
+                    .duration(750)
+                    .style("opacity", 1);
+            }
         })
 
 
@@ -696,9 +709,22 @@ function plotConsChamps(champions) {
             csChampPlot.selectAll(".champLab").remove();
         })
         .on("click", function(d) {
-            d3.select("#constructorsPlot").selectAll("*").remove();
-            //console.log(d.data.key);
-            plotConstructors(cons_count.slice(0, 10), d.data.key);
+            if(!d3.selectAll("." + d.data.key.replace(" ", "")).empty()) {
+                d3.selectAll(".otherBestConstructors")
+                    .transition()
+                    .duration(750)
+                    .style("opacity", 0.1);
+                d3.selectAll("." + d.data.key.replace(" ", ""))
+                    .transition()
+                    .duration(750)
+                    .style("opacity", 1);
+            }
+            else {
+                d3.selectAll(".otherBestConstructors")
+                    .transition()
+                    .duration(750)
+                    .style("opacity", 1);
+            }
         });
 
     csChampPlot.selectAll('allPolylines')
