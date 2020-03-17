@@ -1,5 +1,6 @@
 /* Selector style */
 input.select-dropdown {
+    font-family: f1font;
     color: #ffffff;
 }
 
@@ -79,7 +80,7 @@ html, body, #viewsContainer {
     color: #ffffff;
 }
 
-#constructorsPlot, #driversPlot, #drChampPlot, #csChampPlot, #bestDriver, #bestConstructor, #constructorsPlotTitle, #driversPlotTitle, #drChampPlotTitle, #csChampPlotTitle, #bestDriverTitle, #bestConstructorTitle {
+#constructorsPlot, #driversPlot, #drChampPlot, #csChampPlot, #bestDriver, #bestConstructor, #constructorsPlotTitle, #driversPlotTitle, #drChampPlotTitle, #csChampPlotTitle, #bestDriverTitle, #bestConstructorTitle, #circuitsPlot {
     display: block;
     float: left;
     padding: 10px;
@@ -117,8 +118,8 @@ div.tooltip {
 }
 
 ::selection {
-  background-color: #fff;
-  color: red;
+    background-color: #fff;
+    color: red;
 }
 
 .axis, .axis text {
