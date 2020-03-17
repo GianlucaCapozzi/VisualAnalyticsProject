@@ -37,6 +37,8 @@
         </div>
 
         <div id="viewsContainer" class="scale-transition grid-container-home">
+            <div class="grid-item title center-align" id="mapViewTitle"></div>
+            <div class="grid-item title center-align" id="racesViewTitle">Races results</div>
             <div class="grid-item" id="mapView" class="scale-transition"></div>
             <div class="grid-item" id="racesView" class="scale-transition"></div>
             <div class="grid-item" id="gr_1"></div>
@@ -44,16 +46,32 @@
         </div>
 
         <div id="infoContainer" class="scale-transition scale-out grid-container-info">
-            <div class="grid-item" id="bestDriver"></div>
+            <div class="grid-item title center-align" id="bestDriverTitle">Best driver</div>
+            <div class="grid-item title center-align" id="driversPlotTitle">Most successful drivers</div>
+            <div class="grid-item title center-align" id="drChampPlotTitle">Most drivers' championship winners</div>
+            <div class="grid-item" id="bestDriver">
+                <div class="grid-item normalText center-align" id="bestDriverName"></div>
+                <div class="grid-item normalText center-align" id="bestDriverVictories"></div>
+                <div class="grid-item normalText center-align" id="bestDriverWC"></div>
+            </div>
             <div class="grid-item" id="driversPlot"></div>
             <div class="grid-item" id="drChampPlot"></div>
-            <div class="grid-item" id="bestConstructor"></div>
+            <div class="grid-item title center-align" id="bestConstructorTitle">Best constructor</div>
+            <div class="grid-item title center-align" id="constructorsPlotTitle">Most successful constructors</div>
+            <div class="grid-item title center-align" id="csChampPlotTitle">Most constructors' championship winners</div>
+            <div class="grid-item" id="bestConstructor">
+                <div class="grid-item normalText center-align" id="bestConstructorName"></div>
+                <div class="grid-item normalText center-align" id="bestConstructorVictories"></div>
+                <div class="grid-item normalText center-align" id="bestConstructorWC"></div>
+            </div>
             <div class="grid-item" id="constructorsPlot"></div>
             <div class="grid-item" id="csChampPlot"></div>
         </div>
 
         <div id="pcaContainer" class="scale-transition scale-out grid-container-pca center-align">
-            <div class="grid-item" id="pcaDriver">PCA Driver
+            <div class="grid-item title center-align" id="pcaDriverTitle">PCA Drivers</div>
+            <div class="grid-item title center-align" id="pcaConstructorTitle">PCA Constructors</div>
+            <div class="grid-item" id="pcaDriver">
                 <div class="row">
                     <div class="input-field col s12">
                         <select id="pcaDriverSelect"></select>
@@ -61,7 +79,7 @@
                 </div>
                 <div id="pcaDriverPlot"></div>
             </div>
-            <div class="grid-item" id="pcaConstructor"> PCA Constructor
+            <div class="grid-item" id="pcaConstructor">
                 <div class="row">
                     <div class="input-field col s12">
                         <select id="pcaConstructorSelect"></select>

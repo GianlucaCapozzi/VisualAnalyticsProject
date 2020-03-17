@@ -1,15 +1,19 @@
 var driver_wins = [];
-var marginInfo = {top: 50, right: 50, bottom: 20, left: 50};
+var marginInfo = {top: 30, right: 50, bottom: 0, left: 50};
+var marginDonut = {top: 20, right: 50, bottom: 20, left: 50};
 var color = d3.scaleOrdinal(d3.schemePaired);
 
 var drivWidth = $("#racesView").width() * 40 / 45 - marginInfo.left - marginInfo.right;
 var drivHeight = $("#racesView").height() - marginInfo.top - marginInfo.bottom;
 
-var consWidth = $("#racesView").width() * 40 / 45 - marginInfo.left - marginInfo.right;;
-var consHeight = $("#racesView").height() - marginInfo.top - marginInfo.bottom;;
+var consWidth = $("#racesView").width() * 40 / 45 - marginInfo.left - marginInfo.right;
+var consHeight = $("#racesView").height() - marginInfo.top - marginInfo.bottom;
 
-var dSWidth = $("#racesView").width() * 40 / 45 - marginInfo.left - marginInfo.right;
-var dSHeight = $("#racesView").height() - marginInfo.top - marginInfo.bottom;
+var drivDonutWidth = $("#racesView").width() * 40 / 45 - marginDonut.left - marginDonut.right;
+var drivDonutHeight = $("#racesView").height() - marginDonut.top - marginDonut.bottom;
+
+var consDonutWidth = $("#racesView").width() * 40 / 45 - marginDonut.left - marginDonut.right;
+var consDonutHeight = $("#racesView").height() - marginDonut.top - marginDonut.bottom;
 
 var data_count = [];
 var driver_urls = {};
@@ -49,41 +53,43 @@ function processRaceResults(err, drvs, rsts) {
     var bestDriverCont = d3.select("#bestDriver");
     bestDriverCont.attr("class", "center-align").classed("svg-container", true);
 
-    bestDriverCont.append("h5").text(data_count[0].key);
-    bestDriverCont.append("h5").attr('class', 'text').text(data_count[0].value + " victories");
+    d3.select("#bestDriverName").text(data_count[0].key);
+    d3.select("#bestDriverVictories").text(data_count[0].value + " victories");
 
     let driverName = data_count[0].key;
     d3.json(urlImageRequest + driverName, function(err, mydata) {
         var firstObj = Object.values(mydata.query.pages)[0];
-        let urlImage = firstObj.original.source;
-        var img = new Image();
-        img.addEventListener("load", function(){
-            var imageWidth = this.naturalWidth;
-            var imageHeight = this.naturalHeight;
-            var ratio = 0;
-            var maxWidth = 300, maxHeight = 300;
-            // Check if the current width is larger than the max
-            if(imageWidth > maxWidth){
-                ratio = maxWidth / imageWidth;   // get ratio for scaling image
-                imageHeight = imageHeight * ratio;    // Reset height to match scaled image
-                imageWidth = imageWidth * ratio;    // Reset width to match scaled image
-            }
+        if(firstObj.hasOwnProperty("original")) {
+            let urlImage = firstObj.original.source;
+            var img = new Image();
+            img.addEventListener("load", function(){
+                var imageWidth = this.naturalWidth;
+                var imageHeight = this.naturalHeight;
+                var ratio = 0;
+                var maxWidth = 300, maxHeight = 300;
+                // Check if the current width is larger than the max
+                if(imageWidth > maxWidth){
+                    ratio = maxWidth / imageWidth;   // get ratio for scaling image
+                    imageHeight = imageHeight * ratio;    // Reset height to match scaled image
+                    imageWidth = imageWidth * ratio;    // Reset width to match scaled image
+                }
 
-            // Check if current height is larger than max
-            if(imageHeight > maxHeight){
-                ratio = maxHeight / imageHeight; // get ratio for scaling image
-                imageWidth = imageWidth * ratio;    // Reset width to match scaled image
-                imageHeight = imageHeight * ratio;    // Reset height to match scaled image
-            }
-            bestDriverCont.append("a")
-                .attr("href", driver_urls[driverName])
-                .attr("target", "_blank")
-                .append("img")
-                .attr("src", urlImage)
-                .attr("width", imageWidth)
-                .attr("height", imageHeight);
-        });
-        img.src = urlImage;
+                // Check if current height is larger than max
+                if(imageHeight > maxHeight){
+                    ratio = maxHeight / imageHeight; // get ratio for scaling image
+                    imageWidth = imageWidth * ratio;    // Reset width to match scaled image
+                    imageHeight = imageHeight * ratio;    // Reset height to match scaled image
+                }
+                bestDriverCont.append("a")
+                    .attr("href", driver_urls[driverName])
+                    .attr("target", "_blank")
+                    .append("img")
+                    .attr("src", urlImage)
+                    .attr("width", imageWidth)
+                    .attr("height", imageHeight);
+            });
+            img.src = urlImage;
+        }
     });
 
     plotBestDrivers(data_count.slice(0, 10));
@@ -135,12 +141,6 @@ function plotBestDrivers(bestDrivers) {
     bestDrivers.forEach(d => {
         topDrivers.push(d.key);
     });
-
-    d3.select("#driversPlot")
-        .append("h5")
-        .attr("class", "titleDrivPlot")
-        .text("Most successful drivers");
-
 
     var bestDPlot = d3.select("#driversPlot").attr("class", "center-align").classed("svg-container", true)
         .append("svg")
@@ -262,41 +262,43 @@ function processConstructorResults(err, cons, rsts) {
     var bestConstructorDiv = d3.select("#bestConstructor")
     bestConstructorDiv.attr("class", "center-align").classed("svg-container", true);
 
-    bestConstructorDiv.append("h5").text(cons_count[0].key);
-    bestConstructorDiv.append("h5").attr('class', 'text').text(cons_count[0].value + " victories");
+    d3.select("#bestConstructorName").text(cons_count[0].key);
+    d3.select("#bestConstructorVictories").text(cons_count[0].value + " victories");
 
     let constructorName = cons_count[0].key;
     d3.json(urlImageRequest + constructorName, function(err, mydata) {
         var firstObj = Object.values(mydata.query.pages)[0];
-        let urlImage = firstObj.original.source;
-        var img = new Image();
-        img.addEventListener("load", function(){
-            var imageWidth = this.naturalWidth;
-            var imageHeight = this.naturalHeight;
-            var ratio = 0;
-            var maxWidth = 300, maxHeight = 300;
-            // Check if the current width is larger than the max
-            if(imageWidth > maxWidth){
-                ratio = maxWidth / imageWidth;   // get ratio for scaling image
-                imageHeight = imageHeight * ratio;    // Reset height to match scaled image
-                imageWidth = imageWidth * ratio;    // Reset width to match scaled image
-            }
+        if(firstObj.hasOwnProperty("original")) {
+            let urlImage = firstObj.original.source;
+            var img = new Image();
+            img.addEventListener("load", function(){
+                var imageWidth = this.naturalWidth;
+                var imageHeight = this.naturalHeight;
+                var ratio = 0;
+                var maxWidth = 300, maxHeight = 300;
+                // Check if the current width is larger than the max
+                if(imageWidth > maxWidth){
+                    ratio = maxWidth / imageWidth;   // get ratio for scaling image
+                    imageHeight = imageHeight * ratio;    // Reset height to match scaled image
+                    imageWidth = imageWidth * ratio;    // Reset width to match scaled image
+                }
 
-            // Check if current height is larger than max
-            if(imageHeight > maxHeight){
-                ratio = maxHeight / imageHeight; // get ratio for scaling image
-                imageWidth = imageWidth * ratio;    // Reset width to match scaled image
-                imageHeight = imageHeight * ratio;    // Reset height to match scaled image
-            }
-            bestConstructorDiv.append("a")
-                .attr("href", constructor_urls[constructorName])
-                .attr("target", "_blank")
-                .append("img")
-                .attr("src", urlImage)
-                .attr("width", imageWidth)
-                .attr("height", imageHeight);
-        });
-        img.src = urlImage;
+                // Check if current height is larger than max
+                if(imageHeight > maxHeight){
+                    ratio = maxHeight / imageHeight; // get ratio for scaling image
+                    imageWidth = imageWidth * ratio;    // Reset width to match scaled image
+                    imageHeight = imageHeight * ratio;    // Reset height to match scaled image
+                }
+                bestConstructorDiv.append("a")
+                    .attr("href", constructor_urls[constructorName])
+                    .attr("target", "_blank")
+                    .append("img")
+                    .attr("src", urlImage)
+                    .attr("width", imageWidth)
+                    .attr("height", imageHeight);
+            });
+            img.src = urlImage;
+        }
     });
 
 
@@ -347,7 +349,6 @@ function plotConstructors(constructorWins) {
             topTeams.push(d.key);
         })
 
-        d3.select("#constructorsPlot").append("h5").text("Most successful constructors");
         var bestCPlot = d3.select("#constructorsPlot").attr("class", "center-align").classed("svg-container", true)
             .append("svg")
             //.attr("width", consWidth + marginInfo.left + marginInfo.right)
@@ -377,7 +378,7 @@ function plotConstructors(constructorWins) {
         	var boxWidth = this.getBBox().width;
         	if (boxWidth > maxWidth) maxWidth = boxWidth;
         });
-        
+
         consHeight = consHeight - maxWidth;
         gXAxis.attr("transform", "translate(0," + consHeight + ")");
 
@@ -501,16 +502,15 @@ function processDriversChampionships(err, drivs, stands) {
 
 function plotDrivChamps(champions) {
 
-    var radius = Math.min(dSWidth, dSHeight) / 2;
+    var radius = Math.min(drivDonutWidth, drivDonutHeight) * 0.35;
 
-    d3.select("#drChampPlot").append("h5").text("Most drivers' championship winners");
     var drChampPlot = d3.select("#drChampPlot").attr("class", "center-align").classed("svg-container", true)
         .append("svg")
         .attr("preserveAspectRatio", "xMinYMin meet")
-        .attr("viewBox", "0 0 " + dSWidth + " " + dSHeight)
+        .attr("viewBox", "0 0 " + drivDonutWidth + " " + drivDonutHeight)
         .classed("svg-content-responsive", true)
         .append("g")
-        .attr("transform", "translate(" + dSWidth/2 + "," + dSHeight/2+ ")");
+        .attr("transform", "translate(" + drivDonutWidth/2 + "," + drivDonutHeight/2+ ")");
 
 
     var pie = d3.pie()
@@ -613,7 +613,7 @@ function plotDrivChamps(champions) {
     var bestDriverCont = d3.select("#bestDriver");
     bestDriverCont.attr("class", "center-align").classed("svg-container", true);
 
-    bestDriverCont.append("h5").text(champions[0].value + " world championships");
+    d3.select("#bestDriverWC").text(champions[0].value + " world championships");
 
 }
 
@@ -664,16 +664,15 @@ function processConstructorsChampionships(err, consts, stands) {
 
 function plotConsChamps(champions) {
 
-    var radius = Math.min(dSWidth, dSHeight) / 2;
+    var radius = Math.min(consDonutWidth, consDonutHeight) * 0.35;
 
-    d3.select("#csChampPlot").append("h5").text("Most constructors' championship winners");
     var csChampPlot = d3.select("#csChampPlot").attr("class", "center-align").classed("svg-container", true)
         .append("svg")
         .attr("preserveAspectRatio", "xMinYMin meet")
-        .attr("viewBox", "0 0 " + dSWidth + " " + dSHeight)
+        .attr("viewBox", "0 0 " + consDonutWidth + " " + consDonutHeight)
         .classed("svg-content-responsive", true)
         .append("g")
-        .attr("transform", "translate(" + dSWidth/2 + "," + dSHeight/2+ ")");
+        .attr("transform", "translate(" + consDonutWidth/2 + "," + consDonutHeight/2+ ")");
 
 
     var pie = d3.pie()
@@ -768,5 +767,6 @@ function plotConsChamps(champions) {
 
     var bestConstructorDiv = d3.select("#bestConstructor")
     bestConstructorDiv.attr("class", "center-align").classed("svg-container", true);
-    bestConstructorDiv.append("h5").text(champions[0].value + " world championships");
+    
+    d3.select("#bestConstructorWC").text(champions[0].value + " world championships");
 }

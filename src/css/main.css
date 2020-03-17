@@ -30,12 +30,12 @@ html, body, #viewsContainer {
     display: grid;
     grid-gap: 10px;
     grid-template-columns: 55% 45%;
-    grid-template-rows: 50% auto;
+    grid-template-rows: auto 50% auto;
     background: #222222;
     color: #ffffff;
 }
 
-#mapView,  #racesView, #gr_1, #racesPlotLegendView, #resTable, #standingPlot {
+#mapView,  #racesView, #mapViewTitle, #racesViewTitle, #gr_1, #racesPlotLegendView, #resTable, #standingPlot {
     display: block;
     float: left;
     padding: 10px;
@@ -51,7 +51,7 @@ html, body, #viewsContainer {
     display: grid;
     grid-gap: 10px;
     grid-template-columns: 20% 40% 40%;
-    grid-template-rows: 50% 50%;
+    grid-template-rows: auto 50% auto 50%;
     background: #222222;
     color: #ffffff;
 }
@@ -60,8 +60,15 @@ html, body, #viewsContainer {
     display: grid;
     grid-gap: 10px;
     grid-template-columns: 50% 50%;
+    grid-template-rows: auto auto;
     background: #222222;
     color: #ffffff;
+}
+
+#pcaDriverTitle, #pcaConstructorTitle, #pcaDriver, #pcaConstructor {
+    display: block;
+    float: left;
+    padding: 10px;
 }
 
 .legend-grid {
@@ -72,7 +79,7 @@ html, body, #viewsContainer {
     color: #ffffff;
 }
 
-#constructorsPlot, #driversPlot, #drChampPlot, #csChampPlot, #bestDriver, #bestConstructor {
+#constructorsPlot, #driversPlot, #drChampPlot, #csChampPlot, #bestDriver, #bestConstructor, #constructorsPlotTitle, #driversPlotTitle, #drChampPlotTitle, #csChampPlotTitle, #bestDriverTitle, #bestConstructorTitle {
     display: block;
     float: left;
     padding: 10px;
@@ -138,10 +145,6 @@ div.tooltip {
     font-size: 12px;
 }
 
-#pcaDriverPlot {
-    width: 100%;
-}
-
 .svg-container {
     display: inline-block;
     position: relative;
@@ -168,4 +171,37 @@ div.tooltip {
     background: #000000 url(../images/loader.gif) no-repeat center center;
     text-align: center;
     color: #999;
+}
+
+.title {
+    font-size: 32px;
+    margin-top: 10px;
+}
+
+.normalText {
+    font-size: 24px;
+}
+
+@media only screen and (min-width: 801px) {
+
+   .title {
+      font-size: 32px;
+   }
+
+   .normalText {
+       font-size: 24px;
+   }
+
+}
+
+@media only screen and (max-width: 800px) {
+
+   .title {
+      font-size: 16px;
+   }
+
+   .normalText {
+       font-size: 12px;
+   }
+
 }
