@@ -151,12 +151,12 @@ function plotBestDrivers(bestDrivers) {
     x.domain(bestDrivers.map(function(d) { return d.key; }));
 
     var gXAxis = bestDPlot.append("g")
-        .style("font", "14px f1font")
         .attr("class", "axis")
         .call(d3.axisBottom(x));
 
     gXAxis.selectAll("text")
         .style("text-anchor", "end")
+        .style("font", "14px f1font")
         .attr("dx", "-.8em")
         .attr("dy", ".15em")
         .attr("transform", "rotate(-90)");
