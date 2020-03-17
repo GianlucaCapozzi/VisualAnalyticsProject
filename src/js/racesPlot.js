@@ -1,4 +1,4 @@
-var marginRacePlot = {top: 30, right: 10, bottom: 70, left: 60}
+var marginRacePlot = {top: 30, right: 10, bottom: 50, left: 60}
 var racesPlotWidth = $("#racesView").width() - marginRacePlot.left - marginRacePlot.right;
 var racesPlotHeight = $("#racesView").height() - marginRacePlot.top - marginRacePlot.bottom;
 var aspect = racesPlotWidth / racesPlotHeight;
@@ -47,7 +47,6 @@ function getRaces() {
 
 function makeRacesPlot() {
 
-    d3.select("#racesView").append("h5").text("Races results");
     var scatPlot = d3.select("#racesView").attr("class", "center-align").classed("svg-container", true)
                     .append("svg")
                     //.attr("width", sWidth + marginRacePlot.left + marginRacePlot.right)
