@@ -18,7 +18,6 @@ var urlImageRequest = "https://cors-anywhere.herokuapp.com/https://it.wikipedia.
 
 var drInfo = [];
 
-
 function processRaceResults(err, drvs, rsts) {
     driver_wins = [];
     rsts.forEach(grandPrix => {
@@ -137,7 +136,12 @@ function plotBestDrivers(bestDrivers) {
         topDrivers.push(d.key);
     });
 
-    d3.select("#driversPlot").append("h5").text("Most successful drivers");
+    d3.select("#driversPlot")
+        .append("h5")
+        .attr("class", "titleDrivPlot")
+        .text("Most successful drivers");
+
+
     var bestDPlot = d3.select("#driversPlot").attr("class", "center-align").classed("svg-container", true)
         .append("svg")
         //.attr("width", drivWidth + marginInfo.left + marginInfo.right)
