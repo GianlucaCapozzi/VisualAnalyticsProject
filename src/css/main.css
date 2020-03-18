@@ -36,12 +36,16 @@ html, body, #viewsContainer {
     color: #ffffff;
 }
 
-#mapView,  #racesView, #mapViewTitle, #racesViewTitle, #gr_1, #racesPlotLegendView, #resTable, #standingPlot {
+#mapView, #racesView, #mapViewTitle, #racesViewTitle, #gr_1, #racesPlotLegendView, #resTable, #standingPlot {
     display: block;
     float: left;
     padding: 10px;
     background: #222222;
     color: #ffffff;
+}
+
+#circuitPlot {
+    display: block;
 }
 
 #racesView {
@@ -80,7 +84,7 @@ html, body, #viewsContainer {
     color: #ffffff;
 }
 
-#constructorsPlot, #driversPlot, #drChampPlot, #csChampPlot, #bestDriver, #bestConstructor, #constructorsPlotTitle, #driversPlotTitle, #drChampPlotTitle, #csChampPlotTitle, #bestDriverTitle, #bestConstructorTitle, #circuitsPlot {
+#constructorsPlot, #driversPlot, #drChampPlot, #csChampPlot, #bestDriver, #bestConstructor, #constructorsPlotTitle, #driversPlotTitle, #drChampPlotTitle, #csChampPlotTitle, #bestDriverTitle, #bestConstructorTitle {
     display: block;
     float: left;
     padding: 10px;
