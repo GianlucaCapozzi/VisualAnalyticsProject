@@ -1,26 +1,9 @@
+/*
 var marginCircuitPlot = {top: 30, right: 10, bottom: 50, left: 60}
 var circuitPlotWidth = 960 - marginCircuitPlot.left - marginCircuitPlot.right;
 var circuitPlotHeight = 900 - marginCircuitPlot.top - marginCircuitPlot.bottom;
 var aspect = circuitPlotWidth / circuitPlotHeight;
-
-var tracks = [];
-
-d3.queue()
-    .defer(d3.csv, circuits)
-    .await(populateCircSel);
-
-function populateCircSel(err, crts) {
-    tracks = [];
-    crts.forEach(circ => {
-        if(!tracks.includes(circ.name)) tracks.push(circ.name);
-    });
-    //console.log(tracks);
-    tracks.forEach(track => {
-        let tr = "<option value=" + track + ">" + track + "</option>";
-        $("#circuitSelect").append(tr);
-    })
-    $("#circuitSelect").formSelect();
-}
+*/
 
 var currentCircuit = "Albert Park Grand Prix Circuit";
 
@@ -32,11 +15,11 @@ d3.queue()
     .defer(d3.csv, qualifying)
     .await(processBestLaps);
 
-function processBestLaps(err, tracks, gps, qualis) {
+function processBestLaps(err, circs, gps, qualis) {
     gps.forEach(race => {
         qualis.forEach(quali => {
             if(quali.raceId === race.raceId) {
-                tracks.forEach(t => {
+                circs.forEach(t => {
                     if(race.circuitId === t.circuitId) {
                         if(quali.position === "1") {
                             if(quali.q3 != "\\N") {
@@ -62,12 +45,32 @@ function processBestLaps(err, tracks, gps, qualis) {
         bestTimes[i].values = bestTimes[i].values.sort(function(a, b) { return d3.ascending(+a.year, +b.year)});
     }
 
-    //console.log(bestTimes);
+    console.log(bestTimes);
 
-    makeTimesPlot(currentCircuit);
+    d3.queue()
+        .defer(d3.csv, circuits)
+        .await(populateCircSel);
 }
 
+var tracks_to_show = [];
 
+
+function populateCircSel(err, crts) {
+    tracks_to_show = [];
+    crts.forEach(circ => {
+        bestTimes.forEach(bt => {
+            if(circ.name === bt.key && !tracks_to_show.includes(circ.name)) tracks_to_show.push(circ.name);
+        });
+    });
+    //console.log(tracks);
+    tracks_to_show.forEach(track => {
+        let tr = "<option value=" + track + ">" + track + "</option>";
+        $("#circuitSelect").append(tr);
+    })
+    $("#circuitSelect").formSelect();
+}
+
+/*
 function makeTimesPlot(currCirc) {
     var currCircTimes = [];
     bestTimes.forEach(d => {
@@ -80,7 +83,7 @@ function makeTimesPlot(currCirc) {
 
     //console.log(currCircTimes);
 
-    var bestTimesPlot = d3.select("#circuitPlot").attr("class", "center-align")
+    var bestTimesPlot = d3.select("#circuitPlot")
         .append("svg")
         .attr("width", circuitPlotWidth + marginCircuitPlot.left + marginCircuitPlot.right)
         .attr("height", circuitPlotWidth + marginCircuitPlot.top + marginCircuitPlot.bottom)
@@ -90,10 +93,10 @@ function makeTimesPlot(currCirc) {
         .append("g")
         .attr("transform", "translate(" + marginCircuitPlot.left + "," + marginCircuitPlot.top + ")");
 
-    var x = d3.scaleBand()
+    var x = d3.scaleLinear()
         .range([0, currCircTimes.length]);
 
-    var y = d3.scaleBand()
+    var y = d3.scaleLinear()
         .range([currCircTimes.length, 0]);
 
     x.domain(currCircTimes.map(function(d) { return d.year; }));
@@ -163,7 +166,7 @@ function makeTimesPlot(currCirc) {
         .attr("r", 8)
         .attr("stroke", "white");
 }
-
+*/
 /*
 function makeTimesPlot() {
 

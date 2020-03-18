@@ -16,7 +16,7 @@ html, body, #viewsContainer {
     color: #ffffff;
 }
 
-#infoContainer, #pcaContainer, #circuitContainer {
+#infoContainer, #pcaContainer {
     width: 0%;
     height: 0%;
     background: #222222;
@@ -44,9 +44,6 @@ html, body, #viewsContainer {
     color: #ffffff;
 }
 
-#circuitPlot {
-    display: block;
-}
 
 #racesView {
     overflow: auto;

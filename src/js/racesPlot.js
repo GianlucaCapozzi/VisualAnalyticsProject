@@ -1,4 +1,4 @@
-var marginRacePlot = {top: 30, right: 10, bottom: 50, left: 60}
+var marginRacePlot = {top: 30, right: 10, bottom: 70, left: 60}
 var racesPlotWidth = $("#racesView").width() - marginRacePlot.left - marginRacePlot.right;
 var racesPlotHeight = $("#racesView").height() - marginRacePlot.top - marginRacePlot.bottom;
 var aspect = racesPlotWidth / racesPlotHeight;
@@ -152,7 +152,7 @@ function makeRacesPlot() {
                 .css("top", d3.event.pageY + "px")
                 .css("opacity", 1)
                 .css("display", "inline-block")
-                .html(tracks[d.race + firstRound]);
+                .html(tracks[d.race + firstRound][1]);
         })
         .on("mouseout", function(d) {
             $(".tooltip")

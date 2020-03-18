@@ -43,6 +43,8 @@ function getStanding() {
 
 function makePlot() {
 
+    d3.select("#modalTitle").html(tracks[raceId][1]);
+
     var sWidth = $("#standingPlot").width() * 0.7;
     var sHeight = window.innerHeight/2;
 
@@ -140,7 +142,7 @@ function makePlot() {
                 .css("top", d3.event.pageY + "px")
                 .css("opacity", 1)
                 .css("display", "inline-block")
-                .html(tracks[d.race + firstRound]);
+                .html(tracks[d.race + firstRound][1]);
         })
         .on("mouseout", function(d) {
             $(".tooltip")

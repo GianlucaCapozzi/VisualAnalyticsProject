@@ -47,7 +47,7 @@ function processRacesByYear(err, circ, rac, res) {
                     if(!tracks.includes(c.name)) {
                         //console.log(c.name);
                         countries_with_circ.push(c.country);
-                        tracks[r.raceId] = c.name;
+                        tracks[r.raceId] = [c.name, r.name];
                         racesId[c.name] = r.raceId;
                         racesIdForRank.push(+r.raceId);
                     }
@@ -100,7 +100,7 @@ $("#yearSelect").on("change", function() {
                         if(!tracks.includes(c.name)) {
                             //console.log(c.name);
                             countries_with_circ.push(c.country);
-                            tracks[r.raceId] = c.name;
+                            tracks[r.raceId] = [c.name, r.name];
                             racesId[c.name] = r.raceId;
                             racesIdForRank.push(+r.raceId);
                         }
@@ -183,11 +183,14 @@ function clicked(d) {
     var loc = d.properties.name;
 
     d3.csv(circuits, function(error2, data){
-        if(error2, data) console.log(error2);
         g.selectAll("circle")
             .data(data
             .filter(function(d) {
-                return d.country == loc && countries_with_circ.includes(d.country) && tracks.includes(d.name);
+                var isInTrack = false;
+                tracks.forEach(t => {
+                    if(t[0] === d.name) { isInTrack = true; }
+                });
+                return d.country == loc && countries_with_circ.includes(d.country) && isInTrack;
             }))
             .enter().append("circle")
             .attr("id", "circleMap")
