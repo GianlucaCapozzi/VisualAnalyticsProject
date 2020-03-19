@@ -16,7 +16,7 @@ html, body, #viewsContainer {
     color: #ffffff;
 }
 
-#infoContainer, #pcaContainer {
+#infoContainer, #pcaContainer, #circuitContainer {
     width: 0%;
     height: 0%;
     background: #222222;
@@ -81,7 +81,7 @@ html, body, #viewsContainer {
     color: #ffffff;
 }
 
-#constructorsPlot, #driversPlot, #drChampPlot, #csChampPlot, #bestDriver, #bestConstructor, #constructorsPlotTitle, #driversPlotTitle, #drChampPlotTitle, #csChampPlotTitle, #bestDriverTitle, #bestConstructorTitle {
+#constructorsPlot, #driversPlot, #drChampPlot, #csChampPlot, #bestDriver, #bestConstructor, #constructorsPlotTitle, #driversPlotTitle, #drChampPlotTitle, #csChampPlotTitle, #bestDriverTitle, #bestConstructorTitle, #circuitPlot{
     display: block;
     float: left;
     padding: 10px;

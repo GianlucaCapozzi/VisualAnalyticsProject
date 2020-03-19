@@ -24,10 +24,10 @@ function processBestLaps(err, circs, gps, qualis) {
                             if(quali.q3 != "\\N") {
                                 bestTimes.push({"circuit": t.name, "time": quali.q3, "year": race.year });
                             }
-                            else if(quali.q3 == "\\N" && quali.q2 != "\\N") {
+                            else if(quali.q3 === "\\N" && quali.q2 != "\\N") {
                                 bestTimes.push({"circuit": t.name, "time": quali.q2, "year": race.year });
                             }
-                            else if(quali.q2 == "\\N") {
+                            else if(quali.q2 === "\\N" && quali.q1 != "\\N") {
                                 bestTimes.push({"circuit": t.name, "time": quali.q1, "year": race.year });
                             }
                         }
@@ -44,6 +44,8 @@ function processBestLaps(err, circs, gps, qualis) {
         bestTimes[i].values = bestTimes[i].values.sort(function(a, b) { return d3.ascending(+a.year, +b.year)});
     }
 
+    //console.log(bestTimes);
+
     d3.queue()
         .defer(d3.csv, circuits)
         .await(populateCircSel);
@@ -59,9 +61,11 @@ function populateCircSel(err, crts) {
             if(circ.name === bt.key && !tracks_to_show.includes(circ.name)) tracks_to_show.push(circ.name);
         });
     });
-    //console.log(tracks);
+    //console.log(tracks_to_show);
     tracks_to_show.forEach(track => {
+        //console.log(track);
         let tr = "<option value=" + track + ">" + track + "</option>";
+        //console.log(tr);
         $("#circuitSelect").append(tr);
     })
     $("#circuitSelect").formSelect();
@@ -80,7 +84,7 @@ function makeTimesPlot(currCirc) {
         }
     });
 
-    console.log(currCircTimes);
+    //console.log(currCircTimes);
 
     var specifier = "%M:%S.%L";
     var parsedData = []
@@ -97,7 +101,7 @@ function makeTimesPlot(currCirc) {
         d.time = d.time;
     });
 
-    console.log(currCircTimes);
+    //console.log(currCircTimes);
 
     var bestTimesPlot = d3.select("#circuitPlot")
         .append("svg")
@@ -150,7 +154,7 @@ function makeTimesPlot(currCirc) {
         .style("stroke-width", 4)
         .style("fill", "none");
     
-    bestTimesPlot.selectAll("dot")
+    bestTimesPlot.selectAll("dots")
         .data(currCircTimes)
         .enter()
         .append("circle")
@@ -158,11 +162,26 @@ function makeTimesPlot(currCirc) {
         .attr("cx", function(d) { return x(d.year); })
         .attr("cy", function(d) { return y(d3.timeParse(specifier)(d.time)); })
         .attr("r", 8)
-        .attr("stroke", "white");
+        .attr("stroke", "white")
+        .on("mouseover", function(d) {
+            $(".tooltip")
+                .css("transition", "1s")
+                .css("left", d3.event.pageX + "px")
+                .css("top", d3.event.pageY + "px")
+                .css("opacity", 1)
+                .css("display", "inline-block")
+                .html("Best qualifying time: " + d.time);
+        })
+        .on("mouseout", function(d) {
+            $(".tooltip")
+                .css("transition", "1s")
+                .css("opacity", 0);
+        });
 
     bestTimesPlot.append("g")
         .attr("transform", "translate(0," + circuitPlotHeight + ")")
         .call(d3.axisBottom(x)
+                .tickValues(currCircTimes.map(function(d) { return +d.year; }))
                 .tickFormat(d3.format("d"))
         );
 
@@ -173,133 +192,9 @@ function makeTimesPlot(currCirc) {
 
 }
 
-/*
-function makeTimesPlot() {
-
-    var numValues = 0;
-
-    bestTimes.forEach(bt => {
-        if(bt.key === currentCircuit) {
-            console.log(bt);
-            numValues = bt.values.length;
-        }
-    });
-
-    console.log(circuitPlotHeight);
-
-    //d3.select("#circuitPlot").text(circuitPlotWidth);
-    
-
-    var bestTimesPlot = d3.select("#circuitPlot").attr("class", "center-align")
-        .append("svg")
-        .attr("preserveAspectRatio", "xMinYMin meet")
-        .attr("viewBox", "0 0 " + (circuitPlotWidth + marginCircuitPlot.left + marginCircuitPlot.right) + " " + (circuitPlotHeight + marginCircuitPlot.top + marginCircuitPlot.bottom))
-        .classed("svg-content-responsive", true)
-        .call(resize)
-        .append("g")
-        .attr("transform", "translate(" + marginCircuitPlot.left + "," + marginCircuitPlot.top + ")");
-
-    d3.select(window).on('resize.' + d3.select("#circuitPlot").attr('id'), resize);
-
-    function resize() {
-        const w = parseInt(d3.select("#circuitPlot").style('width'));
-        d3.select("#circuitPlot").selectAll("svg").attr('width', w);
-        d3.select("#circuitPlot").selectAll("svg").attr('height', Math.round(w / aspect));
-    }
-
-    var color = d3.scaleOrdinal(d3.schemeCategory20);
-
-    var x = d3.scaleOrdinal()
-        .range([0, numValues]);
-
-    var y = d3.scaleOrdinal()
-        .range([numValues, 0]);
-
-    x.domain(bestTimes.map(function(d) {
-        if(d.key === currentCircuit) {
-            d.values.forEach(v => {
-                return v.year;
-            })
-        }
-    }));
-
-    y.domain(bestTimes.map(function(d) {
-        if(d.key === currentCircuit) {
-            d.values.forEach(v => {
-                return v.time;
-            });
-        }
-    }));
-
-    var gXAxis = bestTimesPlot.append("g")
-        .attr("class", "axis")
-        .call(d3.axisBottom(x));
-
-    gXAxis.selectAll("text")
-        .style("text-anchor", "end")
-        .style("font", "14px f1font")
-        .attr("dx", "-.8em")
-        .attr("dy", ".15em")
-        .attr("transform", "rotate(-90)")
-        .attr("transform", "translate(0," + circuitPlotWidth + ")");
-
-    var gYAxis = bestTimesPlot.append("g")
-        .attr("class", "axis")
-        .call(d3.axisLeft(y));
-    
-    gYAxis.selectAll("text")
-        .style("text-anchor", "end")
-        .style("font", "14px f1font")
-        .attr("dx", "-.8em")
-        .attr("dy", ".15em");
-
-    // text label for the x axis
-    bestTimesPlot.append("text")
-        .attr("x", circuitPlotWidth/2)
-        .attr("y", circuitPlotHeight + marginCircuitPlot.top + 10)
-        .style("text-anchor", "middle")
-        .style("fill", "red")
-        .style("font", "20px f1font")
-        .text("Years");
-
-    bestTimesPlot.append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 0 - marginCircuitPlot.left)
-        .attr("x", 0 - circuitPlotHeight / 2)
-        .attr("dy", "1em")
-        .style("text-anchor", "middle")
-        .style("fill", "red")
-        .style("font", "20px f1font")
-        .text("Times");
-
-    var line = d3.line()
-        .x(function(d) { return x(d.year); })
-        .y(function(d) { return y(d.time); });
-    
-    bestTimesPlot.selectAll("lines")
-        .data(bestTimes.filter(function(d) { return d.key === currentCircuit}))
-        .enter()
-        .append("path")
-        .attr("d", function(d) { return line(d.values); })
-        .attr("stroke", function(d) { return color(d.key) })
-        .style("stroke-width", 4)
-        .style("fill", "none");
-
-    bestTimesPlot.selectAll("dots")
-        .data(bestTimes.filter(function(d) { return d.key === currentCircuit}))
-        .enter()
-        .append("g")
-        .style("fill", function(d) { return color(d.key) })
-        .selectAll("myPoints")
-        .data(function(d) { return d.values; })
-        .enter()
-        .append("circle")
-        .attr("cx", function(d) { return x(d.year); })
-        .attr("cy", function(d) { return y(d.time); })
-        .attr("r", 8)
-        .attr("stroke", "white");
-          
-
-}
-
-*/
+d3.select("#circuitSelect").on("change", function(d) {
+    d3.select("#circuitPlot").selectAll("*").remove();
+    var selectedOption = $("#circuitSelect option:selected").text();
+    console.log(selectedOption);
+    makeTimesPlot(selectedOption);
+});
