@@ -1,9 +1,8 @@
-/*
-var marginCircuitPlot = {top: 30, right: 10, bottom: 50, left: 60}
+
+var marginCircuitPlot = {top: 30, right: 10, bottom: 20, left: 80}
 var circuitPlotWidth = 960 - marginCircuitPlot.left - marginCircuitPlot.right;
-var circuitPlotHeight = 900 - marginCircuitPlot.top - marginCircuitPlot.bottom;
+var circuitPlotHeight = 550 - marginCircuitPlot.top - marginCircuitPlot.bottom;
 var aspect = circuitPlotWidth / circuitPlotHeight;
-*/
 
 var currentCircuit = "Albert Park Grand Prix Circuit";
 
@@ -45,8 +44,6 @@ function processBestLaps(err, circs, gps, qualis) {
         bestTimes[i].values = bestTimes[i].values.sort(function(a, b) { return d3.ascending(+a.year, +b.year)});
     }
 
-    console.log(bestTimes);
-
     d3.queue()
         .defer(d3.csv, circuits)
         .await(populateCircSel);
@@ -68,9 +65,11 @@ function populateCircSel(err, crts) {
         $("#circuitSelect").append(tr);
     })
     $("#circuitSelect").formSelect();
+
+    makeTimesPlot(currentCircuit);
+
 }
 
-/*
 function makeTimesPlot(currCirc) {
     var currCircTimes = [];
     bestTimes.forEach(d => {
@@ -81,7 +80,24 @@ function makeTimesPlot(currCirc) {
         }
     });
 
-    //console.log(currCircTimes);
+    console.log(currCircTimes);
+
+    var specifier = "%M:%S.%L";
+    var parsedData = []
+    
+    
+    currCircTimes.forEach(function(d) {
+        parsedData.push(d3.timeParse(specifier)(d.time));
+    });
+
+    //console.log(parsedData);
+
+    currCircTimes.forEach(function(d) {
+        d.year = +d.year;
+        d.time = d.time;
+    });
+
+    console.log(currCircTimes);
 
     var bestTimesPlot = d3.select("#circuitPlot")
         .append("svg")
@@ -94,35 +110,13 @@ function makeTimesPlot(currCirc) {
         .attr("transform", "translate(" + marginCircuitPlot.left + "," + marginCircuitPlot.top + ")");
 
     var x = d3.scaleLinear()
-        .range([0, currCircTimes.length]);
+        .range([0, circuitPlotWidth]);
 
     var y = d3.scaleLinear()
-        .range([currCircTimes.length, 0]);
+        .range([circuitPlotHeight, 0]);
 
-    x.domain(currCircTimes.map(function(d) { return d.year; }));
-    y.domain(currCircTimes.map(function(d) { return d.time; }));
-
-    var gXAxis = bestTimesPlot.append("g")
-        .attr("class", "axis")
-        .call(d3.axisBottom(x));
-    
-    gXAxis.selectAll("text")
-        .style("text-anchor", "end")
-        .style("font", "14px f1font")
-        .attr("dx", "-.8em")
-        .attr("dy", ".15em")
-        .attr("transform", "rotate(-90)")
-        .attr("transform", "translate(0," + circuitPlotWidth + ")");
-
-    var gYAxis = bestTimesPlot.append("g")
-        .attr("class", "axis")
-        .call(d3.axisLeft(y));
-    
-    gYAxis.selectAll("text")
-        .style("text-anchor", "end")
-        .style("font", "14px f1font")
-        .attr("dx", "-.8em")
-        .attr("dy", ".15em");
+    x.domain([d3.min(currCircTimes, function(d) { return +d.year; }), d3.max(currCircTimes, function(d) { return +d.year; })]);
+    y.domain([d3.min(parsedData), d3.max(parsedData)]);
 
     // text label for the x axis
     bestTimesPlot.append("text")
@@ -146,7 +140,7 @@ function makeTimesPlot(currCirc) {
     
     var line = d3.line()
         .x(function(d) { return x(d.year); })
-        .y(function(d) { return y(d.time); });
+        .y(function(d) { return y(d3.timeParse(specifier)(d.time)); });
     
 
     bestTimesPlot.append("path")
@@ -162,11 +156,23 @@ function makeTimesPlot(currCirc) {
         .append("circle")
         .style("fill", "steelblue")
         .attr("cx", function(d) { return x(d.year); })
-        .attr("cy", function(d) { return y(d.time); })
+        .attr("cy", function(d) { return y(d3.timeParse(specifier)(d.time)); })
         .attr("r", 8)
         .attr("stroke", "white");
+
+    bestTimesPlot.append("g")
+        .attr("transform", "translate(0," + circuitPlotHeight + ")")
+        .call(d3.axisBottom(x)
+                .tickFormat(d3.format("d"))
+        );
+
+    bestTimesPlot.append("g")
+        .call(d3.axisLeft(y)
+                .tickFormat(d3.timeFormat("%M:%S.%L"))
+        );
+
 }
-*/
+
 /*
 function makeTimesPlot() {
 
