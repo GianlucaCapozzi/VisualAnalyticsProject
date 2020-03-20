@@ -459,6 +459,7 @@ function plotConstructors(constructorWins) {
                     
                 }
                 else {
+                    csChampPlot.selectAll(".champLab").remove();
                     d3.selectAll(".otherBestConstructorsChamp")
                         .transition()
                         .duration(750)
@@ -595,6 +596,7 @@ function plotDrivChamps(champions) {
         .style("stroke-width", "2px")
         .style("opacity", 0.7)
         .on("mouseover", function(d) {
+            drChampPlot.selectAll(".champLab").remove();
             drChampPlot.append("text")
                 .attr("text-anchor", "middle")
                 .attr("class", "champLab")
@@ -604,11 +606,11 @@ function plotDrivChamps(champions) {
             drChampPlot.selectAll(".champLab").remove();
         })
         .on("click", function(d) {
+            d3.selectAll(".otherBestDriversChamp")
+                .transition()
+                .duration(750)
+                .style("opacity", 1);
             if(!d3.selectAll("." + d.data.key.replace(" ", "")).empty()) {
-                d3.selectAll(".otherBestDriversChamp")
-                    .transition()
-                    .duration(750)
-                    .style("opacity", 1);
                 d3.selectAll(".otherBestDrivers")
                     .transition()
                     .duration(750)
@@ -767,6 +769,7 @@ function plotConsChamps(champions) {
         .style("stroke-width", "2px")
         .style("opacity", 0.7)
         .on("mouseover", function(d) {
+            csChampPlot.selectAll(".champLab").remove();
             csChampPlot.append("text")
                 .attr("text-anchor", "middle")
                 .attr("class", "champLab")
@@ -776,11 +779,11 @@ function plotConsChamps(champions) {
             csChampPlot.selectAll(".champLab").remove();
         })
         .on("click", function(d) {
-            if(!d3.selectAll("." + d.data.key.replace(" ", "")).empty()) {
-                d3.selectAll(".otherBestConstructorsChamp")
+            d3.selectAll(".otherBestConstructorsChamp")
                     .transition()
                     .duration(750)
                     .style("opacity", 1);
+            if(!d3.selectAll("." + d.data.key.replace(" ", "")).empty()) {
                 d3.selectAll(".otherBestConstructors")
                     .transition()
                     .duration(750)
