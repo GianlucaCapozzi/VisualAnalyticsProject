@@ -1,5 +1,5 @@
-var marginRacePlot = {top: 30, right: 10, bottom: 70, left: 60}
-var racesPlotWidth = $("#racesView").width() * 0.9 - marginRacePlot.left - marginRacePlot.right;
+var marginRacePlot = {top: 30, right: 40, bottom: 70, left: 60}
+var racesPlotWidth = $("#racesView").width() - marginRacePlot.left - marginRacePlot.right;
 var racesPlotHeight = $("#racesView").height() - marginRacePlot.top - marginRacePlot.bottom;
 var aspect = racesPlotWidth / racesPlotHeight;
 
