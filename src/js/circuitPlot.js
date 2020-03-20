@@ -3,6 +3,7 @@ var marginCircuitPlot = {top: 30, right: 100, bottom: 20, left: 140}
 var circuitPlotWidth = $("#racesView").width() * 50/45 - marginCircuitPlot.left - marginCircuitPlot.right;
 var circuitPlotHeight = $("#racesView").height() - marginCircuitPlot.top - marginCircuitPlot.bottom;
 var aspect = circuitPlotWidth / circuitPlotHeight;
+var heightUpdated = 0;
 
 var currentCircuit = "Albert Park Grand Prix Circuit";
 
@@ -140,20 +141,20 @@ function makeTimesPlot(currCirc) {
     	if (boxWidth > maxWidth) maxWidth = boxWidth;
     });
 
-    circuitPlotHeight = circuitPlotHeight - maxWidth;
-    gXAxis.attr("transform", "translate(0," + circuitPlotHeight + ")");
+    heightUpdated = circuitPlotHeight - maxWidth - 30;
+    gXAxis.attr("transform", "translate(0," + heightUpdated + ")");
 
     // text label for the x axis
     bestTimesPlot.append("text")
                 .attr("x", circuitPlotWidth/2)
-                .attr("y", circuitPlotHeight + marginCircuitPlot.top + marginCircuitPlot.bottom + 30)
+                .attr("y", heightUpdated + marginCircuitPlot.top + marginCircuitPlot.bottom + 30)
                 .style("text-anchor", "middle")
                 .style("fill", "red")
                 .style("font", "20px f1font")
                 .text("Years");
 
 
-    var y = d3.scaleLinear().range([circuitPlotHeight, 0]);
+    var y = d3.scaleLinear().range([heightUpdated, 0]);
     y.domain([d3.min(parsedData), d3.max(parsedData)]);
 
     bestTimesPlot.append("g")
@@ -167,7 +168,7 @@ function makeTimesPlot(currCirc) {
     bestTimesPlot.append("text")
         .attr("transform", "rotate(-90)")
         .attr("y", 0 - marginCircuitPlot.left)
-        .attr("x", 0 - circuitPlotHeight / 2)
+        .attr("x", 0 - heightUpdated / 2)
         .attr("dy", "1em")
         .style("text-anchor", "middle")
         .style("fill", "red")
