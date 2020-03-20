@@ -1,7 +1,7 @@
 
-var marginCircuitPlot = {top: 30, right: 10, bottom: 20, left: 80}
-var circuitPlotWidth = 960 - marginCircuitPlot.left - marginCircuitPlot.right;
-var circuitPlotHeight = 550 - marginCircuitPlot.top - marginCircuitPlot.bottom;
+var marginCircuitPlot = {top: 30, right: 100, bottom: 20, left: 140}
+var circuitPlotWidth = $("#racesView").width() * 50/45 - marginCircuitPlot.left - marginCircuitPlot.right;
+var circuitPlotHeight = $("#racesView").height() - marginCircuitPlot.top - marginCircuitPlot.bottom;
 var aspect = circuitPlotWidth / circuitPlotHeight;
 
 var currentCircuit = "Albert Park Grand Prix Circuit";
@@ -39,7 +39,7 @@ function processBestLaps(err, circs, gps, qualis) {
     bestTimes = d3.nest()
                     .key(function(d) { return d.circuit; })
                     .entries(bestTimes);
-    
+
     for(let i = 0; i < bestTimes.length; i++) {
         bestTimes[i].values = bestTimes[i].values.sort(function(a, b) { return d3.ascending(+a.year, +b.year)});
     }
@@ -88,8 +88,8 @@ function makeTimesPlot(currCirc) {
 
     var specifier = "%M:%S.%L";
     var parsedData = []
-    
-    
+
+
     currCircTimes.forEach(function(d) {
         parsedData.push(d3.timeParse(specifier)(d.time));
     });
@@ -103,33 +103,65 @@ function makeTimesPlot(currCirc) {
 
     //console.log(currCircTimes);
 
-    var bestTimesPlot = d3.select("#circuitPlot")
+    var bestTimesPlot = d3.select("#circuitPlot").classed("svg-container", true)
         .append("svg")
-        .attr("width", circuitPlotWidth + marginCircuitPlot.left + marginCircuitPlot.right)
-        .attr("height", circuitPlotWidth + marginCircuitPlot.top + marginCircuitPlot.bottom)
-        //.attr("preserveAspectRatio", "xMinYMin meet")
-        //.attr("viewBox", "0 0 " + (circuitPlotWidth + marginCircuitPlot.left + marginCircuitPlot.right) + " " + (circuitPlotHeight + marginCircuitPlot.top + marginCircuitPlot.bottom))
-        //.classed("svg-content-responsive", true)
+        //.attr("width", circuitPlotWidth + marginCircuitPlot.left + marginCircuitPlot.right)
+        //.attr("height", circuitPlotWidth + marginCircuitPlot.top + marginCircuitPlot.bottom)
+        .attr("preserveAspectRatio", "xMinYMin meet")
+        .attr("viewBox", "0 0 " + (circuitPlotWidth + marginCircuitPlot.left + marginCircuitPlot.right) + " " + (circuitPlotHeight + marginCircuitPlot.top + marginCircuitPlot.bottom))
+        .classed("svg-content-responsive", true)
         .append("g")
         .attr("transform", "translate(" + marginCircuitPlot.left + "," + marginCircuitPlot.top + ")");
 
-    var x = d3.scaleLinear()
-        .range([0, circuitPlotWidth]);
-
-    var y = d3.scaleLinear()
-        .range([circuitPlotHeight, 0]);
+    var x = d3.scaleLinear().range([0, circuitPlotWidth]);
 
     x.domain([d3.min(currCircTimes, function(d) { return +d.year; }), d3.max(currCircTimes, function(d) { return +d.year; })]);
-    y.domain([d3.min(parsedData), d3.max(parsedData)]);
+
+    var gXAxis = bestTimesPlot.append("g")
+                                .attr("transform", "translate(0," + circuitPlotHeight + ")")
+                                .style("font", "20px f1font")
+                                .attr("class", "x-axis axis")
+                                .call(d3.axisBottom(x)
+                                        .tickValues(currCircTimes.map(function(d) { return +d.year; }))
+                                        .tickFormat(d3.format("d"))
+                                );
+
+    gXAxis.selectAll("text")
+            .style("text-anchor", "end")
+            .attr("dx", "-.8em")
+            .attr("dy", ".15em")
+            .attr("transform", "rotate(-65)");
+
+
+    // Find the maxLabel height, adjust the height accordingly and transform the x axis.
+    var maxWidth = 0;
+    gXAxis.selectAll("text").each(function () {
+    	var boxWidth = this.getBBox().width;
+    	if (boxWidth > maxWidth) maxWidth = boxWidth;
+    });
+
+    circuitPlotHeight = circuitPlotHeight - maxWidth;
+    gXAxis.attr("transform", "translate(0," + circuitPlotHeight + ")");
 
     // text label for the x axis
     bestTimesPlot.append("text")
-        .attr("x", circuitPlotWidth/2)
-        .attr("y", circuitPlotHeight + marginCircuitPlot.top + 10)
-        .style("text-anchor", "middle")
-        .style("fill", "red")
+                .attr("x", circuitPlotWidth/2)
+                .attr("y", circuitPlotHeight + marginCircuitPlot.top + marginCircuitPlot.bottom + 30)
+                .style("text-anchor", "middle")
+                .style("fill", "red")
+                .style("font", "20px f1font")
+                .text("Years");
+
+
+    var y = d3.scaleLinear().range([circuitPlotHeight, 0]);
+    y.domain([d3.min(parsedData), d3.max(parsedData)]);
+
+    bestTimesPlot.append("g")
         .style("font", "20px f1font")
-        .text("Years");
+        .attr("class", "y-axis axis")
+        .call(d3.axisLeft(y)
+                .tickFormat(d3.timeFormat("%M:%S.%L"))
+    );
 
     // text label for the y axis
     bestTimesPlot.append("text")
@@ -141,11 +173,11 @@ function makeTimesPlot(currCirc) {
         .style("fill", "red")
         .style("font", "20px f1font")
         .text("Times");
-    
+
     var line = d3.line()
         .x(function(d) { return x(d.year); })
         .y(function(d) { return y(d3.timeParse(specifier)(d.time)); });
-    
+
 
     bestTimesPlot.append("path")
         .data([currCircTimes])
@@ -153,7 +185,7 @@ function makeTimesPlot(currCirc) {
         .attr("stroke", "steelblue")
         .style("stroke-width", 4)
         .style("fill", "none");
-    
+
     bestTimesPlot.selectAll("dots")
         .data(currCircTimes)
         .enter()
@@ -177,18 +209,6 @@ function makeTimesPlot(currCirc) {
                 .css("transition", "1s")
                 .css("opacity", 0);
         });
-
-    bestTimesPlot.append("g")
-        .attr("transform", "translate(0," + circuitPlotHeight + ")")
-        .call(d3.axisBottom(x)
-                .tickValues(currCircTimes.map(function(d) { return +d.year; }))
-                .tickFormat(d3.format("d"))
-        );
-
-    bestTimesPlot.append("g")
-        .call(d3.axisLeft(y)
-                .tickFormat(d3.timeFormat("%M:%S.%L"))
-        );
 
 }
 
