@@ -22,6 +22,12 @@ var urlImageRequest = "https://cors-anywhere.herokuapp.com/https://it.wikipedia.
 
 var drInfo = [];
 
+var champDrivKeyValue = [];
+var champConsKeyValue = [];
+
+var drChampPlot;
+var csChampPlot;
+
 function processRaceResults(err, drvs, rsts) {
     driver_wins = [];
     rsts.forEach(grandPrix => {
@@ -209,6 +215,28 @@ function plotBestDrivers(bestDrivers) {
                 .transition()
                 .duration(750)
                 .style("opacity", 1);
+            if(!d3.selectAll("." + d.key.replace(" ", "") + "BDC").empty()) {
+                d3.selectAll(".otherBestDriversChamp")
+                    .transition()
+                    .duration(750)
+                    .style("opacity", 0.1);
+                d3.selectAll("." + d.key.replace(" ", "") + "BDC")
+                    .transition()
+                    .duration(750)
+                    .style("opacity", 1);
+                drChampPlot.selectAll(".champLab").remove();
+                drChampPlot.append("text")
+                    .attr("text-anchor", "middle")
+                    .attr("class", "champLab")
+                    .html(champDrivKeyValue[d.key]);
+            }
+            else {
+                drChampPlot.selectAll(".champLab").remove();
+                d3.selectAll(".otherBestDriversChamp")
+                    .transition()
+                    .duration(750)
+                    .style("opacity", 1);
+            }
         });
 
     bestDPlot.selectAll("barText")
@@ -414,6 +442,28 @@ function plotConstructors(constructorWins) {
                     .transition()
                     .duration(750)
                     .style("opacity", 1);
+                if(!d3.selectAll("." + d.key.replace(" ", "") + "BCC").empty()) {
+                    d3.selectAll(".otherBestConstructorsChamp")
+                        .transition()
+                        .duration(750)
+                        .style("opacity", 0.1);
+                    d3.selectAll("." + d.key.replace(" ", "") + "BCC")
+                        .transition()
+                        .duration(750)
+                        .style("opacity", 1);
+                    csChampPlot.selectAll(".champLab").remove();
+                    csChampPlot.append("text")
+                        .attr("text-anchor", "middle")
+                        .attr("class", "champLab")
+                        .html(champConsKeyValue[d.key]);
+                    
+                }
+                else {
+                    d3.selectAll(".otherBestConstructorsChamp")
+                        .transition()
+                        .duration(750)
+                        .style("opacity", 1);
+                }
             });
 
         bestCPlot.selectAll("barCText")
@@ -504,7 +554,7 @@ function plotDrivChamps(champions) {
 
     var radius = Math.min(drivDonutWidth, drivDonutHeight) * 0.35;
 
-    var drChampPlot = d3.select("#drChampPlot").attr("class", "center-align").classed("svg-container", true)
+    drChampPlot = d3.select("#drChampPlot").attr("class", "center-align drivChampPlot").classed("svg-container", true)
         .append("svg")
         .attr("preserveAspectRatio", "xMinYMin meet")
         .attr("viewBox", "0 0 " + drivDonutWidth + " " + drivDonutHeight)
@@ -521,7 +571,10 @@ function plotDrivChamps(champions) {
 
     var data_ready = pie(champions);
 
-    //console.log(data_ready);
+    champions.forEach(c => {
+        champDrivKeyValue[c.key] = c.value;
+    });
+
 
     var arc = d3.arc()
         .innerRadius(radius * 0.5)
@@ -536,6 +589,7 @@ function plotDrivChamps(champions) {
         .enter()
         .append('path')
         .attr('d', arc)
+        .attr("class", function(d){ return d.data.key.replace(" ", "") + "BDC otherBestDriversChamp"; })
         .attr('fill', function(d) {return color(d.data.key)})
         .attr("stroke", "white")
         .style("stroke-width", "2px")
@@ -551,6 +605,10 @@ function plotDrivChamps(champions) {
         })
         .on("click", function(d) {
             if(!d3.selectAll("." + d.data.key.replace(" ", "")).empty()) {
+                d3.selectAll(".otherBestDriversChamp")
+                    .transition()
+                    .duration(750)
+                    .style("opacity", 1);
                 d3.selectAll(".otherBestDrivers")
                     .transition()
                     .duration(750)
@@ -573,6 +631,7 @@ function plotDrivChamps(champions) {
         .data(data_ready)
         .enter()
         .append('polyline')
+        .attr("class", function(d){ return d.data.key.replace(" ", "") + "BDC otherBestDriversChamp"; })
         .attr("stroke", "#fff")
         .style("fill", "none")
         .attr("stroke-width", 1)
@@ -598,13 +657,15 @@ function plotDrivChamps(champions) {
                 return d.data.key;
             }
         })
-        .attr("class", "donut-label")
+        .attr("class", function(d){ return d.data.key.replace(" ", "") + "BDC otherBestDriversChamp"; })
         .attr('transform', function(d) {
             var pos = outerArc.centroid(d);
             var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
             pos[0] = radius * 0.99 * (midangle < Math.PI ? 1 : -1);
             return 'translate(' + pos + ')';
         })
+        .style("font-size", "12px")
+        .style("fill", "#fff")
         .style('text-anchor', function(d) {
             var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
             return (midangle < Math.PI ? 'start' : 'end')
@@ -666,7 +727,7 @@ function plotConsChamps(champions) {
 
     var radius = Math.min(consDonutWidth, consDonutHeight) * 0.35;
 
-    var csChampPlot = d3.select("#csChampPlot").attr("class", "center-align").classed("svg-container", true)
+    csChampPlot = d3.select("#csChampPlot").attr("class", "center-align").classed("svg-container", true)
         .append("svg")
         .attr("preserveAspectRatio", "xMinYMin meet")
         .attr("viewBox", "0 0 " + consDonutWidth + " " + consDonutHeight)
@@ -679,7 +740,9 @@ function plotConsChamps(champions) {
         .sort(null)
         .value(function(d) {return d.value; });
 
-    //console.log(champions);
+    champions.forEach(c => {
+        champConsKeyValue[c.key] = c.value;
+    });
 
     var data_ready = pie(champions);
 
@@ -698,6 +761,7 @@ function plotConsChamps(champions) {
         .enter()
         .append('path')
         .attr('d', arc)
+        .attr("class", function(d) { return d.data.key.replace(" ", "") + "BCC otherBestConstructorsChamp"})
         .attr('fill', function(d) {return color(d.data.key)})
         .attr("stroke", "white")
         .style("stroke-width", "2px")
@@ -713,6 +777,10 @@ function plotConsChamps(champions) {
         })
         .on("click", function(d) {
             if(!d3.selectAll("." + d.data.key.replace(" ", "")).empty()) {
+                d3.selectAll(".otherBestConstructorsChamp")
+                    .transition()
+                    .duration(750)
+                    .style("opacity", 1);
                 d3.selectAll(".otherBestConstructors")
                     .transition()
                     .duration(750)
@@ -734,6 +802,7 @@ function plotConsChamps(champions) {
         .data(data_ready)
         .enter()
         .append('polyline')
+        .attr("class", function(d) { return d.data.key.replace(" ", "") + "BCC otherBestConstructorsChamp"})
         .attr("stroke", "#fff")
         .style("fill", "none")
         .attr("stroke-width", 1)
@@ -759,7 +828,9 @@ function plotConsChamps(champions) {
             pos[0] = radius * 0.99 * (midangle < Math.PI ? 1 : -1);
             return 'translate(' + pos + ')';
         })
-        .attr("class", "donut-label")
+        .attr("class", function(d) { return d.data.key.replace(" ", "") + "BCC otherBestConstructorsChamp"})
+        .attr("fill", "#fff")
+        .style("font-size", "12px")
         .style('text-anchor', function(d) {
             var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
             return (midangle < Math.PI ? 'start' : 'end')
