@@ -68,7 +68,8 @@ function processRacesByYear(err, circ, rac, res) {
         }
     });
     //console.log("MAX DRIVERS: "+ maxDrivers);
-    //console.log(tracks)
+    //console.log(racesIdForRank[racesIdForRank.length-1]);
+    getChampions(racesIdForRank[racesIdForRank.length-1]);
     updateData();
 }
 
@@ -121,12 +122,41 @@ $("#yearSelect").on("change", function() {
             }
         });
         //console.log("MAX DRIVERS: " + maxDrivers);
+        getChampions(racesIdForRank[racesIdForRank.length-1]);
         updateData();
     }
     d3.select("#racesPlotLegendView").selectAll("*").remove();
     d3.select("#racesView").selectAll("*").remove();
     getRaces();
 });
+
+function getChampions(lastRace) {
+    d3.queue()
+        .defer(d3.csv, driver_standings)
+        .defer(d3.csv, drivers)
+        .defer(d3.csv, constructor_standings)
+        .defer(d3.csv, constructors)
+        .await(function(er, driv_s, driv, cons_s, cons) {
+            driv_s.forEach(ds => {
+                if(+ds.raceId === lastRace && ds.positionText === "1") {
+                    driv.forEach(d => {
+                        if(ds.driverId === d.driverId) {
+                            d3.select("#drivChampLab").html("Drivers' champion </br>" + d.forename + " " + d.surname);
+                        }
+                    })
+                }
+            });
+            cons_s.forEach(cs => {
+                if(+cs.raceId === lastRace && cs.positionText === "1") {
+                    cons.forEach(c => {
+                        if(cs.constructorId === c.constructorId) {
+                            d3.select("#consChampLab").html("Constructors' champion </br>" + c.name);
+                        }
+                    });
+                }
+            });
+        });
+}
 
 function updateData() {
     reset();

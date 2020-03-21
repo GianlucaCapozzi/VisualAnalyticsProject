@@ -346,7 +346,7 @@ function getConsInfo(constr) {
                         if(r.constructorId == c.constructorId) {
                             if(r.raceId != lastProcRace) {
                                 consInfo[constr][1] += 1;
-                                lastProcRace = r.raceId
+                                lastProcRace = r.raceId;
                             }
                             if(+r.position == 1 || +r.position == 2 || +r.position == 3) {
                                 consInfo[constr][2] += 1;
