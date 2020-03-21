@@ -1,35 +1,61 @@
-\documentclass[a4paper,twoside]{article}
-
+\documentclass[10pt,twocolumn,letterpaper]{article}
+\usepackage[english]{babel}
+\usepackage{blindtext}
+\usepackage{cvpr}
+\usepackage{times}
 \usepackage{epsfig}
-\usepackage{subfigure}
-\usepackage{calc}
-\usepackage{amssymb}
-\usepackage{amstext}
+\usepackage{graphicx}
+\graphicspath{{images/}}
 \usepackage{amsmath}
-\usepackage{amsthm}
-\usepackage{multicol}
-\usepackage{pslatex}
-\usepackage{apalike}
-\usepackage{SCITEPRESS}
-\usepackage[small]{caption}
+\usepackage{amssymb}
+\usepackage{caption}
+\usepackage[breaklinks=true,bookmarks=false]{hyperref}
 
-\subfigtopskip=0pt
-\subfigcapskip=0pt
-\subfigbottomskip=0pt
+\cvprfinalcopy
 
-\begin{document}
+\def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
 
-\title{FormulaTour  \subtitle{A Visual Analytics framework for navigating Formula 1 history} }
+\title{\LARGE FormulaTour}
 
-\author{\authorname{Gianluca Capozzi\sup{1} and Marco Costa\sup{1}}
-\affiliation{\sup{1}Dipartimento di Ingegneria informatica, automatica e gestionale, University of Rome "La Sapienza"}
-\email{\{capozzi.1693255, costa.1691388\}@studenti.uniroma1.it}
+\author{Gianluca Capozzi\\
+	"La Sapienza" University of Rome\\
+	{\tt\small capozzi.1693255@studenti.uniroma1.it}
+	\and
+	Marco Costa\\
+	"La Sapienza" University of Rome\\
+	{\tt\small costa.1691388@studenti.uniroma1.it}
 }
 
-\onecolumn \maketitle \normalsize \vfill
 
-\section{\uppercase{Abstract}}
+\begin{document}
+\twocolumn[{%
+	\renewcommand\twocolumn[1][]{#1}%
+	\maketitle
+	\begin{center}
+		\centering
+		\includegraphics[width=\textwidth]{allViews}
+		\captionof{figure}{Framework Views}
+	\end{center}%
+}]
 
-\noindent 
+\begin{abstract}
+   \blindtext
+\end{abstract}
+
+\section{Introduction}
+Introduction text 
+\blinddocument
+
+\section{Dataset}
+
+
+\section{Visualization}
+
+
+\section{Analytics}
+
+
+\section{Conclusion}
+Conclusion text
 
 \end{document}
