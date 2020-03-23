@@ -1,6 +1,5 @@
 \documentclass[10pt,twocolumn,letterpaper]{article}
 \usepackage[english]{babel}
-\usepackage{blindtext}
 \usepackage{cvpr}
 \usepackage{times}
 \usepackage{epsfig}
@@ -29,13 +28,13 @@
 
 \begin{document}
 \twocolumn[{%
-	\renewcommand\twocolumn[1][]{#1}%
+	\renewcommand\twocolumn[1][]{#1}
 	\maketitle
 	\begin{center}
 		\centering
 		\includegraphics[width=\textwidth]{allViews}
 		\captionof{figure}{Framework Views}
-	\end{center}%
+	\end{center}
 }]
 
 \begin{abstract}
@@ -54,7 +53,7 @@ view is a times update views that summarizes the evolution of the lap times on a
 	\item A visual analytics framework that supports the examination and exploration of Formula 1 history;
 	\item A visual representation of the features selected by the users.
 \end{itemize}
-The project is a web application and it is developed using the d3.js library and the python3 language for performing PCA.
+The project is a web application and it is developed using the d3.js \cite{D3} library and the python3 language for performing PCA.
 
 \section{Related works}
 There are other frameworks that show the evolution of Formula 1 through its different elements, so races, drivers and constructors. An example is
@@ -62,7 +61,7 @@ There are other frameworks that show the evolution of Formula 1 through its diff
 there is not a division of the races with respect to the years and also the user is not able to locate geographically the position of the circuits. 
 
 \section{Dataset}
-The dataset used for this project is obtained from the \href{http://ergast.com/mrd/}{Ergast Developer API} in .csv format. It is composed by 13 tables: circuits,
+The dataset used for this project is obtained from the Ergast Developer API \cite{Dataset} in .csv format. It is composed by 13 tables: circuits,
 constructorResults, constructorStandings, constructors, driverStandings, drivers, lapTimes, pitStops, qualifying, races, results, seasons and status. The tables considered
 for this project are:
 \begin{itemize}
@@ -80,7 +79,47 @@ The .csv files are manipulated using both d3.js and python. Some of the queries 
 without parameters chosen by the users.
 
 \section{Visualization}
+The visualization is composed by 4 main views, accessible from a simple side menu. Each of these views provides some processed information about the dataset.
+\begin{center}
+	\centering
+	\includegraphics[width=0.3\columnwidth]{menu}
+	\captionof{figure}{Menu}
+\end{center}
 
+\subsection{Home view}
+\begin{center}
+	\centering
+	\includegraphics[width=\columnwidth]{home}
+	\captionof{figure}{Home view}
+\end{center}
+
+When click on a circuit
+\begin{center}
+	\centering
+	\includegraphics[width=\columnwidth]{map-clicked}
+	\captionof{figure}{Home view}
+\end{center}
+
+\subsection{General info view}
+\begin{center}
+	\centering
+	\includegraphics[width=\columnwidth]{generalinfo}
+	\captionof{figure}{General info view}
+\end{center}
+
+\subsection{Correlations view}
+\begin{center}
+	\centering
+	\includegraphics[width=\columnwidth]{correlations}
+	\captionof{figure}{Correlations view}
+\end{center}
+
+\subsection{Times update view}
+\begin{center}
+	\centering
+	\includegraphics[width=\columnwidth]{timesupdate}
+	\captionof{figure}{Times update view}
+\end{center}
 
 
 \section{Analytics}
@@ -90,5 +129,13 @@ without parameters chosen by the users.
 
 \section{Conclusion}
 Conclusion text
+
+\begin{thebibliography}{100} 
+	\bibitem{D3} Data-Driven Documents: \href{https://d3js.org/}{https://d3js.org/}
+	
+	\bibitem{Dataset} Ergast Developer API: \href{http://ergast.com/mrd/}{http://ergast.com/mrd/}
+	
+	\bibitem{Plotly} Plotly JavaScript Open Source Graphing Library: \href{https://plot.ly/javascript/}{https://plot.ly/javascript/}
+\end{thebibliography}
 
 \end{document}
