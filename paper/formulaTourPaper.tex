@@ -56,8 +56,8 @@ view is a times update views that summarizes the evolution of the lap times on a
 The project is a web application and it is developed using the d3.js \cite{D3} library and the python3 language for performing PCA.
 
 \section{Related works}
-There are other frameworks that show the evolution of Formula 1 through its different elements, so races, drivers and constructors. An example is
-\href{https://f1.bitmetric.nl/formula.html}{The history of Formula 1} framework, based on the same dataset used for this project. The main difference is that in that project
+There are other frameworks that show the evolution of Formula 1 through its different elements, so races, drivers and constructors. An example is the History of F1
+\cite{HistoryOfF1} framework, based on the same dataset used for this project. The main difference is that in that project
 there is not a division of the races with respect to the years and also the user is not able to locate geographically the position of the circuits. 
 
 \section{Dataset}
@@ -78,6 +78,8 @@ for this project are:
 The .csv files are manipulated using both d3.js and python. Some of the queries performed over the dataset needs the interaction of the user, while others are performed
 without parameters chosen by the users.
 
+\section{Design Overview}
+
 \section{Visualization}
 The visualization is composed by 4 main views, accessible from a simple side menu. Each of these views provides some processed information about the dataset.
 \begin{center}
@@ -93,12 +95,27 @@ The visualization is composed by 4 main views, accessible from a simple side men
 	\captionof{figure}{Home view}
 \end{center}
 
-When click on a circuit
+This is the main view. Here the user is able to select the desired year from the special selector: the available years are from 1950 to 2019, so from the year in which there was
+the first F1 season till the year in which there was the last one. The home view is divided into four sub-views:
+
+\begin{itemize}
+	\item a map that highlights the countries in which there was at least one Grand Prix during the selected year;
+	\item a scatter plot that shows, for each driver, his final position for each race of the selected season;
+	\item a sub-view that shows the driver and the constructor that have won the two championships at the end of the selected season;
+	\item a sub-view that allows the users to selected a driver: by clicking on the name the scatter plot will be modified showing the results of the selected driver.
+\end{itemize}
+
+The map is interactive, indeed the user can click on one of the highlighted countries: at this point there will be a zoom on the selected country and a red circle showing the
+position of the circuit in which the race was played. By clicking on the red circle the following view will be shown to the user:
+
 \begin{center}
 	\centering
 	\includegraphics[width=\columnwidth]{map-clicked}
-	\captionof{figure}{Home view}
+	\captionof{figure}{Race infos}
 \end{center}
+
+On the left there is a scatter plot that shows the evolution of the drivers' standing till the selected GP, on the right there is a table showing the order of arrival of the selected
+race.
 
 \subsection{General info view}
 \begin{center}
@@ -132,6 +149,8 @@ Conclusion text
 
 \begin{thebibliography}{100} 
 	\bibitem{D3} Data-Driven Documents: \href{https://d3js.org/}{https://d3js.org/}
+	
+	\bibitem{HistoryOfF1} The history of Formula 1: \href{https://f1.bitmetric.nl/formula.html}{https://f1.bitmetric.nl/formula.html}
 	
 	\bibitem{Dataset} Ergast Developer API: \href{http://ergast.com/mrd/}{http://ergast.com/mrd/}
 	
