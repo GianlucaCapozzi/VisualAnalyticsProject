@@ -27,19 +27,22 @@
 
 
 \begin{document}
-\twocolumn[{%
+\twocolumn[{
 	\renewcommand\twocolumn[1][]{#1}
 	\maketitle
 	\begin{center}
 		\centering
 		\includegraphics[width=\textwidth]{allViews}
-		\captionof{figure}{Framework Views}
+		\captionof{figure}{Framework Views: (a) Home view, with world interactive map, winners of the season and interactive drivers trend; (b) Circuit view, with drivers standing and final ranking of the race; (c) General info view, with best driver and constructor,  most successfull drivers and constructors; (d) Correlations view, with scatter plot showing correlation between driver's or constructor's nationality and wins; (e) Circuit info view, with scatter plot showing time trend in the years for each circuit; (f) Menu}
 	\end{center}
+	\rule{\textwidth}{1pt} \\ \\
+	\begin{abstract}
+		The purpose of our application is to provide a framework able to graphically display data about Formula 1 through a user-friendly interface. It's possible to navigate through different views in order to get visual informations about this sport.The application allows you to analyze the history of Formula 1 from the first World Championship (1950) to the last (currently 2019).
+	\end{abstract}
+\rule{\textwidth}{1pt}
 }]
 
-\begin{abstract}
-
-\end{abstract}
+\clearpage
 
 \section{Introduction}
 Formula 1 has a very long history, as it has reached the $70^{th}$ season. During all these years many drivers and constructors took part to the races, which took
@@ -143,18 +146,23 @@ race.
 
 
 \section{Future Works}
+As the dataset provides a lot of data, you can add more views to the application. We have in mind to add an interface that allows you to compare the statistics of the various drivers (e.g. number of wins, number of podiums, number of poles, etc.). 
 
 \section{Conclusion}
-Conclusion text
+The project is useful to be able to retrace the history of Formula 1 easily, through intuitive graphics and a "sports" interface. The application could be used for different purposes, for example by analyzing the times over the years it is possible to guess how the technology or the skill of the pilots has progressed.
 
-\begin{thebibliography}{100} 
-	\bibitem{D3} Data-Driven Documents: \href{https://d3js.org/}{https://d3js.org/}
-	
-	\bibitem{HistoryOfF1} The history of Formula 1: \href{https://f1.bitmetric.nl/formula.html}{https://f1.bitmetric.nl/formula.html}
-	
-	\bibitem{Dataset} Ergast Developer API: \href{http://ergast.com/mrd/}{http://ergast.com/mrd/}
-	
-	\bibitem{Plotly} Plotly JavaScript Open Source Graphing Library: \href{https://plot.ly/javascript/}{https://plot.ly/javascript/}
-\end{thebibliography}
+\clearpage
 
+\twocolumn[{
+	\renewcommand\twocolumn[1][]{#1}
+	\begin{thebibliography}{100} 
+		\bibitem{D3} Data-Driven Documents: \href{https://d3js.org/}{https://d3js.org/}
+		
+		\bibitem{HistoryOfF1} The history of Formula 1: \href{https://f1.bitmetric.nl/formula.html}{https://f1.bitmetric.nl/formula.html}
+		
+		\bibitem{Dataset} Ergast Developer API: \href{http://ergast.com/mrd/}{http://ergast.com/mrd/}
+		
+		\bibitem{Plotly} Plotly JavaScript Open Source Graphing Library: \href{https://plot.ly/javascript/}{https://plot.ly/javascript/}
+	\end{thebibliography}
+}]
 \end{document}
