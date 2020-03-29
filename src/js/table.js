@@ -38,6 +38,8 @@ function makeTable(ranking) {
         .append('th')
         .text(function(column) {return column;} );
 
+    tbody.attr("height", $("#racesView").height());
+
     // create a row for each object in the data
     var rows = tbody.selectAll('tr')
         .data(ranking)

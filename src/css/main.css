@@ -66,7 +66,7 @@ html, body, #viewsContainer {
     display: grid;
     grid-gap: 10px;
     grid-template-columns: 50% 50%;
-    grid-template-areas: 
+    grid-template-areas:
         "header header"
         "driv cons";
     background: #222222;
@@ -115,14 +115,13 @@ html, body, #viewsContainer {
 .modal {
     width: 100% !important;
     height: 100% !important;
-    background: #222222;
-    color: #ffffff;
+    max-height: 80% !important;
+    border-radius:20px;
+    background-color: #222222 !important;
 }
 
-#modalContainer, .modal-footer, .modal-footer>a {
-    background: #222222;
-    background-color: #222222;
-    color: #ffffff;
+.modal-footer, .modal-header {
+    background-color: #000000 !important;
 }
 
 div.tooltip {
@@ -228,4 +227,64 @@ div.tooltip {
        font-size: 12px;
    }
 
+}
+
+/*Creates table with scrollable tbody*/
+tbody {
+  display:block;
+  overflow:auto;
+}
+thead, tbody tr {
+  display:table;
+  width:100%;
+  table-layout:fixed;
+}
+thead {
+  width: calc( 100% - 1em )
+}
+table {
+  width:100%;
+}
+
+/* unvisited link */
+a:link {
+  color: #ffffff;
+}
+
+/* visited link */
+a:visited {
+  color: #ffffff;
+}
+
+/* mouse over link */
+a:hover {
+  color: #ff0000;
+}
+
+/* selected link */
+a:active {
+  color: #ffffff;
+}
+
+// SCROLLBAR
+/* width */
+::-webkit-scrollbar {
+  width: 20px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: red;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #b30000;
 }

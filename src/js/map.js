@@ -1,6 +1,7 @@
 var map = d3.select("#mapView");
 var width = map.node().getBoundingClientRect().width;
 var height = map.node().getBoundingClientRect().height;
+var firstRun = true;
 
 var active = d3.select(null);
 
@@ -188,6 +189,10 @@ function updateData() {
 
     });
 
+    if(firstRun) {
+        $("#loading").css("display", "none"); // Hide chargement
+        firstRun = false;
+    }
 }
 
 

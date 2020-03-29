@@ -19,7 +19,7 @@ function processStanding(err, drvs, stnds) {
         });
     });
 
-    console.log(tracks);
+    //console.log(tracks);
 
     // Group by pilots
     driv_rank = d3.nest()
@@ -46,7 +46,7 @@ function makePlot() {
     d3.select("#modalTitle").html(tracks[raceId][1]);
 
     var sWidth = $("#standingPlot").width() * 0.7;
-    var sHeight = window.innerHeight/2;
+    var sHeight = $("#racesView").height();
 
     d3.select("#standingPlot").append("h5").text("General Standing");
     var scatPlot = d3.select("#standingPlot").attr("class", "center-align")

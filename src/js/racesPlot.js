@@ -189,7 +189,7 @@ function makeRacesPlot() {
             .text(function(d) { drivers.push(d.key); return d.key; })
             .style("font-size", 15)
             .on("click", function(d){
-                console.log(d)
+                //console.log(d)
                 d3.selectAll(".otherDrivers")
                     .transition()
                     .duration(500)

@@ -59,10 +59,14 @@ function processRaceResults(err, drvs, rsts) {
     var bestDriverCont = d3.select("#bestDriver");
     bestDriverCont.attr("class", "center-align").classed("svg-container", true);
 
-    d3.select("#bestDriverName").text(data_count[0].key);
+    let driverName = data_count[0].key;
+
+    d3.select("#bestDriverName").append("a")
+                                .attr("href", driver_urls[driverName])
+                                .attr("target", "_blank")
+                                .text(data_count[0].key);
     d3.select("#bestDriverVictories").text(data_count[0].value + " victories");
 
-    let driverName = data_count[0].key;
     d3.json(urlImageRequest + driverName, function(err, mydata) {
         var firstObj = Object.values(mydata.query.pages)[0];
         if(firstObj.hasOwnProperty("original")) {
@@ -290,10 +294,14 @@ function processConstructorResults(err, cons, rsts) {
     var bestConstructorDiv = d3.select("#bestConstructor")
     bestConstructorDiv.attr("class", "center-align").classed("svg-container", true);
 
-    d3.select("#bestConstructorName").text(cons_count[0].key);
+    let constructorName = cons_count[0].key;
+
+    d3.select("#bestConstructorName").append("a")
+                                    .attr("href", constructor_urls[constructorName])
+                                    .attr("target", "_blank")
+                                    .text(cons_count[0].key);
     d3.select("#bestConstructorVictories").text(cons_count[0].value + " victories");
 
-    let constructorName = cons_count[0].key;
     d3.json(urlImageRequest + constructorName, function(err, mydata) {
         var firstObj = Object.values(mydata.query.pages)[0];
         if(firstObj.hasOwnProperty("original")) {
@@ -456,7 +464,7 @@ function plotConstructors(constructorWins) {
                         .attr("text-anchor", "middle")
                         .attr("class", "champLab")
                         .html(champConsKeyValue[d.key]);
-                    
+
                 }
                 else {
                     csChampPlot.selectAll(".champLab").remove();
@@ -841,6 +849,6 @@ function plotConsChamps(champions) {
 
     var bestConstructorDiv = d3.select("#bestConstructor")
     bestConstructorDiv.attr("class", "center-align").classed("svg-container", true);
-    
+
     d3.select("#bestConstructorWC").text(champions[0].value + " world championships");
 }

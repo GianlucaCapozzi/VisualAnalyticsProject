@@ -130,9 +130,4 @@ $("#circuitButton").on("click", function() {
     $("#circuitContainer").height("100%");
     $("#pca-thing-2").removeClass("scale-out");
     $("#pca-thing-1").removeClass("scale-out");
-})
-
-// Listener for initial loading page
-$(window).on("load", function() {
-    $("#loading").css("display", "none"); // Hide chargement
 });
