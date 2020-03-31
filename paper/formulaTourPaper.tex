@@ -126,6 +126,35 @@ race.
 	\includegraphics[width=\columnwidth]{generalinfo}
 	\captionof{figure}{General info view}
 \end{center}
+In this view we show some statistics about the general world of the Formula 1. It is a grid view divided in two rows and three columns: the first row highlights the drivers
+while the second one the constructors. The three elements of the first row describe the following statistics:
+\begin{itemize}
+	\item Best Driver: this is the driver that has won more races that the other drivers. Here we show the number of victories of this driver and the number of drivers'
+	championship that he has won;
+	\item Most successful drivers: this is a top 10 based on the number of races won by a driver and it is presented using a bar chart. Each bar is associated to a driver and
+	represents the number of races won by that driver; on top of the bar there is a number representing this statistic;
+	\item Most drivers' championship winners: this is a top 10 based on the number of drivers' world titles won by a driver (we have added also the number of championships
+	won by all the other drivers) and it is presented using a donut chart: each slice is associated to a driver and by sliding the mouse over the slice it is possible to see the 
+	number of championships won by that driver.
+\end{itemize}
+The two charts presented in this first row are linked together using of a double interaction: by clicking on a bar of the first chart it will be highlighted together with
+the slice of the other chart corresponding to the same driver (if it exists). The same happens by clicking on a slice of the donut chart.\\
+As said before, in the second row there are some statistics about the constructors:
+\begin{itemize}
+	\item Best Constructor: this is the constructor that has won more races than the other constructors. Together with its name we show also the number of race victories and
+	the number of constructors' world titles that it has won;
+	\item Most successful constructors: this chart shows the 10 constructors that have won more races. It is a bar chart where each bar refers to a constructor with on top of
+	it the corresponding number of victories;
+	\item Most constructors' championship winners: this chart shows the 10 constructors that have won more world titles: it is a donut chart where each slice is associated to
+	a driver (we have added also a slice representing the number of world titles won by the other constructors); by sliding the mouse over the slice it is possible to see the
+	number of championships won by that constructors.
+\end{itemize}
+Also in this case there is a double interaction between the two charts, similar to the one present for the other two charts presented before.\\
+In both the bar charts by sliding the mouse over a bar it is possible to have some informations:
+\begin{itemize}
+	\item drivers: date of birth, nationality, teams for which it has driven, number of races that it has started and number of podiums
+	\item constructors: nationality, number of started races and number of podiums
+\end{itemize}
 
 \subsection{Correlations view}
 \begin{center}
@@ -133,6 +162,10 @@ race.
 	\includegraphics[width=\columnwidth]{correlations}
 	\captionof{figure}{Correlations view}
 \end{center}
+This view is designed to show if there is a correlation between a specific nationality (selected) by the user and the number of victories/podiums achieved by a driver or a 
+constructor of that nationality. The view is divided into two subviews: one for the drivers and one for the constructors. The user is able to select two different nationalities
+for the drivers and constructors using two different selectors. The result is plotted in the form of a scatter plot. In this two scatter plots the red point represents the elements
+of the nationality selected by the user while the blue points represent the elements belonging to all the other nationalities.
 
 \subsection{Times update view}
 \begin{center}
@@ -140,7 +173,11 @@ race.
 	\includegraphics[width=\columnwidth]{timesupdate}
 	\captionof{figure}{Times update view}
 \end{center}
-
+This last view shows the evolution of the lap times during the years for each circuit. The user can select one of the proposed circuits from the selector and then the scatter
+plot will be updated. The lap times that are considered for creating this view are the pole position times for each Grand Prix over the years, so the fastest time
+recorded during the qualifyings. Further informations about the selection of this lap time are provided in the Analytics section. On the x axis there are the years for which the
+best lap time is available while the y-axis shows the times at intervals of different frequencies (the frequency depends on the number of different lap times for each year that
+we have for each circuit).
 
 \section{Analytics}
 
