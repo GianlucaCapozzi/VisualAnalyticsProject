@@ -5,6 +5,11 @@ var driversUrl = "https://formulatour.herokuapp.com/getDriversData?nationality="
 var constructorsUrl = "https://formulatour.herokuapp.com/getConstructorsData?nationality=";
 var pcaData = dataset.concat("/pcaDataset.json");
 
+var marginPca = {top: 10, right: 10, bottom: 50, left: 50};
+
+var pcaWidth = $("#racesView").width() * 50 / 45 - marginPca.left - marginPca.right;
+var pcaHeight = $("#racesView").height() - marginPca.top - marginPca.bottom;
+
 function populate(err, drvs, cons) {
     driverNationalities = [];
     constructorNationalities = [];
@@ -34,8 +39,8 @@ d3.queue()
 var currentDriverNationality = "British", currentConstructorNationality = "British";
 
 function readDriverPca(pcaData) {
-    var isCurrentDriverNationality = {x:[], y:[], mode: "markers", type: "scatter", name: currentDriverNationality,  marker: {color: "red"}};
-    var notCurrentDriverNationality = {x:[], y:[], mode: "markers", type: "scatter", name: "not " + currentDriverNationality,  marker: {color: "blue"}};
+    var isCurrentDriverNationality = {x:[], y:[], mode: "markers", type: "scatter", name: currentDriverNationality,  marker: {color: "red", size: 10, line: {color: "#ffffff", width: 2}}};
+    var notCurrentDriverNationality = {x:[], y:[], mode: "markers", type: "scatter", name: "not " + currentDriverNationality,  marker: {color: "green", size: 10, line: {color: "#ffffff", width: 2}}};
     pcaData.forEach(nat => {
         if (nat.Nationality == currentDriverNationality) {
             isCurrentDriverNationality.x.push(nat.pc1);
@@ -48,15 +53,38 @@ function readDriverPca(pcaData) {
     });
     var dataToPlot = [isCurrentDriverNationality, notCurrentDriverNationality];
     var layout = {
+        autosize: false,
+        width: pcaWidth,
+        height: pcaHeight,
+        margin: {
+            l: marginPca.left,
+            r: marginPca.right,
+            b: marginPca.bottom,
+            t: marginPca.top,
+            pad: 10
+        },
+        plot_bgcolor:"#222222",
+        paper_bgcolor:"#222222",
         title: "",
-        showlegend: true
+        showlegend: true,
+        font: {
+          family: 'f1font',
+          size: 18,
+          color: '#ffffff'
+        },
+        xaxis: {
+            color: "#ffffff"
+        },
+        yaxis: {
+            color: "#ffffff"
+        }
     };
     Plotly.newPlot("pcaDriverPlot", dataToPlot, layout, {scrollZoom: true, responsive: true});
 }
 
 function readConstructorPca(pcaData) {
-    var isCurrentConstructorNationality = {x:[], y:[], mode: "markers", type: "scatter", name: currentConstructorNationality,  marker: {color: "red"}};
-    var notCurrentConstructorNationality = {x:[], y:[], mode: "markers", type: "scatter", name: "not " + currentConstructorNationality,  marker: {color: "blue"}};
+    var isCurrentConstructorNationality = {x:[], y:[], mode: "markers", type: "scatter", name: currentConstructorNationality,  marker: {color: "red", size: 10, line: {color: "#ffffff", width: 2}}};
+    var notCurrentConstructorNationality = {x:[], y:[], mode: "markers", type: "scatter", name: "not " + currentConstructorNationality,  marker: {color: "green", size: 10, line: {color: "#ffffff", width: 2}}};
     pcaData.forEach(nat => {
         if (nat.Nationality == currentConstructorNationality) {
             isCurrentConstructorNationality.x.push(nat.pc1);
@@ -69,8 +97,31 @@ function readConstructorPca(pcaData) {
     });
     var dataToPlot = [isCurrentConstructorNationality, notCurrentConstructorNationality];
     var layout = {
+        autosize: false,
+        width: pcaWidth,
+        height: pcaHeight,
+        margin: {
+            l: marginPca.left,
+            r: marginPca.right,
+            b: marginPca.bottom,
+            t: marginPca.top,
+            pad: 10
+        },
+        plot_bgcolor:"#222222",
+        paper_bgcolor:"#222222",
         title: "",
-        showlegend: true
+        showlegend: true,
+        font: {
+          family: 'f1font',
+          size: 18,
+          color: '#ffffff'
+        },
+        xaxis: {
+            color: "#ffffff"
+        },
+        yaxis: {
+            color: "#ffffff"
+        }
     };
     Plotly.newPlot("pcaConstructorPlot", dataToPlot, layout, {scrollZoom: true, responsive: true});
 }
