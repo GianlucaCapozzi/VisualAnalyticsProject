@@ -108,8 +108,9 @@ the first F1 season till the year in which there was the last one. The home view
 	\item a sub-view that allows the users to selected a driver: by clicking on the name the scatter plot will be modified showing the results of the selected driver.
 \end{itemize}
 
-The map is interactive, indeed the user can click on one of the highlighted countries: at this point there will be a zoom on the selected country and a red circle showing the
-position of the circuit in which the race was played. By clicking on the red circle the following view will be shown to the user:
+The map is interactive, indeed the user can click on one of the highlighted countries (a country is colored in blue if during the selected year there was at least one Grand Prix
+played in that country): at this point there will be a zoom on the selected country and a red circle showing the position of the circuit in which the race was played. By clicking
+on the red circle the following view will be shown to the user:
 
 \begin{center}
 	\centering
@@ -155,6 +156,7 @@ In both the bar charts by sliding the mouse over a bar it is possible to have so
 	\item drivers: date of birth, nationality, teams for which it has driven, number of races that it has started and number of podiums
 	\item constructors: nationality, number of started races and number of podiums
 \end{itemize}
+In both the rows there is a consistency between the colors of the bar and the slice associated to the same driver/constructor.
 
 \subsection{Correlations view}
 \begin{center}
@@ -180,13 +182,30 @@ best lap time is available while the y-axis shows the times at intervals of diff
 we have for each circuit).
 
 \section{Analytics}
-
+The views are produced by manipulating the dataset in different ways starting from an input given by the user. This manipulation is done using the d3.js \cite{D3} library,
+since it allows to do operations easily on .csv files and using Python 3 (in particular the pandas library) for analyze the correlation between nationality and number of
+wins/podiums. Most of the operations are characterized by a \texttt{JOIN} operation between the tables of the dataset and a subsequent \texttt{SELECT} operation over the
+desired attributes with a \texttt{GROUP BY}.\\
+An example could be the map in the main view: in this case we are interested in the circuits where there was at least one race during the year selected by the user. So, first
+of all we \texttt{SELECT} the name of the circuits and the name of the races by making a \texttt{JOIN} between the two tables races and circuits over the attribute \texttt{circuitId}
+\texttt{WHERE} the year in which the race was ran is equal to the one selected by the user. In SQL this query is like the following:
+\begin{itemize}
+	\item \texttt{SELECT c.name, c.country, r.name}
+	\item \texttt{FROM circuits c, races r}
+	\item \texttt{WHERE c.circuitId AND r.year == y}
+\end{itemize}
+where \texttt{y} is the year selected by the user.
+At this point we are interested in two main values: the country in which the race was ran and, in order to put the red circle on the map, the coordinates of the circuit. In order to
+highlight in blue the country on the map, for each country we check if its name is into the set of country names resulting from the query described before. To add the red point
+at the coordinates of the circuit we check, for each circuit, if the \texttt{circuitId} attribute is into the set of ids resulting from the previous query.
 
 \section{Future Works}
-As the dataset provides a lot of data, you can add more views to the application. We have in mind to add an interface that allows you to compare the statistics of the various drivers (e.g. number of wins, number of podiums, number of poles, etc.). 
+As the dataset provides a lot of data, you can add more views to the application. We have in mind to add an interface that allows you to compare the statistics of the various 
+drivers (e.g. number of wins, number of podiums, number of poles, etc.). 
 
 \section{Conclusion}
-The project is useful to be able to retrace the history of Formula 1 easily, through intuitive graphics and a "sports" interface. The application could be used for different purposes, for example by analyzing the times over the years it is possible to guess how the technology or the skill of the pilots has progressed.
+The project is useful to be able to retrace the history of Formula 1 easily, through intuitive graphics and a "sports" interface. The application could be used for different purposes, 
+for example by analyzing the times over the years it is possible to guess how the technology or the skill of the pilots has progressed.
 
 \clearpage
 
