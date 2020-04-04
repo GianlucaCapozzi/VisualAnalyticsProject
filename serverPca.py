@@ -15,7 +15,7 @@ def getDriversData():
     nationality = request.args.get('nationality')
     drivers = pd.read_csv(datasetPath + "drivers.csv").filter(["driverId", "nationality"])
 
-    results = pd.read_csv(datasetPath + "results.csv").merge(drivers, on="driverId").filter(["driverId", "nationality", "position"])
+    results = pd.read_csv(datasetPath + "results.csv").merge(drivers, on="driverId").filter(["driverId", "nationality", "position", "grid"])
 
     #print(results)
 
@@ -25,45 +25,63 @@ def getDriversData():
     is_podium = results['position'].isin(['1', '2', '3'])
     podiums = results[is_podium]
 
+    is_pole = results['grid'] == 1
+    polePositions = results[is_pole]
+
     #print(podiums)
 
-    count_pod = {}
+    count_features = {} # NATIONALITY, NUM_VICT, NUM_PODS, NUM_APPS, NUM_POLES
+    
+    # COUNT VICTORIES
     num_rows_vict = victories.shape[0]
-
     for i in range (0, num_rows_vict):
-        if(victories.iloc[i, 0] not in count_pod.keys()):
-            count_pod[victories.iloc[i, 0]] = [victories.iloc[i, 1], 1, 0]
+        if(victories.iloc[i, 0] not in count_features.keys()):
+            count_features[victories.iloc[i, 0]] = [victories.iloc[i, 1], 1, 0, 0, 0]
         else:
-            count_pod[victories.iloc[i, 0]][1] += 1
+            count_features[victories.iloc[i, 0]][1] += 1
 
-
+    # COUNT PODIUMS
     num_rows_pod = podiums.shape[0]
     for i in range(0, num_rows_pod):
-        if(podiums.iloc[i, 0] not in count_pod.keys()):
-            count_pod[podiums.iloc[i, 0]] = [podiums.iloc[i, 1], 0, 1]
+        if(podiums.iloc[i, 0] not in count_features.keys()):
+            count_features[podiums.iloc[i, 0]] = [podiums.iloc[i, 1], 0, 1, 0, 0]
         else:
-            count_pod[podiums.iloc[i, 0]][2] += 1
+            count_features[podiums.iloc[i, 0]][2] += 1
 
-    #print(count_pod)
+    # COUNT ATTENDANCES
+    num_rows_att = results.shape[0]
+    for i in range(0, num_rows_att):
+        if(results.iloc[i, 0] not in count_features.keys()):
+            count_features[results.iloc[i, 0]] = [results.iloc[i, 1], 0, 0, 1, 0]
+        else:
+            count_features[results.iloc[i, 0]][3] += 1
+
+    # COUNT POLE POSITIONS
+    num_rows_poles = polePositions.shape[0]
+    for i in range(0, num_rows_poles):
+        if(polePositions.iloc[i, 0] not in count_features.keys()):
+            count_features[polePositions.iloc[i, 0]] = [polePositions.iloc[i, 1], 0, 0, 0, 1]
+        else:
+            count_features[polePositions.iloc[i, 0]][4] += 1
 
 
     bin_nat = []
     values = []
     count = 0
 
-    for el in count_pod.keys():
-        if count_pod[el][0] == nationality:
+    for el in count_features.keys():
+        if count_features[el][0] == nationality:
             bin_nat.append(count)
-            values.append([count_pod[el][0], count_pod[el][1], count_pod[el][2]])
+            values.append([count_features[el][0], count_features[el][1], count_features[el][2], count_features[el][3], count_features[el][4]])
         else:
             bin_nat.append(count)
-            values.append(["non-"+nationality, count_pod[el][1], count_pod[el][2]])
+            values.append(["non-"+nationality, count_features[el][1], count_features[el][2], count_features[el][3], count_features[el][4]])
         count += 1
 
-    nat_df = pd.DataFrame(values, index=bin_nat, columns=["Nationality", "Victories", "Podiums"])
+    nat_df = pd.DataFrame(values, index=bin_nat, columns=["Nationality", "Victories", "Podiums", "Attendances", "Poles"])
 
     from sklearn.preprocessing import StandardScaler
-    features = ["Victories", "Podiums"]
+    features = ["Victories", "Podiums", "Attendances", "Poles"]
 
     # Separating out the features
     x = nat_df.loc[:, features].values
@@ -95,7 +113,7 @@ def getConstructorsData():
     nationality = request.args.get('nationality')
 
     constructors = pd.read_csv(datasetPath + "constructors.csv").filter(["constructorId", "nationality"])
-    results = pd.read_csv(datasetPath + "results.csv").merge(constructors, on="constructorId").filter(["constructorId", "nationality", "position"])
+    results = pd.read_csv(datasetPath + "results.csv").merge(constructors, on="constructorId").filter(["constructorId", "nationality", "position", "grid", "raceId"])
 
     #print(results)
 
@@ -105,45 +123,64 @@ def getConstructorsData():
     is_podium = results['position'].isin(['1', '2', '3'])
     podiums = results[is_podium]
 
-    #print(podiums)
+    is_pole = results['grid'] == 1
+    polePositions = results[is_pole]
 
-    count_pod = {}
+    count_features = {} # NATIONALITY, NUM_VICT, NUM_PODS, NUM_APPS, NUM_POLES
+    
+    # COUNT VICTORIES
     num_rows_vict = victories.shape[0]
-
     for i in range (0, num_rows_vict):
-        if(victories.iloc[i, 0] not in count_pod.keys()):
-            count_pod[victories.iloc[i, 0]] = [victories.iloc[i, 1], 1, 0]
+        if(victories.iloc[i, 0] not in count_features.keys()):
+            count_features[victories.iloc[i, 0]] = [victories.iloc[i, 1], 1, 0, 0, 0]
         else:
-            count_pod[victories.iloc[i, 0]][1] += 1
+            count_features[victories.iloc[i, 0]][1] += 1
 
-
+    # COUNT PODIUMS
     num_rows_pod = podiums.shape[0]
     for i in range(0, num_rows_pod):
-        if(podiums.iloc[i, 0] not in count_pod.keys()):
-            count_pod[podiums.iloc[i, 0]] = [podiums.iloc[i, 1], 0, 1]
+        if(podiums.iloc[i, 0] not in count_features.keys()):
+            count_features[podiums.iloc[i, 0]] = [podiums.iloc[i, 1], 0, 1, 0, 0]
         else:
-            count_pod[podiums.iloc[i, 0]][2] += 1
+            count_features[podiums.iloc[i, 0]][2] += 1
 
-    #print(count_pod)
+    # COUNT ATTENDANCES
+    num_rows_app = results.shape[0]
+    last_race = ""
+    for i in range(0, num_rows_app):
+        #print(results.iloc[i, 4])
+        if(results.iloc[i, 0] not in count_features.keys()):
+            count_features[results.iloc[i, 0]] = [results.iloc[i, 1], 0, 0, 1, 0]
+        else:
+            if(results.iloc[i, 4] != last_race):
+                count_features[results.iloc[i, 0]][3] += 1
+                last_race = results.iloc[i, 4]
 
+    # COUNT POLE POSITIONS
+    num_rows_poles = polePositions.shape[0]
+    for i in range(0, num_rows_poles):
+        if(polePositions.iloc[i, 0] not in count_features.keys()):
+            count_features[polePositions.iloc[i, 0]] = [polePositions.iloc[i, 1], 0, 0, 0, 1]
+        else:
+            count_features[polePositions.iloc[i, 0]][4] += 1
 
     bin_nat = []
     values = []
     count = 0
 
-    for el in count_pod.keys():
-        if count_pod[el][0] == nationality:
+    for el in count_features.keys():
+        if count_features[el][0] == nationality:
             bin_nat.append(count)
-            values.append([count_pod[el][0], count_pod[el][1], count_pod[el][2]])
+            values.append([count_features[el][0], count_features[el][1], count_features[el][2]])
         else:
             bin_nat.append(count)
-            values.append(["non-"+nationality, count_pod[el][1], count_pod[el][2]])
+            values.append(["non-"+nationality, count_features[el][1], count_features[el][2]])
         count += 1
 
-    nat_df = pd.DataFrame(values, index=bin_nat, columns=["Nationality", "Victories", "Podiums"])
+    nat_df = pd.DataFrame(values, index=bin_nat, columns=["Nationality", "Victories", "Podiums", "Appereances", "Poles"])
 
     from sklearn.preprocessing import StandardScaler
-    features = ["Victories", "Podiums"]
+    features = ["Victories", "Podiums", "Appereances", "Poles"]
 
     # Separating out the features
     x = nat_df.loc[:, features].values
