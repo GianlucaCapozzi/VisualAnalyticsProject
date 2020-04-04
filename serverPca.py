@@ -171,10 +171,10 @@ def getConstructorsData():
     for el in count_features.keys():
         if count_features[el][0] == nationality:
             bin_nat.append(count)
-            values.append([count_features[el][0], count_features[el][1], count_features[el][2]])
+            values.append([count_features[el][0], count_features[el][1], count_features[el][2], count_features[el][3], count_features[el][4]])
         else:
             bin_nat.append(count)
-            values.append(["non-"+nationality, count_features[el][1], count_features[el][2]])
+            values.append(["non-"+nationality, count_features[el][1], count_features[el][2], count_features[el][3], count_features[el][4]])
         count += 1
 
     nat_df = pd.DataFrame(values, index=bin_nat, columns=["Nationality", "Victories", "Podiums", "Appereances", "Poles"])

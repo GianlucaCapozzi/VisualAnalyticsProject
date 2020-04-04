@@ -6,6 +6,8 @@ drivers = pd.read_csv("drivers.csv").filter(["driverId", "nationality"])
 
 constructors = pd.read_csv("constructors.csv").filter(["constructorId", "nationality"])
 
+results = pd.read_csv("results.csv").merge(constructors, on="constructorId").filter(["constructorId", "nationality", "position", "grid", "raceId"])
+
 #results = pd.read_csv("results.csv").merge(drivers, on="driverId").filter(["driverId", "nationality", "position", "grid"])
 
 results = pd.read_csv("results.csv").merge(constructors, on="constructorId").filter(["constructorId", "nationality", "position", "grid", "raceId"])
