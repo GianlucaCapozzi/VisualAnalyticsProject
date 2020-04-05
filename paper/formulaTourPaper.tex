@@ -164,10 +164,10 @@ In both the rows there is a consistency between the colors of the bar and the sl
 	\includegraphics[width=\columnwidth]{correlations}
 	\captionof{figure}{Correlations view}
 \end{center}
-This view is designed to show if there is a correlation between a specific nationality (selected) by the user and the number of victories/podiums achieved by a driver or a 
+This view is designed to show if there is a correlation between a specific nationality (selected) by the user and some statistics about a driver or a 
 constructor of that nationality. The view is divided into two subviews: one for the drivers and one for the constructors. The user is able to select two different nationalities
 for the drivers and constructors using two different selectors. The result is plotted in the form of a scatter plot. In this two scatter plots the red point represents the elements
-of the nationality selected by the user while the blue points represent the elements belonging to all the other nationalities.
+of the nationality selected by the user while the green points represent the elements belonging to all the other nationalities.
 
 \subsection{Times update view}
 \begin{center}
@@ -183,28 +183,51 @@ we have for each circuit).
 
 \section{Analytics}
 The views are produced by manipulating the dataset in different ways starting from an input given by the user. This manipulation is done using the d3.js \cite{D3} library,
-since it allows to do operations easily on .csv files and using Python 3 (in particular the pandas library) for analyze the correlation between nationality and number of
-wins/podiums. Most of the operations are characterized by a \texttt{JOIN} operation between the tables of the dataset and a subsequent \texttt{SELECT} operation over the
-desired attributes with a \texttt{GROUP BY}.\\
+since it allows to do operations easily on .csv files and using Python 3 (in particular the pandas \cite{Pandas} and scikit-learn libraries \cite{Scikit-learn}) 
+for analyze the correlation between nationality and number of wins/podiums. Most of the operations are characterized by a \texttt{JOIN} operation between the tables of the 
+dataset and a subsequent \texttt{SELECT} operation over the desired attributes with a \texttt{GROUP BY}.\\
 An example could be the map in the main view: in this case we are interested in the circuits where there was at least one race during the year selected by the user. So, first
-of all we \texttt{SELECT} the name of the circuits and the name of the races by making a \texttt{JOIN} between the two tables races and circuits over the attribute \texttt{circuitId}
-\texttt{WHERE} the year in which the race was ran is equal to the one selected by the user. In SQL this query is like the following:
+of all we make a \texttt{JOIN} between the two tables races and circuits over the attribute \texttt{circuitId} \texttt{WHERE} the year in which the race was ran is equal to the
+one selected by the user and then we \texttt{SELECT} the name of the circuits together with the corresponding country name and the name of the races. In SQL this query is like the
+following:
 \begin{itemize}
 	\item \texttt{SELECT c.name, c.country, r.name}
 	\item \texttt{FROM circuits c, races r}
-	\item \texttt{WHERE c.circuitId AND r.year == y}
+	\item \texttt{WHERE c.circuitId == r.circuitId AND r.year == y}
 \end{itemize}
 where \texttt{y} is the year selected by the user.
 At this point we are interested in two main values: the country in which the race was ran and, in order to put the red circle on the map, the coordinates of the circuit. In order to
 highlight in blue the country on the map, for each country we check if its name is into the set of country names resulting from the query described before. To add the red point
-at the coordinates of the circuit we check, for each circuit, if the \texttt{circuitId} attribute is into the set of ids resulting from the previous query.
+at the coordinates of the circuit we check, for each circuit, if the \texttt{circuitId} attribute is into the set of ids resulting from the previous query and then we take the
+corresponding coordinates.\\
+The Correlations View is based, as the name suggests, on the concept of correlation between attributes. In order to find if there is this correlation between attributes we have
+decided to use the PCA algorithm, that is a statistical procedure that allows you to summarize the information content in large data tables by means of a smaller set of “summary indices” 
+that can be more easily visualized and analyzed. In our case we have used PCA to check if there is a correlation between a nationality (selected by the user) and a set of features:
+the number of victories, the number of podiums, the number of attendances and the number of pole positions done by a driver/constructor. The computation of PCA is done using Python 3 
+and in particular using the implementation provided by the scikit-learn library \cite{Scikit-learn}. The idea is the following: if \texttt{n} is the nationality selected by the user 
+then we create a new dataset in which we divide the drivers/constructors with respect to their nationality using the following binary classification: \texttt{n} vs non-\texttt{n}. 
+Each row of this new dataset is composed by the following fields: number of victories, number of podiums, number of attendances and number of pole positions. Once done this we compute
+PCA over this dataset performing the following three steps:
+\begin{enumerate}
+	\item Separate the labels (\texttt{n} and non-\texttt{n}) from the features
+	\item Standardize the features (such that the variance of the data is 1 while their mean is 0)
+	\item Perform the dimensionality reduction using the PCA algorithm (the data are projected on a 2D space)
+\end{enumerate}
+The resulting dataset is plotted using d3.js \cite{D3}.\\
+As said in the previous section, the Times Update View is characterized by the evolution of the best lap times for each circuit selected by the user. A key point of this view is how to 
+compute this best lap times. Since during Formula 1 history in addition to technology changes there have also been changes in the race regulations (such as changes applied to pit stop
+rules) we have decided to take as best time for each circuit and each year the time of the pole position, so the fastest lap time registered during the qualifying of the race.
+In the current regulation, the qualifying is divided into three phases: Q1, Q2 and Q3; the pole position is the fastest lap of the Q3 phase. But, by exploring the dataset, we have found
+that there are some qualifyings for which one of the phases is not available (or no one of the phases; in this case obviously the race is not considered) so the fastest lap time is chosen
+with the following criterion: if Q3 is not available the fastest lap time is the one registered during Q2; if Q2 is not available the fastest lap time is the one registered during
+the Q1 phase.
 
 \section{Future Works}
 As the dataset provides a lot of data, you can add more views to the application. We have in mind to add an interface that allows you to compare the statistics of the various 
 drivers (e.g. number of wins, number of podiums, number of poles, etc.). 
 
 \section{Conclusion}
-The project is useful to be able to retrace the history of Formula 1 easily, through intuitive graphics and a "sports" interface. The application could be used for different purposes, 
+The project is useful to be able to retrace the history of Formula 1 easily, through intuitive graphics and a "sports" interface. The application could be used for different purposes,
 for example by analyzing the times over the years it is possible to guess how the technology or the skill of the pilots has progressed.
 
 \clearpage
@@ -219,6 +242,10 @@ for example by analyzing the times over the years it is possible to guess how th
 		\bibitem{Dataset} Ergast Developer API: \href{http://ergast.com/mrd/}{http://ergast.com/mrd/}
 		
 		\bibitem{Plotly} Plotly JavaScript Open Source Graphing Library: \href{https://plot.ly/javascript/}{https://plot.ly/javascript/}
+		
+		\bibitem{Pandas} Pandas library: \href{https://pandas.pydata.org/}{https://pandas.pydata.org/}
+		
+		\bibitem{Scikit-learn} Scikit-learn library: \href{https://scikit-learn.org/stable/}{https://scikit-learn.org/stable/}
 	\end{thebibliography}
 }]
 \end{document}
