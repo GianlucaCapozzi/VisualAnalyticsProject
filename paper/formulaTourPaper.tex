@@ -51,8 +51,9 @@ place in different circuits located in different countries. This means that it i
 each related to the other. The goal of this project is to provide a way to navigate the history of the Formula 1 by highlighting each component and their relations.
 Our framework is divided into four main views each of which contains multiple sub-views. An initial view summarizes the races of the selected season by showing
 the countries and the exact location of the circuit in which they took place. A general view summarizes the most important results achieved by the drivers and the
-constructors during the Formula 1 history. A correlation view that shows if it exists a correlation between nationalities and number of victories/podiums. The last
-view is a times update views that summarizes the evolution of the lap times on a selected circuit during the years. So, our project is composed by:
+constructors during the Formula 1 history. A correlation view that shows if it exists a correlation between nationalities and some other statistics related to 
+drivers/constructs with that nationality.
+The last view is a times update views that summarizes the evolution of the lap times on a selected circuit during the years. So, our project is composed by:
 \begin{itemize}
 	\item A visual analytics framework that supports the examination and exploration of Formula 1 history;
 	\item A visual representation of the features selected by the users.
@@ -89,7 +90,7 @@ The visualization is composed by 4 main views, accessible from a simple side men
 	\includegraphics[width=0.3\columnwidth]{menu}
 	\captionof{figure}{Menu}
 \end{center}
-In the first view the statistics of a season are analyzed, selectable by the user. The second view provides general information for all seasons, highlighting the best drivers and constructors. In the third view the correlation between the nationality of the drivers or constructors and the victories is shown.  The last view shows the trend of the best times over the years.
+In the first view the statistics of a season are analyzed, selectable by the user. The second view provides general information for all seasons, highlighting the best drivers and constructors. In the third view the correlation between the nationality of the drivers or constructors and other statistics is shown. The last view shows the trend of the best times over the years.
 
 \subsection{Home view}
 \begin{center}
@@ -164,7 +165,7 @@ In both the rows there is a consistency between the colors of the bar and the sl
 	\includegraphics[width=\columnwidth]{correlations}
 	\captionof{figure}{Correlations view}
 \end{center}
-This view is designed to show if there is a correlation between a specific nationality (selected) by the user and some statistics about a driver or a 
+This view is designed to show if there is a correlation between a specific nationality (selected by the user) and some statistics about a driver or a 
 constructor of that nationality. The view is divided into two subviews: one for the drivers and one for the constructors. The user is able to select two different nationalities
 for the drivers and constructors using two different selectors. The result is plotted in the form of a scatter plot. In this two scatter plots the red point represents the elements
 of the nationality selected by the user while the green points represent the elements belonging to all the other nationalities.
@@ -185,7 +186,7 @@ we have for each circuit).
 The views are produced by manipulating the dataset in different ways starting from an input given by the user. This manipulation is done using the d3.js \cite{D3} library,
 since it allows to do operations easily on .csv files and using Python 3 (in particular the pandas \cite{Pandas} and scikit-learn libraries \cite{Scikit-learn}) 
 for analyze the correlation between nationality and number of wins/podiums. Most of the operations are characterized by a \texttt{JOIN} operation between the tables of the 
-dataset and a subsequent \texttt{SELECT} operation over the desired attributes with a \texttt{GROUP BY}.\\
+dataset and a subsequent \texttt{SELECT} operation over the desired attributes, in some cases with a \texttt{GROUP BY}.\\
 An example could be the map in the main view: in this case we are interested in the circuits where there was at least one race during the year selected by the user. So, first
 of all we make a \texttt{JOIN} between the two tables races and circuits over the attribute \texttt{circuitId} \texttt{WHERE} the year in which the race was ran is equal to the
 one selected by the user and then we \texttt{SELECT} the name of the circuits together with the corresponding country name and the name of the races. In SQL this query is like the
