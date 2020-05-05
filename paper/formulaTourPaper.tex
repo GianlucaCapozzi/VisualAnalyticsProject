@@ -1,4 +1,4 @@
-\documentclass[10pt,twocolumn,letterpaper]{article}
+\documentclass[11pt,twocolumn,letterpaper]{article}
 \usepackage[english]{babel}
 \usepackage{cvpr}
 \usepackage{times}
@@ -214,6 +214,7 @@ PCA over this dataset performing the following three steps:
 	\item Standardize the features (such that the variance of the data is 1 while their mean is 0)
 	\item Perform the dimensionality reduction using the PCA algorithm (the data are projected on a 2D space)
 \end{enumerate}
+Since the user can select different nationalities through a selector, we decided to deploy the script that runs PCA on Heroku\cite{Heroku}, creating a simple server with Flask\cite{Flask}.
 The resulting dataset is plotted using d3.js \cite{D3}.\\
 As said in the previous section, the Times Update View is characterized by the evolution of the best lap times for each circuit selected by the user. A key point of this view is how to 
 compute this best lap times. Since during Formula 1 history in addition to technology changes there have also been changes in the race regulations (such as changes applied to pit stop
@@ -224,12 +225,13 @@ with the following criterion: if Q3 is not available the fastest lap time is the
 the Q1 phase.
 
 \section{Future Works}
-As the dataset provides a lot of data, you can add more views to the application. We have in mind to add an interface that allows you to compare the statistics of the various 
-drivers (e.g. number of wins, number of podiums, number of poles, etc.). 
+As the dataset provides a lot of data, it's possible to add more views to the application. We have in mind to add an interface that allows you to compare the statistics of the various 
+drivers (e.g. number of wins, number of podiums, number of poles, etc.). The same could be done for constructors. Another interesting thing we would like to do is to have a projection of the remaining part of the current season considering both the races already raced in that season and the results obtained by the various drivers in previous seasons.
 
 \section{Conclusion}
 The project is useful to be able to retrace the history of Formula 1 easily, through intuitive graphics and a "sports" interface. The application could be used for different purposes,
 for example by analyzing the times over the years it is possible to guess how the technology or the skill of the pilots has progressed.
+Learning how to use the framework is very simple, as we have chosen to use immediate and easily interpretable graphics. 
 
 \clearpage
 
@@ -247,6 +249,10 @@ for example by analyzing the times over the years it is possible to guess how th
 		\bibitem{Pandas} Pandas library: \href{https://pandas.pydata.org/}{https://pandas.pydata.org/}
 		
 		\bibitem{Scikit-learn} Scikit-learn library: \href{https://scikit-learn.org/stable/}{https://scikit-learn.org/stable/}
+		
+		\bibitem{Heroku} Heroku: \href{https://www.heroku.com/}{https://www.heroku.com/}
+		
+		\bibitem{Flask} Flask: \href{https://flask.palletsprojects.com/en/1.1.x/}{https://flask.palletsprojects.com/en/1.1.x/}
 	\end{thebibliography}
 }]
 \end{document}
