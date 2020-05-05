@@ -58,7 +58,7 @@ The last view is a times update views that summarizes the evolution of the lap t
 	\item A visual analytics framework that supports the examination and exploration of Formula 1 history;
 	\item A visual representation of the features selected by the users.
 \end{itemize}
-The project is a web application and it is developed using the d3.js \cite{D3} library and the python3 language for performing PCA.
+The project is a web application and it is developed using the d3.js \cite{D3} library and the python3 language for implementing a server in order to perform some backend functionalities.
 
 \section{Related works}
 There are other frameworks that show the evolution of Formula 1 through its different elements, so races, drivers and constructors. An example is the History of F1
@@ -80,17 +80,17 @@ for this project are:
 	\item constructors;
 	\item constructorStandings. 
 \end{itemize}
-The .csv files are manipulated using both d3.js and python. Some of the queries performed over the dataset needs the interaction of the user, while others are performed
-without parameters chosen by the users.
+The .csv files are manipulated using both d3.js and python. Some of the queries performed over the dataset needs an input from the user, while others are performed by only manipulating the original data.
 
 \section{Design Overview}
-The visualization is composed by 4 main views, accessible from a simple side menu. Each of these views provides some processed information about the dataset.
+
+Our framework is composed, as anticipated in the introduction, by four main views. It is possible to navigate through the application using the simple slide menu that is shown by clicking on the button on the top-right corner. This menu is composed by four buttons, each of which redirects the user to the corresponding view.
 \begin{center}
 	\centering
 	\includegraphics[width=0.3\columnwidth]{menu}
 	\captionof{figure}{Menu}
 \end{center}
-In the first view the statistics of a season are analyzed, selectable by the user. The second view provides general information for all seasons, highlighting the best drivers and constructors. In the third view the correlation between the nationality of the drivers or constructors and other statistics is shown. The last view shows the trend of the best times over the years.
+In the next sections each view will be explained more in depth, analysing especially the design.
 
 \subsection{Home view}
 \begin{center}
@@ -99,19 +99,19 @@ In the first view the statistics of a season are analyzed, selectable by the use
 	\captionof{figure}{Home view}
 \end{center}
 
-This is the main view. Here the user is able to select the desired year from the special selector: the available years are from 1950 to 2019, so from the year in which there was
-the first F1 season till the year in which there was the last one. The home view is divided into four sub-views:
+This is the main view. Here the user is able to select the desired year from the special selector: the available years are from 1950 to 2019, so from the year in which the first 
+F1 championship was run till the year in which the last one was run. The home view is divided into four sub-views:
 
 \begin{itemize}
 	\item a map that highlights the countries in which there was at least one Grand Prix during the selected year;
-	\item a scatter plot that shows, for each driver, his final position for each race of the selected season;
+	\item a scatter plot that shows, for each driver and each race run during that year, his final position for that race;
 	\item a sub-view that shows the driver and the constructor that have won the two championships at the end of the selected season;
-	\item a sub-view that allows the users to selected a driver: by clicking on the name the scatter plot will be modified showing the results of the selected driver.
+	\item a sub-view that allows the users to selected a driver: by clicking on the name the scatter plot will be modified, showing the results of the selected driver.
 \end{itemize}
 
 The map is interactive, indeed the user can click on one of the highlighted countries (a country is colored in blue if during the selected year there was at least one Grand Prix
-played in that country): at this point there will be a zoom on the selected country and a red circle showing the position of the circuit in which the race was played. By clicking
-on the red circle the following view will be shown to the user:
+played in that country): at this point, there will be a zoom on the selected country and a red circle showing the position of the circuit in which the race was played. By clicking
+on the red circle, the following view will be shown to the user:
 
 \begin{center}
 	\centering
@@ -119,7 +119,7 @@ on the red circle the following view will be shown to the user:
 	\captionof{figure}{Race infos}
 \end{center}
 
-On the left there is a scatter plot that shows the evolution of the drivers' standing till the selected GP, on the right there is a table showing the order of arrival of the selected
+On the left, there is a scatter plot that shows the evolution of the drivers' standing till the selected GP; on the right, there is a table showing the order of arrival of the selected
 race.
 
 \subsection{General info view}
@@ -128,10 +128,10 @@ race.
 	\includegraphics[width=\columnwidth]{generalinfo}
 	\captionof{figure}{General info view}
 \end{center}
-In this view we show some statistics about the general world of the Formula 1. It is a grid view divided in two rows and three columns: the first row highlights the drivers
+In this view, we show some statistics about the general world of the Formula 1. It is a grid view divided in two rows and three columns: the first row highlights the drivers
 while the second one the constructors. The three elements of the first row describe the following statistics:
 \begin{itemize}
-	\item Best Driver: this is the driver that has won more races that the other drivers. Here we show the number of victories of this driver and the number of drivers'
+	\item Best Driver: this is the driver that has won the most races of all the drivers. Here we show the number of victories of this driver and the number of drivers'
 	championship that he has won;
 	\item Most successful drivers: this is a top 10 based on the number of races won by a driver and it is presented using a bar chart. Each bar is associated to a driver and
 	represents the number of races won by that driver; on top of the bar there is a number representing this statistic;
@@ -139,13 +139,13 @@ while the second one the constructors. The three elements of the first row descr
 	won by all the other drivers) and it is presented using a donut chart: each slice is associated to a driver and by sliding the mouse over the slice it is possible to see the 
 	number of championships won by that driver.
 \end{itemize}
-The two charts presented in this first row are linked together using of a double interaction: by clicking on a bar of the first chart it will be highlighted together with
+The two charts presented in this first row are linked together using a double interaction: by clicking on a bar of the first chart it will be highlighted together with
 the slice of the other chart corresponding to the same driver (if it exists). The same happens by clicking on a slice of the donut chart.\\
 As said before, in the second row there are some statistics about the constructors:
 \begin{itemize}
-	\item Best Constructor: this is the constructor that has won more races than the other constructors. Together with its name we show also the number of race victories and
+	\item Best Constructor: this is the constructor that has won the most races of all the constructors. Together with its name we show also the number of race victories and
 	the number of constructors' world titles that it has won;
-	\item Most successful constructors: this chart shows the 10 constructors that have won more races. It is a bar chart where each bar refers to a constructor with on top of
+	\item Most successful constructors: this chart shows the 10 constructors that have won the most races at all. It is a bar chart where each bar refers to a constructor with on top of
 	it the corresponding number of victories;
 	\item Most constructors' championship winners: this chart shows the 10 constructors that have won more world titles: it is a donut chart where each slice is associated to
 	a driver (we have added also a slice representing the number of world titles won by the other constructors); by sliding the mouse over the slice it is possible to see the
@@ -157,7 +157,7 @@ In both the bar charts by sliding the mouse over a bar it is possible to have so
 	\item drivers: date of birth, nationality, teams for which it has driven, number of races that it has started and number of podiums
 	\item constructors: nationality, number of started races and number of podiums
 \end{itemize}
-In both the rows there is a consistency between the colors of the bar and the slice associated to the same driver/constructor.
+In both the rows there is a consistency between the colors of the bar and the slice associated to the same driver/constructor. The distribution of the different sub-views in the two rows follows a common pattern.
 
 \subsection{Correlations view}
 \begin{center}
@@ -165,10 +165,10 @@ In both the rows there is a consistency between the colors of the bar and the sl
 	\includegraphics[width=\columnwidth]{correlations}
 	\captionof{figure}{Correlations view}
 \end{center}
-This view is designed to show if there is a correlation between a specific nationality (selected by the user) and some statistics about a driver or a 
-constructor of that nationality. The view is divided into two subviews: one for the drivers and one for the constructors. The user is able to select two different nationalities
+This view is designed to show if there is a correlation between a specific nationality (selected by the user) and some statistics about the drivers and/or the 
+constructors with that nationality. The view is divided into two sub-views: one for the drivers and one for the constructors. The user is able to select two different nationalities
 for the drivers and constructors using two different selectors. The result is plotted in the form of a scatter plot. In this two scatter plots the red point represents the elements
-of the nationality selected by the user while the green points represent the elements belonging to all the other nationalities.
+of the nationality selected by the user while the green points represent the elements belonging to all the other nationalities. More details about the statistics that are taken into consideration are given in the analysis section.
 
 \subsection{Times update view}
 \begin{center}
@@ -183,12 +183,13 @@ best lap time is available while the y-axis shows the times at intervals of diff
 we have for each circuit).
 
 \section{Analytics}
-The views are produced by manipulating the dataset in different ways starting from an input given by the user. This manipulation is done using the d3.js \cite{D3} library,
+This section is more focused on data analysis and how to obtain, starting from the dataset, the views described above.\\
+Most of the views are produced by manipulating the dataset in different ways starting from an input given by the user. This manipulation is done using the d3.js \cite{D3} library,
 since it allows to do operations easily on .csv files and using Python 3 (in particular the pandas \cite{Pandas} and scikit-learn libraries \cite{Scikit-learn}) 
-for analyze the correlation between nationality and number of wins/podiums. Most of the operations are characterized by a \texttt{JOIN} operation between the tables of the 
+for analyse the correlation between nationality and number of wins/podiums. Most of the operations are characterized by a \texttt{JOIN} operation between the tables of the 
 dataset and a subsequent \texttt{SELECT} operation over the desired attributes, in some cases with a \texttt{GROUP BY}.\\
 An example could be the map in the main view: in this case we are interested in the circuits where there was at least one race during the year selected by the user. So, first
-of all we make a \texttt{JOIN} between the two tables races and circuits over the attribute \texttt{circuitId} \texttt{WHERE} the year in which the race was ran is equal to the
+of all we make a \texttt{JOIN} between the two tables races and circuits over the attribute \texttt{circuitId} \texttt{WHERE} the year in which the race was run is equal to the
 one selected by the user and then we \texttt{SELECT} the name of the circuits together with the corresponding country name and the name of the races. In SQL this query is like the
 following:
 \begin{itemize}
@@ -197,13 +198,13 @@ following:
 	\item \texttt{WHERE c.circuitId == r.circuitId AND r.year == y}
 \end{itemize}
 where \texttt{y} is the year selected by the user.
-At this point we are interested in two main values: the country in which the race was ran and, in order to put the red circle on the map, the coordinates of the circuit. In order to
+At this point we are interested in two main values: the country in which the race was run and, in order to put the red circle on the map, the coordinates of the circuit. In order to
 highlight in blue the country on the map, for each country we check if its name is into the set of country names resulting from the query described before. To add the red point
 at the coordinates of the circuit we check, for each circuit, if the \texttt{circuitId} attribute is into the set of ids resulting from the previous query and then we take the
 corresponding coordinates.\\
 The Correlations View is based, as the name suggests, on the concept of correlation between attributes. In order to find if there is this correlation between attributes we have
-decided to use the PCA algorithm, that is a statistical procedure that allows you to summarize the information content in large data tables by means of a smaller set of “summary indices” 
-that can be more easily visualized and analyzed. In our case we have used PCA to check if there is a correlation between a nationality (selected by the user) and a set of features:
+decided to use the PCA algorithm, that is a statistical procedure that allows to summarize the information content in large data tables by means of a smaller set of “summary indices” 
+that can be more easily visualized and analysed. In our case we have used PCA to check if there is a correlation between a nationality (selected by the user) and a set of features:
 the number of victories, the number of podiums, the number of attendances and the number of pole positions done by a driver/constructor. The computation of PCA is done using Python 3 
 and in particular using the implementation provided by the scikit-learn library \cite{Scikit-learn}. The idea is the following: if \texttt{n} is the nationality selected by the user 
 then we create a new dataset in which we divide the drivers/constructors with respect to their nationality using the following binary classification: \texttt{n} vs non-\texttt{n}. 
@@ -230,7 +231,7 @@ drivers (e.g. number of wins, number of podiums, number of poles, etc.). The sam
 
 \section{Conclusion}
 The project is useful to be able to retrace the history of Formula 1 easily, through intuitive graphics and a "sports" interface. The application could be used for different purposes,
-for example by analyzing the times over the years it is possible to guess how the technology or the skill of the pilots has progressed.
+for example by analysing the times over the years it is possible to guess how the technology or the skill of the pilots has progressed.
 Learning how to use the framework is very simple, as we have chosen to use immediate and easily interpretable graphics. 
 
 \clearpage
