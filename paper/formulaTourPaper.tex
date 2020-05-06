@@ -46,39 +46,29 @@ The application allows you to analyze the history of Formula 1 from the first Wo
 \clearpage
 
 \section{Introduction}
-Formula 1 has a very long history, as it has reached the $70^{th}$ season. During all these years many drivers and constructors took part to the races, which took
-place in different circuits located in different countries. This means that it is very difficult to navigate this history, since it is characterized by many components,
-each related to the other. The goal of this project is to provide a way to navigate the history of the Formula 1 by highlighting each component and their relations.
-Our framework is divided into four main views each of which contains multiple sub-views. An initial view summarizes the races of the selected season by showing
-the countries and the exact location of the circuit in which they took place. A general view summarizes the most important results achieved by the drivers and the
-constructors during the Formula 1 history. A correlation view that shows if it exists a correlation between nationalities and some other statistics related to 
-drivers/constructs with that nationality.
-The last view is a times update views that summarizes the evolution of the lap times on a selected circuit during the years. So, our project is composed by:
+Formula 1 has a very long history, as it has reached the $70^{th}$ season. During all these years many drivers and constructors took part to the races, which took place in different circuits located in different countries. This means that it is very difficult to navigate this history, since it is characterized by many components, each related to the other. The goal of this project is to provide a way to navigate the history of the Formula 1 by highlighting each component and their relations. Broadly, Formula 1 is characterized by three main elements: the drivers, the constructors and the races. These components have evolved over the years, thanks to the introduction of new technologies and regulatory changes, causing an improvement in performance. Most of these evolutions are visible in our framework, for example, it is possible to see that nowadays the number of races has increased while the lap times have reduced significantly.\\
+Our framework is divided into four main views, each of which contains multiple sub-views. An initial view that summarizes the races of the selected season by showing the countries and the exact location of the circuit in which they took place together with the results. A general view that summarizes the most important results achieved by the drivers and the constructors during the Formula 1 history. A correlation view that shows if it exists a correlation between a specific nationality selected by the user and some other statistics related to drivers/constructs with that nationality. The last view is a times update view that summarizes the evolution of the lap times on a selected circuit during the years.\\
+So, the framework is divided in two parts:
 \begin{itemize}
-	\item A visual analytics framework that supports the examination and exploration of Formula 1 history;
-	\item A visual representation of the features selected by the users.
+	\item An analytics part that computes the examination and exploration of Formula 1 history;
+	\item A visual representation of the features computed by the analytics part.
 \end{itemize}
-The project is a web application and it is developed using the d3.js \cite{D3} library and the python3 language for implementing a server in order to perform some backend functionalities.
+The project is a web application and it is developed using the d3.js \cite{D3} library and the Python3 language for implementing a server in order to perform some backend functionalities.
 
 \section{Related works}
-There are other frameworks that show the evolution of Formula 1 through its different elements, so races, drivers and constructors. An example is the History of F1
-\cite{HistoryOfF1} framework, based on the same dataset used for this project. The main difference is that in that project
-there is not a division of the races with respect to the years and also the user is not able to locate geographically the position of the circuits. 
+There are other frameworks that show the evolution of Formula 1 through its different elements, so races, drivers and constructors. An example is the History of F1 \cite{HistoryOfF1} framework, based on the same dataset used for this project. The main difference is that in that project there is not a division of the races with respect to the years and also the user is not able to locate geographically the position of the circuits. 
 
 \section{Dataset}
-The dataset used for this project is obtained from the Ergast Developer API \cite{Dataset} in .csv format. It is composed by 13 tables: circuits,
-constructorResults, constructorStandings, constructors, driverStandings, drivers, lapTimes, pitStops, qualifying, races, results, seasons and status. The tables considered
-for this project are:
+The dataset used for this project is obtained from the Ergast Developer API \cite{Dataset}; it is available in different formats but, since both in d3.js \cite{D3} and Python3 is easy to manipulate data in .csv format, we have chosen this specific format. It is composed by 13 tables: circuits, constructorResults, constructorStandings, constructors, driverStandings, drivers, lapTimes, pitStops, qualifying, races, results, seasons and status. The tables considered for this project are:
 \begin{itemize}
-	\item races: a table that contains informations about each race, as the year and the date in which it was played, the circuitId (which identifies the circuit in which it took place), the name of the Grand Prix (such as Italian Grand Prix) and so on;
-	\item circuits: a table that contains informations about each circuit, such as the name of the circuit, its coordinates, the country and so on;
-	\item drivers: a table that contains informations about each driver, such as his name and surname, his date of birth, his nationality and so on;
+	\item races: a table that contains information about each race, as the year and the date in which it was run, the circuitId (which identifies the circuit in which it took place), the name of the Grand Prix (such as Italian Grand Prix) and so on;
+	\item circuits: a table that contains information about each circuit, such as the name of the circuit, its coordinates, the country and so on;
+	\item drivers: a table that contains information about each driver, such as his name and surname, his date of birth, his nationality and so on;
 	\item results; a table that, for each race and driver who took part in that race, shows the result of that driver in that race and other infos;
-	\item driverStandings: a table that, for each race and driver who took part in that race, shows the driver's point into the drivers' standing after the conclusion of that
-	race;
+	\item driverStandings: a table that, for each race and driver who took part in that race, shows the driver's points into the drivers' standing after the conclusion of that race;
 	\item qualifying: a table that, for each race and driver who took part in that race, shows the results that the given driver achieves during the qualifying for that race;
-	\item constructors;
-	\item constructorStandings. 
+	\item constructors: a table that contains information about each constructor that took part at least to one Formula 1 race;
+	\item constructorStandings: a table that, for each constructor and each race, shows the results of the constructor's points into the corresponding standing after the conclusion of that race. 
 \end{itemize}
 The .csv files are manipulated using both d3.js and python. Some of the queries performed over the dataset needs an input from the user, while others are performed by only manipulating the original data.
 
@@ -99,8 +89,7 @@ In the next sections each view will be explained more in depth, analysing especi
 	\captionof{figure}{Home view}
 \end{center}
 
-This is the main view. Here the user is able to select the desired year from the special selector: the available years are from 1950 to 2019, so from the year in which the first 
-F1 championship was run till the year in which the last one was run. The home view is divided into four sub-views:
+This is the home view. Here the user is able to select the desired year from the special selector: the available years are from 1950 to 2019, so from the year in which the first F1 championship was played till the year in which the last one was played. The home view is divided into four sub-views:
 
 \begin{itemize}
 	\item a map that highlights the countries in which there was at least one Grand Prix during the selected year;
@@ -109,9 +98,8 @@ F1 championship was run till the year in which the last one was run. The home vi
 	\item a sub-view that allows the users to selected a driver: by clicking on the name the scatter plot will be modified, showing the results of the selected driver.
 \end{itemize}
 
-The map is interactive, indeed the user can click on one of the highlighted countries (a country is colored in blue if during the selected year there was at least one Grand Prix
-played in that country): at this point, there will be a zoom on the selected country and a red circle showing the position of the circuit in which the race was played. By clicking
-on the red circle, the following view will be shown to the user:
+The colors of the lines in the scatter plot are consistent with the colors of the name of the drivers.\\ 
+The map is interactive, indeed the user can click on one of the highlighted countries (a country is colored in blue if during the selected year there was at least one Grand Prix played in that country): at this point, there will be a zoom on the selected country and a red circle showing the position of the circuit in which the race was played. By clicking on the red circle, the following view will be shown to the user:
 
 \begin{center}
 	\centering
@@ -119,8 +107,7 @@ on the red circle, the following view will be shown to the user:
 	\captionof{figure}{Race infos}
 \end{center}
 
-On the left, there is a scatter plot that shows the evolution of the drivers' standing till the selected GP; on the right, there is a table showing the order of arrival of the selected
-race.
+On the left, there is a scatter plot that shows the evolution of the drivers' standing till the selected GP; on the right, there is a table showing the order of arrival of the selected race.
 
 \subsection{General info view}
 \begin{center}
@@ -128,47 +115,35 @@ race.
 	\includegraphics[width=\columnwidth]{generalinfo}
 	\captionof{figure}{General info view}
 \end{center}
-In this view, we show some statistics about the general world of the Formula 1. It is a grid view divided in two rows and three columns: the first row highlights the drivers
-while the second one the constructors. The three elements of the first row describe the following statistics:
+In this view, we show some statistics about the general world of the Formula 1. It is a grid view divided in two rows and three columns: the first row highlights the drivers while the second one the constructors. The three elements of the first row describe the following statistics:
 \begin{itemize}
-	\item Best Driver: this is the driver that has won the most races of all the drivers. Here we show the number of victories of this driver and the number of drivers'
-	championship that he has won;
-	\item Most successful drivers: this is a top 10 based on the number of races won by a driver and it is presented using a bar chart. Each bar is associated to a driver and
-	represents the number of races won by that driver; on top of the bar there is a number representing this statistic;
-	\item Most drivers' championship winners: this is a top 10 based on the number of drivers' world titles won by a driver (we have added also the number of championships
-	won by all the other drivers) and it is presented using a donut chart: each slice is associated to a driver and by sliding the mouse over the slice it is possible to see the 
-	number of championships won by that driver.
+	\item Best Driver: this is the driver that has won the most races of all the drivers. Here we show the number of victories of this driver and the number of drivers' championship that he has won;
+	\item Most successful drivers: this is a top 10 based on the number of races won by a driver and it is presented using a bar chart. Each bar is associated to a driver and represents the number of races won by that driver; on top of the bar there is a number representing this statistic;
+	\item Most drivers' championship winners: this is a top 10 based on the number of drivers' world titles won by a driver (we have added also the number of championships won by all the other drivers) and it is presented using a donut chart: each slice is associated to a driver and by sliding the mouse over the slice it is possible to see the number of championships won by that driver.
 \end{itemize}
-The two charts presented in this first row are linked together using a double interaction: by clicking on a bar of the first chart it will be highlighted together with
-the slice of the other chart corresponding to the same driver (if it exists). The same happens by clicking on a slice of the donut chart.\\
+The two charts presented in this first row are linked together using a double interaction: by clicking on a bar of the first chart it will be highlighted together with the slice of the other chart corresponding to the same driver (if it exists). The same happens by clicking on a slice of the donut chart.\\
 As said before, in the second row there are some statistics about the constructors:
 \begin{itemize}
-	\item Best Constructor: this is the constructor that has won the most races of all the constructors. Together with its name we show also the number of race victories and
-	the number of constructors' world titles that it has won;
-	\item Most successful constructors: this chart shows the 10 constructors that have won the most races at all. It is a bar chart where each bar refers to a constructor with on top of
-	it the corresponding number of victories;
-	\item Most constructors' championship winners: this chart shows the 10 constructors that have won more world titles: it is a donut chart where each slice is associated to
-	a driver (we have added also a slice representing the number of world titles won by the other constructors); by sliding the mouse over the slice it is possible to see the
-	number of championships won by that constructors.
+	\item Best Constructor: this is the constructor that has won the most races of all the constructors. Together with its name we show also the number of race victories and the number of constructors' world titles that it has won;
+	\item Most successful constructors: this chart shows the 10 constructors that have won the most races at all. It is a bar chart where each bar refers to a constructor with on top of it the corresponding number of victories;
+	\item Most constructors' championship winners: this chart shows the 10 constructors that have won more world titles: it is a donut chart where each slice is associated to a driver (we have added also a slice representing the number of world titles won by the other constructors); by sliding the mouse over the slice it is possible to see the number of championships won by that constructors.
 \end{itemize}
-Also in this case there is a double interaction between the two charts, similar to the one present for the other two charts presented before.\\
-In both the bar charts by sliding the mouse over a bar it is possible to have some informations:
+Also in this case there is a double interaction between the two charts, similar to the one described before.\\
+In both the bar charts, by sliding the mouse over a bar, it is possible to have some informations:
 \begin{itemize}
-	\item drivers: date of birth, nationality, teams for which it has driven, number of races that it has started and number of podiums
-	\item constructors: nationality, number of started races and number of podiums
+	\item drivers: date of birth, nationality, teams for which it has driven, number of races that it has started and number of podiums;
+	\item constructors: nationality, number of started races and number of podiums.
 \end{itemize}
 In both the rows there is a consistency between the colors of the bar and the slice associated to the same driver/constructor. The distribution of the different sub-views in the two rows follows a common pattern.
 
+\newpage
 \subsection{Correlations view}
 \begin{center}
 	\centering
 	\includegraphics[width=\columnwidth]{correlations}
 	\captionof{figure}{Correlations view}
 \end{center}
-This view is designed to show if there is a correlation between a specific nationality (selected by the user) and some statistics about the drivers and/or the 
-constructors with that nationality. The view is divided into two sub-views: one for the drivers and one for the constructors. The user is able to select two different nationalities
-for the drivers and constructors using two different selectors. The result is plotted in the form of a scatter plot. In this two scatter plots the red point represents the elements
-of the nationality selected by the user while the green points represent the elements belonging to all the other nationalities. More details about the statistics that are taken into consideration are given in the analysis section.
+This view is designed to show if there is a correlation between a specific nationality (selected by the user) and some statistics about the drivers and/or the constructors with that nationality. The view is divided into two sub-views: one for the drivers and one for the constructors. The user is able to select two different nationalities for the drivers and constructors using two different selectors. The result is plotted in the form of a scatter plot. In this two scatter plots the red point represents the elements of the nationality selected by the user while the green points represent the elements belonging to all the other nationalities. More details about the statistics that are taken into consideration are given in the analysis section.
 
 \subsection{Times update view}
 \begin{center}
