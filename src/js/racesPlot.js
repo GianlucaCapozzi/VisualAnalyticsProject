@@ -124,7 +124,7 @@ function makeRacesPlot() {
         .data(season_races)
         .enter()
         .append("path")
-        .attr("class", function(d){ return d.key.replace(" ", "") + " otherDrivers" })
+        .attr("class", function(d){ return d.key.replace(/\./g, "").replace(/\s/g, '') + " otherDrivers" })
         .attr("d", function(d){ return line(d.values) } )
         .attr("stroke", function(d){ return color(d.key) })
         .style("stroke-width", 4)
@@ -136,7 +136,7 @@ function makeRacesPlot() {
         .enter()
         .append('g')
         .style("fill", function(d){ return color(d.key) })
-        .attr("class", function(d){ return d.key.replace(" ", "") + " otherDrivers" })
+        .attr("class", function(d){ return d.key.replace(/\./g, "").replace(/\s/g, '') + " otherDrivers" })
         .selectAll("myPoints")
         .data(function(d){ return d.values; })
         .enter()
@@ -166,7 +166,7 @@ function makeRacesPlot() {
             .enter()
             .append('g')
             .append("text")
-            .attr("class", function(d){ return d.key.replace(" ", "") + " otherDrivers" })
+            .attr("class", function(d){ return d.key.replace(/\./g, "").replace(/\s/g, '') + " otherDrivers" })
             .datum(function(d) { return {name: d.key, value: d.values[d.values.length - 1]}; }) // keep only the last value of each time series
             .attr("transform", function(d) { return "translate(" + x(d.value.race) + "," + y(d.value.position) + ")"; }) // Put the text at the position of the last point
             .attr("x", 12) // shift the text a bit more right
@@ -194,7 +194,7 @@ function makeRacesPlot() {
                     .transition()
                     .duration(500)
                     .style("opacity", 0);
-                d3.selectAll("." + d.key.replace(" ", ""))
+                d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, ''))
                     .transition()
                     .duration(2000)
                     .style("opacity", 1);
@@ -205,7 +205,7 @@ function makeRacesPlot() {
         .transition()
         .duration(500)
         .style("opacity", 0);
-    d3.selectAll("." + drivers[0].replace(" ", ""))
+    d3.selectAll("." + drivers[0].replace(/\./g, "").replace(/\s/g, ''))
         .transition()
         .duration(2000)
         .style("opacity", 1);

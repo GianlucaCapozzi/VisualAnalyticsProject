@@ -113,7 +113,7 @@ function makePlot() {
         .data(driv_rank)
         .enter()
         .append("path")
-        .attr("class", function(d) { return d.key; })
+        .attr("class", function(d) { return d.key.replace(/\./g, "").replace(/\s/g, '') + "ForRace otherDriversForRace"; })
         .attr("d", function(d){ return line(d.values) } )
         .attr("stroke", function(d){ return color(d.key) })
         .style("stroke-width", 4)
@@ -129,6 +129,9 @@ function makePlot() {
         .data(function(d){ return d.values })
         .enter()
         .append("circle")
+        .attr("class", function(d) {
+            return d.driver.replace(/\./g, "").replace(/\s/g, '') + "ForRace otherDriversForRace"; 
+        })
         .attr("cx", function(d) { return x(d.race) } )
         .attr("cy", function(d) { return y(d.position) } )
         .attr("r", 5)
@@ -136,6 +139,7 @@ function makePlot() {
         .on("mouseover", function(d) {
             //console.log(tracks[d.race + firstRound])
             // Add tooltip
+            console.log(driv_rank);
             $(".tooltip")
                 .css("transition", "1s")
                 .css("left", d3.event.pageX + "px")
@@ -156,11 +160,42 @@ function makePlot() {
         .enter()
         .append('g')
         .append("text")
+        .attr("class", function(d) { 
+            //console.log(tracks);
+            return d.key.replace(/\./g, "").replace(/\s/g, '') + "ForRace otherDriversForRace"
+        })
         .datum(function(d) { return {name: d.key, value: d.values[d.values.length - 1]}; }) // keep only the last value of each time series
         .attr("transform", function(d) { return "translate(" + x(d.value.race) + "," + y(d.value.position) + ")"; }) // Put the text at the position of the last point
         .attr("x", 12) // shift the text a bit more right
         .text(function(d) { return d.name; })
         .style("fill", function(d){ return color(d.name); })
-        .style("font-size", 15);
+        .style("font-size", 15)
+        .on("click", function(d) {
+            if(d3.select(this).style("opacity") != 0.1){
+                d3.selectAll("." + d.name.replace(/\./g, "").replace(/\s/g, '')+"ForRace")
+                    .transition()
+                    .duration(500)
+                    .style("opacity", 0.1);
+            }
+            else {
+                console.log(d.name.replace(/\./g, "").replace(/\s/g, ''));
+                d3.selectAll("." + d.name.replace(/\./g, "").replace(/\s/g, '')+"ForRace")
+                    .transition()
+                    .duration(500)
+                    .style("opacity", 1);
+            }
+        });    
+
+    //console.log(driv_rank[driv_rank.length-1]);
+
+    // Show only first driver
+    d3.selectAll(".otherDriversForRace")
+        .transition()
+        .duration(500)
+        .style("opacity", 0.1);
+    d3.selectAll("." + driv_rank[driv_rank.length-1].key.replace(/\./g, "").replace(/\s/g, '')+"ForRace")
+        .transition()
+        .duration(2000)
+        .style("opacity", 1);
 
 }
