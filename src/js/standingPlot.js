@@ -1,6 +1,7 @@
-var marginPlot = {top: 50, right: 150, bottom: 50, left: 70}
+var marginPlot = {top: 50, right: 190, bottom: 50, left: 70}
 
 var firstRound = 0;
+var curr_leader;
 
 function processStanding(err, drvs, stnds) {
     driv_rank = [];
@@ -13,6 +14,9 @@ function processStanding(err, drvs, stnds) {
                 drvs.forEach(driver => {
                     if(driver.driverId === stand.driverId) {
                         driv_rank.push({'driver' : driver.forename + " " + driver.surname, 'race' : stand.raceId - firstRound, 'position' : stand.position});
+                        if(rId === parseInt(raceId) && parseInt(stand.position) === 1) {
+                            curr_leader = driver.forename + " " + driver.surname;
+                        }
                     }
                 });
             }
@@ -142,8 +146,8 @@ function makePlot() {
             console.log(driv_rank);
             $(".tooltip")
                 .css("transition", "1s")
-                .css("left", d3.event.pageX + "px")
-                .css("top", d3.event.pageY + "px")
+                .css("left", d3.select(this).attr("cx") + "px")
+                .css("top", d3.select(this).attr("cy") + "px")
                 .css("opacity", 1)
                 .css("display", "inline-block")
                 .html(tracks[d.race + firstRound][1]);
@@ -160,10 +164,10 @@ function makePlot() {
         .enter()
         .append('g')
         .append("text")
-        .attr("class", function(d) { 
+        //.attr("class", function(d) { 
             //console.log(tracks);
-            return d.key.replace(/\./g, "").replace(/\s/g, '') + "ForRace otherDriversForRace"
-        })
+        //    return d.key.replace(/\./g, "").replace(/\s/g, '') + "ForRace otherDriversForRace"
+        //})
         .datum(function(d) { return {name: d.key, value: d.values[d.values.length - 1]}; }) // keep only the last value of each time series
         .attr("transform", function(d) { return "translate(" + x(d.value.race) + "," + y(d.value.position) + ")"; }) // Put the text at the position of the last point
         .attr("x", 12) // shift the text a bit more right
@@ -171,6 +175,13 @@ function makePlot() {
         .style("fill", function(d){ return color(d.name); })
         .style("font-size", 15)
         .on("click", function(d) {
+
+            var currOpacity = d3.selectAll("." + d.name.replace(/\./g, "").replace(/\s/g, '')+"ForRace").style("opacity");
+            d3.selectAll("." + d.name.replace(/\./g, "").replace(/\s/g, '')+"ForRace")
+                .transition()
+                .duration(500)
+                .style("opacity", currOpacity == 1 ? 0.05:1);
+            /*
             if(d3.select(this).style("opacity") != 0.1){
                 d3.selectAll("." + d.name.replace(/\./g, "").replace(/\s/g, '')+"ForRace")
                     .transition()
@@ -184,6 +195,7 @@ function makePlot() {
                     .duration(500)
                     .style("opacity", 1);
             }
+            */
         });    
 
     //console.log(driv_rank[driv_rank.length-1]);
@@ -192,8 +204,8 @@ function makePlot() {
     d3.selectAll(".otherDriversForRace")
         .transition()
         .duration(500)
-        .style("opacity", 0.1);
-    d3.selectAll("." + driv_rank[driv_rank.length-1].key.replace(/\./g, "").replace(/\s/g, '')+"ForRace")
+        .style("opacity", 0.05);
+    d3.selectAll("." + curr_leader.replace(/\./g, "").replace(/\s/g, '')+"ForRace")
         .transition()
         .duration(2000)
         .style("opacity", 1);

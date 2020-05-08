@@ -114,6 +114,7 @@ html, body, #viewsContainer {
 }
 
 .modal {
+    position: absolute;
     width: 100% !important;
     height: 100% !important;
     max-height: 80% !important;

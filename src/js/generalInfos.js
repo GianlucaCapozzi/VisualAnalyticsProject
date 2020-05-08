@@ -191,7 +191,7 @@ function plotBestDrivers(bestDrivers) {
     bestDPlot.selectAll("bar")
         .data(bestDrivers)
         .enter().append("rect")
-        .attr("class", function(d){ return d.key.replace(" ", "") + " otherBestDrivers"; })
+        .attr("class", function(d){ return d.key.replace(/\./g, "").replace(/\s/g, '') + " otherBestDrivers"; })
         .attr("x", function(d) { return x(d.key); })
         .attr("width", x.bandwidth())
         .attr("y", function(d) { return y(d.value); })
@@ -219,12 +219,12 @@ function plotBestDrivers(bestDrivers) {
                 .transition()
                 .duration(750)
                 .style("opacity", 1);
-            if(!d3.selectAll("." + d.key.replace(" ", "") + "BDC").empty()) {
+            if(!d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, '') + "BDC").empty()) {
                 d3.selectAll(".otherBestDriversChamp")
                     .transition()
                     .duration(750)
                     .style("opacity", 0.1);
-                d3.selectAll("." + d.key.replace(" ", "") + "BDC")
+                d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, '') + "BDC")
                     .transition()
                     .duration(750)
                     .style("opacity", 1);
@@ -251,7 +251,7 @@ function plotBestDrivers(bestDrivers) {
             return d.value;
         })
         .attr("text-anchor", "middle")
-        .attr("class", function(d){ return d.key.replace(" ", "") + " otherBestDrivers" })
+        .attr("class", function(d){ return d.key.replace(/\./g, "").replace(/\s/g, '') + " otherBestDrivers" })
         .style("fill", "#fff")
         .attr("x", function(d) {
             return x(d.key) + x.bandwidth()/2;
@@ -424,7 +424,7 @@ function plotConstructors(constructorWins) {
         bestCPlot.selectAll("bar")
             .data(constructorWins)
             .enter().append("rect")
-            .attr("class", function(d){ return d.key.replace(" ", "") + " otherBestConstructors"; })
+            .attr("class", function(d){ return d.key.replace(/\./g, "").replace(/\s/g, '') + " otherBestConstructors"; })
             .attr("x", function(d) { return x(d.key); })
             .attr("width", x.bandwidth())
             .attr("y", function(d) { return y(d.value); })
@@ -450,12 +450,12 @@ function plotConstructors(constructorWins) {
                     .transition()
                     .duration(750)
                     .style("opacity", 1);
-                if(!d3.selectAll("." + d.key.replace(" ", "") + "BCC").empty()) {
+                if(!d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, '') + "BCC").empty()) {
                     d3.selectAll(".otherBestConstructorsChamp")
                         .transition()
                         .duration(750)
                         .style("opacity", 0.1);
-                    d3.selectAll("." + d.key.replace(" ", "") + "BCC")
+                    d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, '') + "BCC")
                         .transition()
                         .duration(750)
                         .style("opacity", 1);
@@ -489,7 +489,7 @@ function plotConstructors(constructorWins) {
             .attr("y", function(d) {
                 return y(d.value);
             })
-            .attr("class", function(d){ return d.key.replace(" ", "") + " otherBestConstructors"; })
+            .attr("class", function(d){ return d.key.replace(/\./g, "").replace(/\s/g, '') + " otherBestConstructors"; })
             .style("fill", "#fff");
 
 }
@@ -598,7 +598,7 @@ function plotDrivChamps(champions) {
         .enter()
         .append('path')
         .attr('d', arc)
-        .attr("class", function(d){ return d.data.key.replace(" ", "") + "BDC otherBestDriversChamp"; })
+        .attr("class", function(d){ return d.data.key.replace(/\./g, "").replace(/\s/g, '') + "BDC otherBestDriversChamp"; })
         .attr('fill', function(d) {return color(d.data.key)})
         .attr("stroke", "white")
         .style("stroke-width", "2px")
@@ -618,12 +618,12 @@ function plotDrivChamps(champions) {
                 .transition()
                 .duration(750)
                 .style("opacity", 1);
-            if(!d3.selectAll("." + d.data.key.replace(" ", "")).empty()) {
+            if(!d3.selectAll("." + d.data.key.replace(/\./g, "").replace(/\s/g, '')).empty()) {
                 d3.selectAll(".otherBestDrivers")
                     .transition()
                     .duration(750)
                     .style("opacity", 0.1);
-                d3.selectAll("." + d.data.key.replace(" ", ""))
+                d3.selectAll("." + d.data.key.replace(/\./g, "").replace(/\s/g, ''))
                     .transition()
                     .duration(750)
                     .style("opacity", 1);
@@ -641,7 +641,7 @@ function plotDrivChamps(champions) {
         .data(data_ready)
         .enter()
         .append('polyline')
-        .attr("class", function(d){ return d.data.key.replace(" ", "") + "BDC otherBestDriversChamp"; })
+        .attr("class", function(d){ return d.data.key.replace(/\./g, "").replace(/\s/g, '') + "BDC otherBestDriversChamp"; })
         .attr("stroke", "#fff")
         .style("fill", "none")
         .attr("stroke-width", 1)
@@ -667,7 +667,7 @@ function plotDrivChamps(champions) {
                 return d.data.key;
             }
         })
-        .attr("class", function(d){ return d.data.key.replace(" ", "") + "BDC otherBestDriversChamp"; })
+        .attr("class", function(d){ return d.data.key.replace(/\./g, "").replace(/\s/g, '') + "BDC otherBestDriversChamp"; })
         .attr('transform', function(d) {
             var pos = outerArc.centroid(d);
             var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
@@ -771,7 +771,7 @@ function plotConsChamps(champions) {
         .enter()
         .append('path')
         .attr('d', arc)
-        .attr("class", function(d) { return d.data.key.replace(" ", "") + "BCC otherBestConstructorsChamp"})
+        .attr("class", function(d) { return d.data.key.replace(/\./g, "").replace(/\s/g, '') + "BCC otherBestConstructorsChamp"})
         .attr('fill', function(d) {return color(d.data.key)})
         .attr("stroke", "white")
         .style("stroke-width", "2px")
@@ -791,12 +791,12 @@ function plotConsChamps(champions) {
                     .transition()
                     .duration(750)
                     .style("opacity", 1);
-            if(!d3.selectAll("." + d.data.key.replace(" ", "")).empty()) {
+            if(!d3.selectAll("." + d.data.key.replace(/\./g, "").replace(/\s/g, '')).empty()) {
                 d3.selectAll(".otherBestConstructors")
                     .transition()
                     .duration(750)
                     .style("opacity", 0.1);
-                d3.selectAll("." + d.data.key.replace(" ", ""))
+                d3.selectAll("." + d.data.key.replace(/\./g, "").replace(/\s/g, ''))
                     .transition()
                     .duration(750)
                     .style("opacity", 1);
@@ -813,7 +813,7 @@ function plotConsChamps(champions) {
         .data(data_ready)
         .enter()
         .append('polyline')
-        .attr("class", function(d) { return d.data.key.replace(" ", "") + "BCC otherBestConstructorsChamp"})
+        .attr("class", function(d) { return d.data.key.replace(/\./g, "").replace(/\s/g, '') + "BCC otherBestConstructorsChamp"})
         .attr("stroke", "#fff")
         .style("fill", "none")
         .attr("stroke-width", 1)
@@ -839,7 +839,7 @@ function plotConsChamps(champions) {
             pos[0] = radius * 0.99 * (midangle < Math.PI ? 1 : -1);
             return 'translate(' + pos + ')';
         })
-        .attr("class", function(d) { return d.data.key.replace(" ", "") + "BCC otherBestConstructorsChamp"})
+        .attr("class", function(d) { return d.data.key.replace(/\./g, "").replace(/\s/g, '') + "BCC otherBestConstructorsChamp"})
         .attr("fill", "#fff")
         .style("font-size", "12px")
         .style('text-anchor', function(d) {
