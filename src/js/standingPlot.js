@@ -134,7 +134,7 @@ function makePlot() {
         .enter()
         .append("circle")
         .attr("class", function(d) {
-            return d.driver.replace(/\./g, "").replace(/\s/g, '') + "ForRace otherDriversForRace"; 
+            return d.driver.replace(/\./g, "").replace(/\s/g, '') + "ForRace otherDriversForRace";
         })
         .attr("cx", function(d) { return x(d.race) } )
         .attr("cy", function(d) { return y(d.position) } )
@@ -143,11 +143,11 @@ function makePlot() {
         .on("mouseover", function(d) {
             //console.log(tracks[d.race + firstRound])
             // Add tooltip
-            console.log(driv_rank);
+            //console.log(driv_rank);
             $(".tooltip")
                 .css("transition", "1s")
-                .css("left", d3.select(this).attr("cx") + "px")
-                .css("top", d3.select(this).attr("cy") + "px")
+                .css("left", (parseInt(d3.select(this).attr("cx")) + document.getElementById("modal1").offsetLeft) + "px")
+                .css("top", (parseInt(d3.select(this).attr("cy")) + document.getElementById("modal1").offsetTop) + "px")
                 .css("opacity", 1)
                 .css("display", "inline-block")
                 .html(tracks[d.race + firstRound][1]);
@@ -164,7 +164,7 @@ function makePlot() {
         .enter()
         .append('g')
         .append("text")
-        //.attr("class", function(d) { 
+        //.attr("class", function(d) {
             //console.log(tracks);
         //    return d.key.replace(/\./g, "").replace(/\s/g, '') + "ForRace otherDriversForRace"
         //})
@@ -196,7 +196,7 @@ function makePlot() {
                     .style("opacity", 1);
             }
             */
-        });    
+        });
 
     //console.log(driv_rank[driv_rank.length-1]);
 
