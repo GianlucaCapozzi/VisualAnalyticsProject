@@ -176,7 +176,7 @@ function makeRacesPlot() {
 
     // Add a legend (interactive)
     var legend = d3.select("#racesPlotLegendView");
-    legend.append("h5").text("Drivers:").style("width", "100%").attr("class", "center-align");
+    legend.append("div").text("Drivers:").style("width", "100%").attr("class", "title center-align");
     var legendContainer = legend.append("div").attr("class", "legend-grid");
     var drivers = [];
     legendContainer.selectAll("myLegend")
