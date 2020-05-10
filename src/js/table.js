@@ -11,7 +11,7 @@ function processRace(err, drvs, rsts) {
     });
 
     let table = makeTable(res);
-    table.attr("class", "striped highlighted centered resultTablePosition");
+    table.attr("class", "striped centered resultTablePosition");
 }
 
 function getResults() {

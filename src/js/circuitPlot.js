@@ -51,7 +51,7 @@ function processBestLaps(err, circs, gps, qualis, drivs, constrs) {
                                     }
                                 });
                             }
-                            
+
                         });
                     }
                 });
@@ -287,7 +287,7 @@ function qualiPlot(standingList) {
 
     var specifier = "%M:%S.%L";
     var parsedData = []
-    
+
 
     standingList.forEach(function(d) {
         parsedData.push(d3.timeParse(specifier)(d.time));
@@ -392,7 +392,7 @@ function qualiPlot(standingList) {
 function updateQualiPlot(standingList) {
     var specifier = "%M:%S.%L";
     var parsedData = []
-    
+
     console.log(standingList);
 
     standingList.forEach(function(d) {

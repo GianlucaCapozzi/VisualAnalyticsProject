@@ -95,14 +95,10 @@ html, body, #viewsContainer {
     color: #ffffff;
 }
 
-#circuitsTitle, #circuitsSelector, #circuitPlot {
+#circuitsTitle, #circuitsSelector, #circuitPlotTitle, #qualiStandingPlotTitle, #circuitPlot, #qualiStandingPlot {
     display: block;
     float: left;
     padding: 10px;
-}
-
-#circuitPlot, #qualiStandingPlot {
-    width: 50%;
 }
 
 .legend-grid {
@@ -139,7 +135,7 @@ div.tooltip {
     width: auto;
     height: auto;
     padding: 2px;
-    background: lightsteelblue;
+    background: #333333;
     border: 0px;
     border-radius: 8px;
     pointer-events: none;
@@ -272,4 +268,13 @@ a:hover {
 /* selected link */
 a:active {
   color: #ffffff;
+}
+
+/* Table colors */
+.resultTablePosition > tbody > tr:nth-child(2n+1) > td, .resultTablePosition > tbody > tr:nth-child(2n+1) > th {
+   background-color: #333333;
+}
+
+.resultTablePosition > tbody > tr:hover > td, .resultTablePosition > tbody > tr:hover > th {
+    background-color: #444444 !important;
 }
