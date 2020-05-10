@@ -8,6 +8,8 @@ var constructors = dataset.concat("/constructors.csv");
 var constructor_standings = dataset.concat("/constructor_standings.csv");
 var qualifying = dataset.concat("/qualifying.csv");
 
+var color = d3.scaleOrdinal(d3.schemeCategory20);
+
 var onCloseModal = function() {
     d3.select("#standingPlot").selectAll("*").remove();
     d3.select("#resTable").selectAll("*").remove();
@@ -130,3 +132,14 @@ $("#circuitButton").on("click", function() {
     $("#pca-thing-2").removeClass("scale-out");
     $("#pca-thing-1").removeClass("scale-out");
 });
+
+function removeA(arr) {
+    var what, a = arguments, L = a.length, ax;
+    while (L > 1 && arr.length) {
+        what = a[--L];
+        while ((ax= arr.indexOf(what)) !== -1) {
+            arr.splice(ax, 1);
+        }
+    }
+    return arr;
+}
