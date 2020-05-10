@@ -43,7 +43,6 @@ function processRacesByYear(err, circ, rac, res) {
     season_drivers = [];
     maxDrivers = 0;
     rac.forEach(r => {
-        racesForYear.push({'year' : r.year, 'raceId' : r.raceId});
         if(r.year == year) {
             circ.forEach(c => {
                 if(r.circuitId === c.circuitId) {
