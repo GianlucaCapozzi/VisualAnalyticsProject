@@ -190,14 +190,11 @@ function makeRacesPlot() {
             .style("font-size", 15)
             .on("click", function(d){
                 //console.log(d)
-                d3.selectAll(".otherDrivers")
-                    .transition()
-                    .duration(500)
-                    .style("opacity", 0);
+                var currOpacity = d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, '')).style("opacity");
                 d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, ''))
                     .transition()
-                    .duration(2000)
-                    .style("opacity", 1);
+                    .duration(1000)
+                    .style("opacity", currOpacity == 1 ? 0:1);
             });
 
     // Show only first driver

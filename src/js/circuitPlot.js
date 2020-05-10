@@ -23,13 +23,13 @@ function processBestLaps(err, circs, gps, qualis) {
                     if(race.circuitId === t.circuitId) {
                         if(quali.position === "1") {
                             if(quali.q3 != "\\N") {
-                                bestTimes.push({"circuit": t.name, "time": quali.q3, "year": race.year });
+                                bestTimes.push({"circuit": t.name, "time": quali.q3, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date });
                             }
                             else if(quali.q3 === "\\N" && quali.q2 != "\\N") {
-                                bestTimes.push({"circuit": t.name, "time": quali.q2, "year": race.year });
+                                bestTimes.push({"circuit": t.name, "time": quali.q2, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date });
                             }
                             else if(quali.q2 === "\\N" && quali.q1 != "\\N") {
-                                bestTimes.push({"circuit": t.name, "time": quali.q1, "year": race.year });
+                                bestTimes.push({"circuit": t.name, "time": quali.q1, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date });
                             }
                         }
                     }
@@ -80,7 +80,7 @@ function makeTimesPlot(currCirc) {
     bestTimes.forEach(d => {
         if(d.key === currCirc) {
             d.values.forEach(v => {
-                currCircTimes.push({'year': v.year, 'time': v.time});
+                currCircTimes.push({'year': v.year, 'time': v.time, "lat": v.lat, "long": v.long, "date": v.date});
             });
         }
     });
@@ -197,13 +197,31 @@ function makeTimesPlot(currCirc) {
         .attr("r", 8)
         .attr("stroke", "white")
         .on("mouseover", function(d) {
-            $(".tooltip")
-                .css("transition", "1s")
-                .css("left", d3.event.pageX + "px")
-                .css("top", d3.event.pageY + "px")
-                .css("opacity", 1)
-                .css("display", "inline-block")
-                .html("Best qualifying time: " + d.time);
+            var x_pos = d3.event.pageX;
+            var y_pos = d3.event.pageY;
+            console.log(d);
+            var findStationIdLink = "https://api.meteostat.net/v1/stations/nearby?lat=" + d.lat + "&lon=" + d.long + "&limit=1&key=RmlE0dX0";
+            d3.json(findStationIdLink, function(err, mydata) {
+                var stationId = mydata.data[0].id;
+                //console.log(stationId);
+                var weatherLink = "https://api.meteostat.net/v1/history/daily?station=" + stationId + "&start=" + d.date + "&end=" + d.date + "&key=RmlE0dX0"
+                d3.json(weatherLink, function(err, newdata) {
+                    //console.log(newdata);
+                    var temp_max = "n.d."
+                    var temp_min = "n.d."
+                    if(Array.isArray(newdata.data) && newdata.data.length) {
+                        temp_max = newdata.data[0].temperature_max;
+                        temp_min = newdata.data[0].temperature_min;
+                    }
+                    $(".tooltip")
+                        .css("transition", "1s")
+                        .css("left", x_pos + "px")
+                        .css("top", y_pos + "px")
+                        .css("opacity", 1)
+                        .css("display", "inline-block")
+                        .html("Best qualifying time: " + d.time + "<br/>Temperature max: " + temp_max + "<br/> Temperature min: " + temp_min);
+                });
+            });
         })
         .on("mouseout", function(d) {
             $(".tooltip")
