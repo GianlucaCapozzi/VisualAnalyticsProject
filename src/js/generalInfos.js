@@ -446,11 +446,11 @@ function plotConstructors(constructorWins) {
                             .css("opacity", 0);
             })
             .on("click", function(d) {
-                d3.selectAll(".otherBestConstructors")
+                d3.selectAll(".otherBestConstructors") // Set all the bars to opacity 1
                     .transition()
                     .duration(750)
                     .style("opacity", 1);
-                if(!d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, '') + "BCC").empty()) {
+                if(!d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, '') + "BCC").empty()) { // Check if there is a corresponding slice in the donut chart
                     d3.selectAll(".otherBestConstructorsChamp")
                         .transition()
                         .duration(750)
@@ -459,14 +459,14 @@ function plotConstructors(constructorWins) {
                         .transition()
                         .duration(750)
                         .style("opacity", 1);
-                    csChampPlot.selectAll(".champLab").remove();
-                    csChampPlot.append("text")
+                    csChampPlot.selectAll(".champLab").remove(); // Remove the current label in the middle of the donut
+                    csChampPlot.append("text") // Set the label in the middle of the donut with the number of champs won by the selected constructor
                         .attr("text-anchor", "middle")
                         .attr("class", "champLab")
                         .html(champConsKeyValue[d.key]);
 
                 }
-                else {
+                else { // No slice corresponding to the selected driver: reset donut
                     csChampPlot.selectAll(".champLab").remove();
                     d3.selectAll(".otherBestConstructorsChamp")
                         .transition()
