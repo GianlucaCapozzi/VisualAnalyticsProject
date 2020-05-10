@@ -8,6 +8,8 @@ var constructors = dataset.concat("/constructors.csv");
 var constructor_standings = dataset.concat("/constructor_standings.csv");
 var qualifying = dataset.concat("/qualifying.csv");
 
+var color = d3.scaleOrdinal(d3.schemeCategory20);
+
 var onCloseModal = function() {
     d3.select("#standingPlot").selectAll("*").remove();
     d3.select("#resTable").selectAll("*").remove();

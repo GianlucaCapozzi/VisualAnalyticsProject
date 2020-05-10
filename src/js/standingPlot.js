@@ -60,8 +60,6 @@ function makePlot() {
                     .append("g")
                     .attr("transform", "translate(" + marginPlot.left + "," + marginPlot.top + ")");
 
-    var color = d3.scaleOrdinal(d3.schemeCategory20);
-
     var x = d3.scaleLinear().range([0, sWidth]);
 
     var y = d3.scaleLinear().range([sHeight, 0]);

@@ -66,8 +66,6 @@ function makeRacesPlot() {
         d3.select("#racesView").selectAll("svg").attr('height', Math.round(w / aspect));
     }
 
-    var color = d3.scaleOrdinal(d3.schemeCategory20);
-
     var x = d3.scaleLinear().range([0, racesPlotWidth]);
 
     var y = d3.scaleLinear().range([racesPlotHeight, 0]);
