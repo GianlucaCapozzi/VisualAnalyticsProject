@@ -94,15 +94,18 @@
         </div>
 
         <div id="circuitContainer" class="scale-transition scale-out grid-container-circuits center-align">
-            <div class="grid-item title center-align" id="circuitsTitle">Circuits Info</div>
-            <div class="grid-item" id="circuitsSelector">
+            <div class="grid-item title center-align" id="circuitsTitle" style="grid-area: header">Circuits Info</div>
+            <div class="grid-item" id="circuitsSelector" style="grid-area: selector">
                 <div class="row">
                     <div class="input-field col s12">
                         <select id="circuitSelect"></select>
                     </div>
                 </div>
             </div>
-            <div class="grid-item" id="circuitPlot"></div>
+            <div class="grid-item title center-align" id="Best Times Evolution" style="grid-area: title1">Best Times Evolution</div>
+            <div class="grid-item title center-align" id="Qualifying Times" style="grid-area: title2">Qualifying Times</div>
+            <div class="grid-item" id="circuitPlot" style="grid-area: circ"></div>
+            <div class="grid-item" id="qualiStandingPlot" style="grid-area: quali"></div>
         </div>
 
 

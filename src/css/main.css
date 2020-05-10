@@ -84,8 +84,13 @@ html, body, #viewsContainer {
 .grid-container-circuits {
     display: grid;
     grid-gap: 10px;
-    grid-template-columns: 100%;
-    grid-template-rows: 10% 10% 50%;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 10% 6% 6% auto;
+    grid-template-areas:
+        "header header"
+        "selector selector"
+        "title1 title2"
+        "circ quali";
     background: #222222;
     color: #ffffff;
 }
@@ -96,7 +101,7 @@ html, body, #viewsContainer {
     padding: 10px;
 }
 
-#circuitPlot {
+#circuitPlot, #qualiStandingPlot {
     width: 50%;
 }
 
@@ -108,7 +113,7 @@ html, body, #viewsContainer {
     color: #ffffff;
 }
 
-#constructorsPlot, #driversPlot, #drChampPlot, #csChampPlot, #bestDriver, #bestConstructor, #constructorsPlotTitle, #driversPlotTitle, #drChampPlotTitle, #csChampPlotTitle, #bestDriverTitle, #bestConstructorTitle, #circuitPlot{
+#constructorsPlot, #driversPlot, #drChampPlot, #csChampPlot, #bestDriver, #bestConstructor, #constructorsPlotTitle, #driversPlotTitle, #drChampPlotTitle, #csChampPlotTitle, #bestDriverTitle, #bestConstructorTitle, #circuitPlot, #qualiStandingPlot{
     display: block;
     float: left;
     padding: 10px;
