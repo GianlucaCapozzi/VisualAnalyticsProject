@@ -11,7 +11,7 @@ function processRace(err, drvs, rsts) {
     });
 
     let table = makeTable(res);
-    table.attr("class", "striped highlighted centered");
+    table.attr("class", "striped highlighted centered resultTablePosition");
 }
 
 function getResults() {
@@ -44,7 +44,35 @@ function makeTable(ranking) {
     var rows = tbody.selectAll('tr')
         .data(ranking)
         .enter()
-        .append('tr');
+        .append('tr')
+        .attr("class", function(d) {return d.Driver.replace(/\./g, "").replace(/\s/g, '') + "ForTable"})
+        .on("click", function(d) {
+            var currOpacity = d3.selectAll("." + d.Driver.replace(/\./g, "").replace(/\s/g, '')+"ForRace").style("opacity");
+            if (currOpacity == 1) {
+                removeA(selectedDrivers, d.Driver);
+                d3.selectAll("." + d.Driver.replace(/\./g, "").replace(/\s/g, '')+"ForRace")
+                    .transition()
+                    .duration(500)
+                    .style("opacity", 0.05);
+                d3.selectAll("." + d.Driver.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot")
+                    .transition()
+                    .duration(1000)
+                    .style("opacity", 0);
+                d3.selectAll("." + d.Driver.replace(/\./g, "").replace(/\s/g, '') + "ForTable").style("color", "#FFFFFF");
+            }
+            else {
+                selectedDrivers.push(d.Driver);
+                d3.selectAll("." + d.Driver.replace(/\./g, "").replace(/\s/g, '')+"ForRace")
+                    .transition()
+                    .duration(500)
+                    .style("opacity", 1);
+                d3.selectAll("." + d.Driver.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot")
+                    .transition()
+                    .duration(1000)
+                    .style("opacity", 1);
+                d3.selectAll("." + d.Driver.replace(/\./g, "").replace(/\s/g, '') + "ForTable").style("color", "#FF0000");
+            }
+        });
 
     rows.exit().remove();
 
@@ -60,6 +88,10 @@ function makeTable(ranking) {
         .text(function(d) { return d.value; });
 
     cells.exit().remove();
+
+    for (var i = 0; i < selectedDrivers.length; i++) {
+        d3.selectAll("." + selectedDrivers[i].replace(/\./g, "").replace(/\s/g, '') + "ForTable").style("color", "#FF0000");
+    }
 
     return table;
 

@@ -175,12 +175,31 @@ function makePlot() {
         .style("fill", function(d){ return color(d.name); })
         .style("font-size", 15)
         .on("click", function(d) {
-
             var currOpacity = d3.selectAll("." + d.name.replace(/\./g, "").replace(/\s/g, '')+"ForRace").style("opacity");
-            d3.selectAll("." + d.name.replace(/\./g, "").replace(/\s/g, '')+"ForRace")
-                .transition()
-                .duration(500)
-                .style("opacity", currOpacity == 1 ? 0.05:1);
+            if (currOpacity == 1) {
+                removeA(selectedDrivers, d.name);
+                d3.selectAll("." + d.name.replace(/\./g, "").replace(/\s/g, '')+"ForRace")
+                    .transition()
+                    .duration(500)
+                    .style("opacity", 0.05);
+                d3.selectAll("." + d.name.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot")
+                    .transition()
+                    .duration(1000)
+                    .style("opacity", 0);
+                d3.selectAll("." + d.name.replace(/\./g, "").replace(/\s/g, '') + "ForTable").style("color", "#FFFFFF");
+            }
+            else {
+                selectedDrivers.push(d.name);
+                d3.selectAll("." + d.name.replace(/\./g, "").replace(/\s/g, '')+"ForRace")
+                    .transition()
+                    .duration(500)
+                    .style("opacity", 1);
+                d3.selectAll("." + d.name.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot")
+                    .transition()
+                    .duration(1000)
+                    .style("opacity", 1);
+                d3.selectAll("." + d.name.replace(/\./g, "").replace(/\s/g, '') + "ForTable").style("color", "#FF0000");
+            }
             /*
             if(d3.select(this).style("opacity") != 0.1){
                 d3.selectAll("." + d.name.replace(/\./g, "").replace(/\s/g, '')+"ForRace")
@@ -205,9 +224,12 @@ function makePlot() {
         .transition()
         .duration(500)
         .style("opacity", 0.05);
-    d3.selectAll("." + curr_leader.replace(/\./g, "").replace(/\s/g, '')+"ForRace")
-        .transition()
-        .duration(2000)
-        .style("opacity", 1);
+    for (var i = 0; i < selectedDrivers.length; i++) {
+        d3.selectAll("." + selectedDrivers[i].replace(/\./g, "").replace(/\s/g, '')+"ForRace")
+            .transition()
+            .duration(500)
+            .style("opacity", 1);
+
+    }
 
 }

@@ -131,3 +131,14 @@ $("#circuitButton").on("click", function() {
     $("#pca-thing-2").removeClass("scale-out");
     $("#pca-thing-1").removeClass("scale-out");
 });
+
+function removeA(arr) {
+    var what, a = arguments, L = a.length, ax;
+    while (L > 1 && arr.length) {
+        what = a[--L];
+        while ((ax= arr.indexOf(what)) !== -1) {
+            arr.splice(ax, 1);
+        }
+    }
+    return arr;
+}

@@ -124,7 +124,7 @@ function makeRacesPlot() {
         .data(season_races)
         .enter()
         .append("path")
-        .attr("class", function(d){ return d.key.replace(/\./g, "").replace(/\s/g, '') + " otherDrivers" })
+        .attr("class", function(d){ return d.key.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot otherDrivers" })
         .attr("d", function(d){ return line(d.values) } )
         .attr("stroke", function(d){ return color(d.key) })
         .style("stroke-width", 4)
@@ -136,7 +136,7 @@ function makeRacesPlot() {
         .enter()
         .append('g')
         .style("fill", function(d){ return color(d.key) })
-        .attr("class", function(d){ return d.key.replace(/\./g, "").replace(/\s/g, '') + " otherDrivers" })
+        .attr("class", function(d){ return d.key.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot otherDrivers" })
         .selectAll("myPoints")
         .data(function(d){ return d.values; })
         .enter()
@@ -190,11 +190,21 @@ function makeRacesPlot() {
             .style("font-size", 15)
             .on("click", function(d){
                 //console.log(d)
-                var currOpacity = d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, '')).style("opacity");
-                d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, ''))
-                    .transition()
-                    .duration(1000)
-                    .style("opacity", currOpacity == 1 ? 0:1);
+                var currOpacity = d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot").style("opacity");
+                if (currOpacity == 1) {
+                    removeA(selectedDrivers, d.key);
+                    d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot")
+                        .transition()
+                        .duration(1000)
+                        .style("opacity", 0);
+                }
+                else {
+                    selectedDrivers.push(d.key);
+                    d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot")
+                        .transition()
+                        .duration(1000)
+                        .style("opacity", 1);
+                }
             });
 
     // Show only first driver
@@ -202,10 +212,6 @@ function makeRacesPlot() {
         .transition()
         .duration(500)
         .style("opacity", 0);
-    d3.selectAll("." + drivers[0].replace(/\./g, "").replace(/\s/g, ''))
-        .transition()
-        .duration(2000)
-        .style("opacity", 1);
 
 }
 

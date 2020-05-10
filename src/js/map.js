@@ -5,6 +5,8 @@ var firstRun = true;
 
 var active = d3.select(null);
 
+var selectedDrivers = [];
+
 var projection = d3.geoEquirectangular()
     .center([0, 15]) // set centre to further North as we are cropping more off bottom of map
     .scale(width / 6) // scale to fit group width
@@ -76,6 +78,7 @@ function processRacesByYear(err, circ, rac, res) {
 
 
 $("#yearSelect").on("change", function() {
+    selectedDrivers = [];
     countries_with_circ = [];
     tracks = [];
     racesId = [];
@@ -142,7 +145,13 @@ function getChampions(lastRace) {
                 if(+ds.raceId === lastRace && ds.positionText === "1") {
                     driv.forEach(d => {
                         if(ds.driverId === d.driverId) {
-                            d3.select("#drivChampLab").html("Drivers' champion </br>" + d.forename + " " + d.surname);
+                            var champion = d.forename + " " + d.surname;
+                            selectedDrivers.push(champion);
+                            d3.select("#drivChampLab").html("Drivers' champion </br>" + champion);
+                            d3.selectAll("." + champion.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot")
+                                .transition()
+                                .duration(1000)
+                                .style("opacity", 1);
                         }
                     })
                 }
