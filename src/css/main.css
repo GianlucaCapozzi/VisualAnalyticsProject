@@ -199,6 +199,14 @@ div.tooltip {
     text-align: center;
     color: #999;
 }
+.loaderPCA {
+    position: fixed;
+    width: 50%;
+    height: 40%;
+    background: url(../images/loader.gif) no-repeat center center;
+    text-align: center;
+    color: #999;
+}
 
 .title {
     font-size: 32px;

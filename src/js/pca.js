@@ -39,6 +39,7 @@ d3.queue()
 var currentDriverNationality = "British", currentConstructorNationality = "British";
 
 function readDriverPca(pcaData) {
+$("#loadingPCADriver").css("display", "none");
     var isCurrentDriverNationality = {x:[], y:[], mode: "markers", type: "scatter", name: currentDriverNationality,  marker: {color: "red", size: 10, line: {color: "#ffffff", width: 2}}};
     var notCurrentDriverNationality = {x:[], y:[], mode: "markers", type: "scatter", name: "not " + currentDriverNationality,  marker: {color: "green", size: 10, line: {color: "#ffffff", width: 2}}};
     pcaData.forEach(nat => {
@@ -83,6 +84,7 @@ function readDriverPca(pcaData) {
 }
 
 function readConstructorPca(pcaData) {
+    $("#loadingPCAConstructor").css("display", "none");
     var isCurrentConstructorNationality = {x:[], y:[], mode: "markers", type: "scatter", name: currentConstructorNationality,  marker: {color: "red", size: 10, line: {color: "#ffffff", width: 2}}};
     var notCurrentConstructorNationality = {x:[], y:[], mode: "markers", type: "scatter", name: "not " + currentConstructorNationality,  marker: {color: "green", size: 10, line: {color: "#ffffff", width: 2}}};
     pcaData.forEach(nat => {
@@ -144,6 +146,8 @@ $.ajax(settings).done(function(response) {
 
 $("#pcaDriverSelect").on("change", function() {
     d3.select("#pcaDriverPlot").selectAll("*").remove();
+    d3.select("#pcaDriverPlot").append("div").attr("class", "loaderPCA").attr("id", "loadingPCADriver");
+    $("#loadingPCADriver").css("display", "block");
     currentDriverNationality = $("#pcaDriverSelect").val();
 
     var settings = {
@@ -180,6 +184,8 @@ $.ajax(settings).done(function(response) {
 
 $("#pcaConstructorSelect").on("change", function() {
     d3.select("#pcaConstructorPlot").selectAll("*").remove();
+    d3.select("#pcaConstructorPlot").append("div").attr("class", "loaderPCA").attr("id", "loadingPCAConstructor");
+    $("#loadingPCAConstructor").css("display", "block");
     currentConstructorNationality = $("#pcaConstructorSelect").val();
 
     var settings = {
