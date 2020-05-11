@@ -5,8 +5,8 @@
     <head>
         <title>FormulaTour</title>
         <link rel="shortcut icon" href="src/images/icon.ico"/> <!--Tab icon-->
-        <link href="src/css/materialIcons.css" rel="stylesheet"> <!--Google Icon Font-->
         <link rel="stylesheet" type="text/css" href="src/css/nouislider.css" />
+        <link href="src/css/materialIcons.css" rel="stylesheet"> <!--Google Icon Font-->
         <link type="text/css" rel="stylesheet" href="src/css/materialize.css"  media="screen,projection"/> <!--Materialize css-->
         <link rel="stylesheet" type="text/css" href="src/css/main.css" />
         <link rel="stylesheet" type="text/css" href="src/css/map.css" /> <!--Style-->
@@ -59,9 +59,11 @@
         </div>
 
         <div id="infoContainer" class="scale-transition scale-out grid-container-info">
-            <div class="grid-item title center-align" id=""></div>
-            <div class="grid-item title center-align" id="yearSlider"></div>
-            <div class="grid-item title center-align" id=""></div>
+            <div class="grid-item normalText center-align" id="yearSliderContainer">
+                <div class="grid-item normalText center-align" id="startYear">1950</div>
+                <div class="grid-item center-align" id="yearSlider"></div>
+                <div class="grid-item normalText center-align" id="endYear">2019</div>
+            </div>
             <div class="grid-item title center-align" id="bestDriverTitle">Best driver</div>
             <div class="grid-item title center-align" id="driversPlotTitle">Most successful drivers</div>
             <div class="grid-item title center-align" id="drChampPlotTitle">Most drivers' championship winners</div>
@@ -69,6 +71,7 @@
                 <div class="grid-item normalText center-align" id="bestDriverName"></div>
                 <div class="grid-item normalText center-align" id="bestDriverVictories"></div>
                 <div class="grid-item normalText center-align" id="bestDriverWC"></div>
+                <div class="grid-item normalText center-align" id="bestDriverImage"></div>
             </div>
             <div class="grid-item" id="driversPlot"></div>
             <div class="grid-item" id="drChampPlot"></div>
@@ -79,6 +82,7 @@
                 <div class="grid-item normalText center-align" id="bestConstructorName"></div>
                 <div class="grid-item normalText center-align" id="bestConstructorVictories"></div>
                 <div class="grid-item normalText center-align" id="bestConstructorWC"></div>
+                <div class="grid-item normalText center-align" id="bestConstructorImage"></div>
             </div>
             <div class="grid-item" id="constructorsPlot"></div>
             <div class="grid-item" id="csChampPlot"></div>

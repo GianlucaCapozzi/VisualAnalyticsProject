@@ -1,4 +1,3 @@
-var driver_wins = [];
 var marginInfo = {top: 30, right: 50, bottom: 0, left: 50};
 var marginDonut = {top: 20, right: 50, bottom: 20, left: 50};
 var color = d3.scaleOrdinal(d3.schemePaired);
@@ -15,42 +14,109 @@ var drivDonutHeight = $("#racesView").height() - marginDonut.top - marginDonut.b
 var consDonutWidth = $("#racesView").width() * 40 / 45 - marginDonut.left - marginDonut.right;
 var consDonutHeight = $("#racesView").height() - marginDonut.top - marginDonut.bottom;
 
-var data_count = [];
-
-var drInfo = [];
-
 var champDrivKeyValue = [];
 var champConsKeyValue = [];
 
+var driv_champ_wins = [];
+var cons_champ_wins = [];
+
+var driver_wins = [];
+var data_count = [];
+var drInfo = [];
 var constructor_wins = [];
 var cons_count = [];
-var consInfo = []
+var consInfo = [];
+
+var lastRacesId = [];
 
 var drChampPlot;
 var csChampPlot;
 
+var startYear = 1950, endYear = 2019;
+
 var slider = document.getElementById('yearSlider');
-  noUiSlider.create(slider, {
-   start: [20, 80],
+noUiSlider.create(slider, {
+   start: [1950, 2019],
    connect: true,
    step: 1,
    range: {
-     'min': 0,
-     'max': 100
+       'min': 1950,
+       'max': 2019
    },
    format: wNumb({
-     decimals: 0
+       decimals: 0
    })
-  });
+});
+slider.noUiSlider.on('update', function (values, handle) {
+    if(handle == 0) {
+        startYear = values[handle];
+        $("#startYear").text(startYear);
+    }
+    else {
+        endYear = values[handle];
+        $("#endYear").text(endYear);
+    }
+});
+slider.noUiSlider.on('change', function (values, handle) {
+    d3.select("#bestDriverName").selectAll("*").remove();
+    d3.select("#bestDriverVictories").selectAll("*").remove();
+    d3.select("#bestDriverWC").selectAll("*").remove();
+    d3.select("#bestDriverImage").selectAll("*").remove();
+    d3.select("#driversPlot").selectAll("*").remove();
+    d3.select("#drChampPlot").selectAll("*").remove();
+    d3.select("#bestConstructorName").selectAll("*").remove();
+    d3.select("#bestConstructorVictories").selectAll("*").remove();
+    d3.select("#bestConstructorWC").selectAll("*").remove();
+    d3.select("#bestConstructorImage").selectAll("*").remove();
+    d3.select("#constructorsPlot").selectAll("*").remove();
+    d3.select("#csChampPlot").selectAll("*").remove();
+    champDrivKeyValue = [];
+    champConsKeyValue = [];
+    data_count = [];
+    drInfo = [];
+    cons_count = [];
+    consInfo = [];
+    driv_champ_wins = [];
+    cons_champ_wins = [];
+    lastRacesId = [];
+    d3.queue()
+        .defer(d3.csv, races)
+        .await(getLastRaces);
+    d3.queue()
+        .defer(d3.csv, drivers)
+        .defer(d3.csv, constructors)
+        .defer(d3.csv, results)
+        .defer(d3.csv, races)
+        .await(processResults);
+    d3.queue()
+        .defer(d3.csv, drivers)
+        .defer(d3.csv, driver_standings)
+        .await(processDriversChampionships);
+    d3.queue()
+        .defer(d3.csv, constructors)
+        .defer(d3.csv, constructor_standings)
+        .await(processConstructorsChampionships);
+});
 
-function processRaceResults(err, drvs, rsts) {
+function processResults(err, drvs, cons, rsts, rcs) {
     driver_wins = [];
-    rsts.forEach(grandPrix => {
-        drvs.forEach(driv => {
-            if(driv.driverId === grandPrix.driverId && +grandPrix.position == 1) {
-                let driverName = driv.forename + " " + driv.surname;
-                driver_wins.push({'driver' : driverName});
-                driver_urls[driverName] = driv.url;
+    constructor_wins = [];
+    rcs.forEach(race => {
+        rsts.forEach(grandPrix => {
+            if(race.raceId === grandPrix.raceId) {
+                drvs.forEach(driv => {
+                    if(race.year >= startYear && race.year <= endYear && driv.driverId === grandPrix.driverId && +grandPrix.position == 1) {
+                        let driverName = driv.forename + " " + driv.surname;
+                        driver_wins.push({'driver' : driverName});
+                        driver_urls[driverName] = driv.url;
+                    }
+                });
+                cons.forEach(c => {
+                    if(race.year >= startYear && race.year <= endYear && c.constructorId === grandPrix.constructorId && +grandPrix.position == 1) {
+                        constructor_wins.push({'constructor' : c.name});
+                        constructor_urls[c.name] = c.url;
+                    }
+                });
             }
         });
     });
@@ -67,9 +133,21 @@ function processRaceResults(err, drvs, rsts) {
 
     data_count.slice(0, 10).forEach(d => {
         getDrivInfo(d.key);
-    })
+    });
 
-    //console.log(drInfo);
+    cons_count = d3.nest()
+        .key(function(d){
+            return d.constructor;
+        })
+        .rollup(function(dr) {
+            return dr.length;
+        })
+        .entries(constructor_wins)
+        .sort(function(a, b) {return d3.descending(a.value, b.value)});
+
+    cons_count.slice(0, 10).forEach(c => {
+        getConsInfo(c.key);
+    });
 
     var bestDriverCont = d3.select("#bestDriver");
     bestDriverCont.attr("class", "center-align").classed("svg-container", true);
@@ -105,7 +183,7 @@ function processRaceResults(err, drvs, rsts) {
                     imageWidth = imageWidth * ratio;    // Reset width to match scaled image
                     imageHeight = imageHeight * ratio;    // Reset height to match scaled image
                 }
-                bestDriverCont.append("a")
+                d3.select("#bestDriverImage").append("a")
                     .attr("href", driver_urls[driverName])
                     .attr("target", "_blank")
                     .append("img")
@@ -117,7 +195,54 @@ function processRaceResults(err, drvs, rsts) {
         }
     });
 
+    var bestConstructorDiv = d3.select("#bestConstructor")
+    bestConstructorDiv.attr("class", "center-align").classed("svg-container", true);
+
+    let constructorName = cons_count[0].key;
+
+    d3.select("#bestConstructorName").append("a")
+                                    .attr("href", constructor_urls[constructorName])
+                                    .attr("target", "_blank")
+                                    .text(cons_count[0].key);
+    d3.select("#bestConstructorVictories").text(cons_count[0].value + " victories");
+
+    d3.json(urlImageRequest + constructorName, function(err, mydata) {
+        var firstObj = Object.values(mydata.query.pages)[0];
+        if(firstObj.hasOwnProperty("original")) {
+            let urlImage = firstObj.original.source;
+            var img = new Image();
+            img.addEventListener("load", function(){
+                var imageWidth = this.naturalWidth;
+                var imageHeight = this.naturalHeight;
+                var ratio = 0;
+                var maxWidth = 300, maxHeight = 300;
+                // Check if the current width is larger than the max
+                if(imageWidth > maxWidth){
+                    ratio = maxWidth / imageWidth;   // get ratio for scaling image
+                    imageHeight = imageHeight * ratio;    // Reset height to match scaled image
+                    imageWidth = imageWidth * ratio;    // Reset width to match scaled image
+                }
+
+                // Check if current height is larger than max
+                if(imageHeight > maxHeight){
+                    ratio = maxHeight / imageHeight; // get ratio for scaling image
+                    imageWidth = imageWidth * ratio;    // Reset width to match scaled image
+                    imageHeight = imageHeight * ratio;    // Reset height to match scaled image
+                }
+                d3.select("#bestConstructorImage").append("a")
+                    .attr("href", constructor_urls[constructorName])
+                    .attr("target", "_blank")
+                    .append("img")
+                    .attr("src", urlImage)
+                    .attr("width", imageWidth)
+                    .attr("height", imageHeight);
+            });
+            img.src = urlImage;
+        }
+    });
+
     plotBestDrivers(data_count.slice(0, 10));
+    plotConstructors(cons_count.slice(0, 10));
 }
 
 function getDrivInfo(driv) {
@@ -148,12 +273,6 @@ function getDrivInfo(driv) {
         });
 }
 
-
-d3.queue()
-    .defer(d3.csv, drivers)
-    .defer(d3.csv, results)
-    .await(processRaceResults);
-
 function plotBestDrivers(bestDrivers) {
 
     // set the ranges
@@ -169,10 +288,8 @@ function plotBestDrivers(bestDrivers) {
 
     var bestDPlot = d3.select("#driversPlot").attr("class", "center-align").classed("svg-container", true)
         .append("svg")
-        //.attr("width", drivWidth + marginInfo.left + marginInfo.right)
-        //.attr("height", drivWidth + marginInfo.top + marginInfo.bottom)
         .attr("preserveAspectRatio", "xMinYMin meet")
-        .attr("viewBox", "0 0 " + (drivWidth + marginInfo.left + marginInfo.right) + " " + (drivWidth + marginInfo.top + marginInfo.bottom))
+        .attr("viewBox", "0 0 " + (drivWidth + marginInfo.left + marginInfo.right) + " " + (drivHeight + marginInfo.top + marginInfo.bottom))
         .classed("svg-content-responsive", true)
         .append("g")
         .attr("transform", "translate(" + marginInfo.left + "," + marginInfo.top + ")");
@@ -197,10 +314,10 @@ function plotBestDrivers(bestDrivers) {
     	if (boxWidth > maxWidth) maxWidth = boxWidth;
     });
 
-    drivHeight = drivHeight - maxWidth;
-    gXAxis.attr("transform", "translate(0," + drivHeight + ")");
+    var updatedDrivHeight = drivHeight - maxWidth;
+    gXAxis.attr("transform", "translate(0," + updatedDrivHeight + ")");
 
-    var y = d3.scaleLinear().range([drivHeight, 0]);
+    var y = d3.scaleLinear().range([updatedDrivHeight, 0]);
     y.domain([0, d3.max(bestDrivers, function(d) { return d.value; })]);
 
     bestDPlot.selectAll("bar")
@@ -210,7 +327,7 @@ function plotBestDrivers(bestDrivers) {
         .attr("x", function(d) { return x(d.key); })
         .attr("width", x.bandwidth())
         .attr("y", function(d) { return y(d.value); })
-        .attr("height", function(d) { return drivHeight - y(d.value); })
+        .attr("height", function(d) { return updatedDrivHeight - y(d.value); })
         .style("fill", function(d){ return color(d.key) })
         .on("mouseover", function(d) {
             // Add tooltip
@@ -276,81 +393,6 @@ function plotBestDrivers(bestDrivers) {
         });
 }
 
-function processConstructorResults(err, cons, rsts) {
-    constructor_wins = [];
-    rsts.forEach(race => {
-        cons.forEach(c => {
-            if(c.constructorId === race.constructorId && +race.position == 1) {
-                constructor_wins.push({'constructor' : c.name});
-                constructor_urls[c.name] = c.url;
-            }
-        });
-    });
-
-    cons_count = d3.nest()
-        .key(function(d){
-            return d.constructor;
-        })
-        .rollup(function(dr) {
-            return dr.length;
-        })
-        .entries(constructor_wins)
-        .sort(function(a, b) {return d3.descending(a.value, b.value)});
-
-    cons_count.slice(0, 10).forEach(c => {
-        getConsInfo(c.key);
-    });
-
-    var bestConstructorDiv = d3.select("#bestConstructor")
-    bestConstructorDiv.attr("class", "center-align").classed("svg-container", true);
-
-    let constructorName = cons_count[0].key;
-
-    d3.select("#bestConstructorName").append("a")
-                                    .attr("href", constructor_urls[constructorName])
-                                    .attr("target", "_blank")
-                                    .text(cons_count[0].key);
-    d3.select("#bestConstructorVictories").text(cons_count[0].value + " victories");
-
-    d3.json(urlImageRequest + constructorName, function(err, mydata) {
-        var firstObj = Object.values(mydata.query.pages)[0];
-        if(firstObj.hasOwnProperty("original")) {
-            let urlImage = firstObj.original.source;
-            var img = new Image();
-            img.addEventListener("load", function(){
-                var imageWidth = this.naturalWidth;
-                var imageHeight = this.naturalHeight;
-                var ratio = 0;
-                var maxWidth = 300, maxHeight = 300;
-                // Check if the current width is larger than the max
-                if(imageWidth > maxWidth){
-                    ratio = maxWidth / imageWidth;   // get ratio for scaling image
-                    imageHeight = imageHeight * ratio;    // Reset height to match scaled image
-                    imageWidth = imageWidth * ratio;    // Reset width to match scaled image
-                }
-
-                // Check if current height is larger than max
-                if(imageHeight > maxHeight){
-                    ratio = maxHeight / imageHeight; // get ratio for scaling image
-                    imageWidth = imageWidth * ratio;    // Reset width to match scaled image
-                    imageHeight = imageHeight * ratio;    // Reset height to match scaled image
-                }
-                bestConstructorDiv.append("a")
-                    .attr("href", constructor_urls[constructorName])
-                    .attr("target", "_blank")
-                    .append("img")
-                    .attr("src", urlImage)
-                    .attr("width", imageWidth)
-                    .attr("height", imageHeight);
-            });
-            img.src = urlImage;
-        }
-    });
-
-
-    plotConstructors(cons_count.slice(0, 10));
-}
-
 function getConsInfo(constr) {
     var lastProcRace = "";
     d3.queue()
@@ -376,12 +418,6 @@ function getConsInfo(constr) {
         });
 }
 
-
-d3.queue()
-    .defer(d3.csv, constructors)
-    .defer(d3.csv, results)
-    .await(processConstructorResults);
-
 function plotConstructors(constructorWins) {
 
         // set the ranges
@@ -397,10 +433,8 @@ function plotConstructors(constructorWins) {
 
         var bestCPlot = d3.select("#constructorsPlot").attr("class", "center-align").classed("svg-container", true)
             .append("svg")
-            //.attr("width", consWidth + marginInfo.left + marginInfo.right)
-            //.attr("height", consWidth + marginInfo.top + marginInfo.bottom)
             .attr("preserveAspectRatio", "xMinYMin meet")
-            .attr("viewBox", "0 0 " + (consWidth + marginInfo.left + marginInfo.right) + " " + (consWidth + marginInfo.top + marginInfo.bottom))
+            .attr("viewBox", "0 0 " + (consWidth + marginInfo.left + marginInfo.right) + " " + (consHeight + marginInfo.top + marginInfo.bottom))
             .classed("svg-content-responsive", true)
             .append("g")
             .attr("transform", "translate(" + marginInfo.left + "," + marginInfo.top + ")");
@@ -425,10 +459,10 @@ function plotConstructors(constructorWins) {
         	if (boxWidth > maxWidth) maxWidth = boxWidth;
         });
 
-        consHeight = consHeight - maxWidth;
-        gXAxis.attr("transform", "translate(0," + consHeight + ")");
+        var updatedConsHeight = consHeight - maxWidth;
+        gXAxis.attr("transform", "translate(0," + updatedConsHeight + ")");
 
-        var y = d3.scaleLinear().range([consHeight, 0]);
+        var y = d3.scaleLinear().range([updatedConsHeight, 0]);
         y.domain([0, d3.max(constructorWins, function(d) { return d.value; })]);
 
         bestCPlot.selectAll("bar")
@@ -438,7 +472,7 @@ function plotConstructors(constructorWins) {
             .attr("x", function(d) { return x(d.key); })
             .attr("width", x.bandwidth())
             .attr("y", function(d) { return y(d.value); })
-            .attr("height", function(d) { return consHeight - y(d.value); })
+            .attr("height", function(d) { return updatedConsHeight - y(d.value); })
             .style("fill", function(d){ return color(d.key) })
             .on("mouseover", function(d) {
                 // Add tooltip
@@ -504,17 +538,9 @@ function plotConstructors(constructorWins) {
 
 }
 
-
-
-var lastRacesId = [];
-
-d3.queue()
-        .defer(d3.csv, races)
-        .await(getLastRaces);
-
 function getLastRaces(err, GPs) {
     var gpsByYear = [];
-    for (i = 1950; i < 2020; i++) {
+    for (i = startYear; i <= endYear; i++) {
         GPs.forEach(gp => {
             if(parseInt(gp.year) === i) {
                 gpsByYear.push(+gp.raceId);
@@ -525,13 +551,6 @@ function getLastRaces(err, GPs) {
         gpsByYear = [];
     }
 }
-
-var driv_champ_wins = [];
-
-d3.queue()
-    .defer(d3.csv, drivers)
-    .defer(d3.csv, driver_standings)
-    .await(processDriversChampionships);
 
 function processDriversChampionships(err, drivs, stands) {
     lastRacesId.forEach(lastRace => {
@@ -698,15 +717,6 @@ function plotDrivChamps(champions) {
 
 }
 
-
-// Best constructors wins
-var cons_champ_wins = [];
-
-d3.queue()
-    .defer(d3.csv, constructors)
-    .defer(d3.csv, constructor_standings)
-    .await(processConstructorsChampionships);
-
 function processConstructorsChampionships(err, consts, stands) {
     lastRacesId.forEach(lastRace => {
         stands.forEach(st => {
@@ -862,3 +872,25 @@ function plotConsChamps(champions) {
 
     d3.select("#bestConstructorWC").text(champions[0].value + " world championships");
 }
+
+// Initialize
+d3.queue()
+    .defer(d3.csv, drivers)
+    .defer(d3.csv, constructors)
+    .defer(d3.csv, results)
+    .defer(d3.csv, races)
+    .await(processResults);
+
+d3.queue()
+    .defer(d3.csv, races)
+    .await(getLastRaces);
+
+d3.queue()
+    .defer(d3.csv, drivers)
+    .defer(d3.csv, driver_standings)
+    .await(processDriversChampionships);
+
+d3.queue()
+    .defer(d3.csv, constructors)
+    .defer(d3.csv, constructor_standings)
+    .await(processConstructorsChampionships);
