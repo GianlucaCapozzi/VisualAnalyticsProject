@@ -184,6 +184,8 @@ function makeRacesPlot() {
             .style("float", "left")
             .style("margin-right", "5px")
             .style("color", function(d){ return color(d.key) })
+            .style("opacity", 0.5)
+            .attr("class", function(d){ return d.key.replace(/\./g, "").replace(/\s/g, '') + "forLegend" })
             .text(function(d) { drivers.push(d.key); return d.key; })
             .style("font-size", 15)
             .on("click", function(d){
@@ -191,6 +193,10 @@ function makeRacesPlot() {
                 var currOpacity = d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot").style("opacity");
                 if (currOpacity == 1) {
                     removeA(selectedDrivers, d.key);
+                    d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, '') + "forLegend")
+                        .transition()
+                        .duration(1000)
+                        .style("opacity", 0.5);
                     d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot")
                         .transition()
                         .duration(1000)
@@ -198,11 +204,27 @@ function makeRacesPlot() {
                 }
                 else {
                     selectedDrivers.push(d.key);
+                    d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, '') + "forLegend")
+                        .transition()
+                        .duration(1000)
+                        .style("opacity", 1);
                     d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot")
                         .transition()
                         .duration(1000)
                         .style("opacity", 1);
                 }
+            })
+            .on("mouseover", function() {
+                var currDriver = d3.select(this);
+                currDriver.style("opacity", 1);
+            })
+            .on("mouseout", function() {
+                var currDriver = d3.select(this);
+                var isSelected = false;
+                for (var i = 0; i < selectedDrivers.length; i++) {
+                    if (selectedDrivers[i].replace(/\./g, "").replace(/\s/g, '') + "forLegend" == currDriver.attr("class")) isSelected = true;
+                }
+                if (!isSelected) currDriver.style("opacity", 0.5);
             });
 
     // Show only first driver

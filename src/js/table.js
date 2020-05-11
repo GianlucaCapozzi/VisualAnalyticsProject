@@ -54,6 +54,10 @@ function makeTable(ranking) {
                     .transition()
                     .duration(500)
                     .style("opacity", 0.05);
+                d3.selectAll("." + d.Driver.replace(/\./g, "").replace(/\s/g, '') + "forLegend")
+                    .transition()
+                    .duration(1000)
+                    .style("opacity", 0.5);
                 d3.selectAll("." + d.Driver.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot")
                     .transition()
                     .duration(1000)
@@ -65,6 +69,10 @@ function makeTable(ranking) {
                 d3.selectAll("." + d.Driver.replace(/\./g, "").replace(/\s/g, '')+"ForRace")
                     .transition()
                     .duration(500)
+                    .style("opacity", 1);
+                d3.selectAll("." + d.Driver.replace(/\./g, "").replace(/\s/g, '') + "forLegend")
+                    .transition()
+                    .duration(1000)
                     .style("opacity", 1);
                 d3.selectAll("." + d.Driver.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot")
                     .transition()

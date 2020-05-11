@@ -151,6 +151,10 @@ function getChampions(lastRace) {
                                 .transition()
                                 .duration(1000)
                                 .style("opacity", 1);
+                            d3.selectAll("." + champion.replace(/\./g, "").replace(/\s/g, '') + "forLegend")
+                                .transition()
+                                .duration(1000)
+                                .style("opacity", 1);
                         }
                     })
                 }

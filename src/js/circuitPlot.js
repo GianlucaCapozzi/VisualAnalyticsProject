@@ -283,7 +283,7 @@ var x_quali, y_quali;
 var qualiStandingPlot;
 
 function qualiPlot(standingList) {
-    console.log(standingList);
+    //console.log(standingList);
 
     var specifier = "%M:%S.%L";
     var parsedData = []

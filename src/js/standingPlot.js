@@ -162,16 +162,14 @@ function makePlot() {
         .enter()
         .append('g')
         .append("text")
-        //.attr("class", function(d) {
-            //console.log(tracks);
-        //    return d.key.replace(/\./g, "").replace(/\s/g, '') + "ForRace otherDriversForRace"
-        //})
         .datum(function(d) { return {name: d.key, value: d.values[d.values.length - 1]}; }) // keep only the last value of each time series
         .attr("transform", function(d) { return "translate(" + x(d.value.race) + "," + y(d.value.position) + ")"; }) // Put the text at the position of the last point
         .attr("x", 12) // shift the text a bit more right
         .text(function(d) { return d.name; })
         .style("fill", function(d){ return color(d.name); })
         .style("font-size", 15)
+        .style("opacity", 0.5)
+        .attr("class", function(d) {return d.name.replace(/\./g, "").replace(/\s/g, '') + "forLegend"})
         .on("click", function(d) {
             var currOpacity = d3.selectAll("." + d.name.replace(/\./g, "").replace(/\s/g, '')+"ForRace").style("opacity");
             if (currOpacity == 1) {
@@ -180,6 +178,10 @@ function makePlot() {
                     .transition()
                     .duration(500)
                     .style("opacity", 0.05);
+                d3.selectAll("." + d.name.replace(/\./g, "").replace(/\s/g, '') + "forLegend")
+                    .transition()
+                    .duration(1000)
+                    .style("opacity", 0.5);
                 d3.selectAll("." + d.name.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot")
                     .transition()
                     .duration(1000)
@@ -192,28 +194,29 @@ function makePlot() {
                     .transition()
                     .duration(500)
                     .style("opacity", 1);
+                d3.selectAll("." + d.name.replace(/\./g, "").replace(/\s/g, '') + "forLegend")
+                    .transition()
+                    .duration(1000)
+                    .style("opacity", 1);
                 d3.selectAll("." + d.name.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot")
                     .transition()
                     .duration(1000)
                     .style("opacity", 1);
                 d3.selectAll("." + d.name.replace(/\./g, "").replace(/\s/g, '') + "ForTable").style("color", "#FF0000");
             }
-            /*
-            if(d3.select(this).style("opacity") != 0.1){
-                d3.selectAll("." + d.name.replace(/\./g, "").replace(/\s/g, '')+"ForRace")
-                    .transition()
-                    .duration(500)
-                    .style("opacity", 0.1);
+        })
+        .on("mouseover", function() {
+            var currDriver = d3.select(this);
+            currDriver.style("opacity", 1);
+        })
+        .on("mouseout", function() {
+            var currDriver = d3.select(this);
+            var isSelected = false;
+            for (var i = 0; i < selectedDrivers.length; i++) {
+                if (selectedDrivers[i].replace(/\./g, "").replace(/\s/g, '') + "forLegend" == currDriver.attr("class")) isSelected = true;
             }
-            else {
-                console.log(d.name.replace(/\./g, "").replace(/\s/g, ''));
-                d3.selectAll("." + d.name.replace(/\./g, "").replace(/\s/g, '')+"ForRace")
-                    .transition()
-                    .duration(500)
-                    .style("opacity", 1);
-            }
-            */
-        });
+            if (!isSelected) currDriver.style("opacity", 0.5);
+        });;
 
     //console.log(driv_rank[driv_rank.length-1]);
 
@@ -224,6 +227,10 @@ function makePlot() {
         .style("opacity", 0.05);
     for (var i = 0; i < selectedDrivers.length; i++) {
         d3.selectAll("." + selectedDrivers[i].replace(/\./g, "").replace(/\s/g, '')+"ForRace")
+            .transition()
+            .duration(500)
+            .style("opacity", 1);
+        d3.selectAll("." + selectedDrivers[i].replace(/\./g, "").replace(/\s/g, '')+"forLegend")
             .transition()
             .duration(500)
             .style("opacity", 1);
