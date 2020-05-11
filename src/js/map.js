@@ -146,7 +146,11 @@ function getChampions(lastRace) {
                         if(ds.driverId === d.driverId) {
                             var champion = d.forename + " " + d.surname;
                             selectedDrivers.push(champion);
-                            d3.select("#drivChampLab").html("Drivers' champion</br>" + champion + "</br>");
+                            d3.select("#drivChampLabName")
+                                .append("a")
+                                .text(champion)
+                                .attr("href", driver_urls[champion])
+                                .attr("target", "_blank");
                             d3.selectAll("." + champion.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot")
                                 .transition()
                                 .duration(1000)
@@ -178,7 +182,7 @@ function getChampions(lastRace) {
                                             imageWidth = imageWidth * ratio;    // Reset width to match scaled image
                                             imageHeight = imageHeight * ratio;    // Reset height to match scaled image
                                         }
-                                        d3.select("#drivChampLab").append("a")
+                                        d3.select("#drivChampLabImage").append("a")
                                             .attr("href", driver_urls[champion])
                                             .attr("target", "_blank")
                                             .append("img")
@@ -197,9 +201,13 @@ function getChampions(lastRace) {
                 if(+cs.raceId === lastRace && cs.positionText === "1") {
                     cons.forEach(c => {
                         if(cs.constructorId === c.constructorId) {
-                            var consChanpion = c.name;
-                            d3.select("#consChampLab").html("Constructors' champion </br>" + consChanpion + "</br>");
-                            d3.json(urlImageRequest + consChanpion, function(err, mydata) {
+                            var consChampion = c.name;
+                            d3.select("#consChampLabName")
+                                .append("a")
+                                .text(consChampion)
+                                .attr("href", constructor_urls[consChampion])
+                                .attr("target", "_blank");
+                            d3.json(urlImageRequest + consChampion, function(err, mydata) {
                                 var firstObj = Object.values(mydata.query.pages)[0];
                                 if(firstObj.hasOwnProperty("original")) {
                                     let urlImage = firstObj.original.source;
@@ -222,8 +230,8 @@ function getChampions(lastRace) {
                                             imageWidth = imageWidth * ratio;    // Reset width to match scaled image
                                             imageHeight = imageHeight * ratio;    // Reset height to match scaled image
                                         }
-                                        d3.select("#consChampLab").append("a")
-                                            .attr("href", driver_urls[consChanpion])
+                                        d3.select("#consChampLabImage").append("a")
+                                            .attr("href", constructor_urls[consChampion])
                                             .attr("target", "_blank")
                                             .append("img")
                                             .attr("src", urlImage)

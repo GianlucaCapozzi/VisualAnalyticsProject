@@ -22,6 +22,10 @@ var drInfo = [];
 var champDrivKeyValue = [];
 var champConsKeyValue = [];
 
+var constructor_wins = [];
+var cons_count = [];
+var consInfo = []
+
 var drChampPlot;
 var csChampPlot;
 
@@ -257,11 +261,6 @@ function plotBestDrivers(bestDrivers) {
             return y(d.value);
         });
 }
-
-var constructor_wins = [];
-var cons_count = [];
-var constructor_urls = {};
-var consInfo = []
 
 function processConstructorResults(err, cons, rsts) {
     constructor_wins = [];
