@@ -89,6 +89,11 @@ $("#yearSelect").on("change", function() {
     maxDrivers = 0;
     let year = $("#yearSelect").val();
 
+    d3.select("#drivChampLabName").selectAll("*").remove();
+    d3.select("#drivChampLabImage").selectAll("*").remove();
+    d3.select("#consChampLabName").selectAll("*").remove();
+    d3.select("#consChampLabImage").selectAll("*").remove();
+
     d3.queue()
         .defer(d3.csv, circuits)
         .defer(d3.csv, races)
