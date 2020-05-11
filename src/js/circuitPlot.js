@@ -102,7 +102,17 @@ function populateCircSel(err, crts) {
 
 function makeTimesPlot(currCirc) {
 
+    console.log(tracks_to_show[0]);
+
+    if(!tracks_to_show.includes(currCirc)) {
+        currCirc = tracks_to_show[0];
+    }
+
     var currCircTimes = [];
+    var currYear;
+
+    //console.log(sel_year);
+
     bestTimes.forEach(d => {
         if(d.key === currCirc) {
             d.values.forEach(v => {
@@ -115,13 +125,29 @@ function makeTimesPlot(currCirc) {
         if(qs.key === currCirc) {
             qs.values.forEach(qsv => {
                 //console.log(currCircTimes[currCircTimes.length-1].year);
-                if(parseInt(qsv.key) === parseInt(currCircTimes[currCircTimes.length-1].year)) {
-                    //console.log(qsv)
+                if(sel_year != "") {
+                    //console.log(sel_year);
+                    currCircTimes.forEach(d => {
+                        if(parseInt(sel_year) === parseInt(d.year)) {
+                             currYear = parseInt(sel_year);
+                        }
+                        else {
+                            currYear = parseInt(currCircTimes[currCircTimes.length-1].year);
+                        }
+                    });
+                }
+                else {
+                    currYear = parseInt(currCircTimes[currCircTimes.length-1].year);
+                }
+                if(parseInt(qsv.key) === currYear) {
+                    console.log(currYear)
                     qualiPlot(qsv.values);
                 }
-            })
+            });
         }
     });
+
+    d3.select("#circuitsTitle").append("h4").text("Circuits Info: " + currCirc + ", Year: " + currYear);
 
     var specifier = "%M:%S.%L";
     var parsedData = []
@@ -270,6 +296,8 @@ function makeTimesPlot(currCirc) {
                         //console.log(qsv);
                         if(parseInt(qsv.key) === d.year) {
                             //console.log(qsv)
+                            d3.select("#circuitsTitle").selectAll("*").remove();
+                            d3.select("#circuitsTitle").append("h4").text("Circuits Info: " + currCirc + ", Year: " + d.year);
                             updateQualiPlot(qsv.values);
                         }
                     })
@@ -332,7 +360,7 @@ function qualiPlot(standingList) {
     // text label for the x axis
     qualiStandingPlot.append("text")
         .attr("x", circuitPlotWidth/2)
-        .attr("y", heightUpdated + marginCircuitPlot.top + marginCircuitPlot.bottom + 30)
+        .attr("y", heightUpdated + marginCircuitPlot.top + marginCircuitPlot.bottom + 10)
         .style("text-anchor", "middle")
         .style("fill", "red")
         .style("font", "20px f1font")
@@ -367,11 +395,6 @@ function qualiPlot(standingList) {
         .enter()
         .append("circle")
         .attr("class", "qualiDots")
-        .style("fill", function(d){ return color(d.constructor) })
-        .attr("cx", function(d) { return x_quali(+d.position); })
-        .attr("cy", function(d) { return y_quali(d3.timeParse(specifier)(d.time)); })
-        .attr("r", 8)
-        .attr("stroke", function(d){ return color(d.constructor) })
         .on("mouseover", function(d) {
             $(".tooltip")
                 .css("transition", "1s")
@@ -385,13 +408,20 @@ function qualiPlot(standingList) {
             $(".tooltip")
                         .css("transition", "1s")
                         .css("opacity", 0);
-        });;
+        })
+        .style("fill", function(d){ return color(d.constructor) })
+        .transition()
+        .duration(2000)
+        .attr("cx", function(d) { return x_quali(+d.position); })
+        .attr("cy", function(d) { return y_quali(d3.timeParse(specifier)(d.time)); })
+        .attr("r", 8)
+        .attr("stroke", function(d){ return color(d.constructor) });
 
 }
 
 function updateQualiPlot(standingList) {
     var specifier = "%M:%S.%L";
-    var parsedData = []
+    var parsedData = [];
 
     console.log(standingList);
 
@@ -441,7 +471,7 @@ function updateQualiPlot(standingList) {
         })
         .style("fill", function(d){ return color(d.constructor) })
         .transition()
-        .duration(1500)
+        .duration(2000)
         .attr("cx", function(d) { return x_quali(+d.position); })
         .attr("cy", function(d) { return y_quali(d3.timeParse(specifier)(d.time)); })
         .attr("r", 8)
@@ -452,6 +482,7 @@ function updateQualiPlot(standingList) {
 d3.select("#circuitSelect").on("change", function(d) {
     d3.select("#circuitPlot").selectAll("*").remove();
     d3.select("#qualiStandingPlot").selectAll("*").remove();
+    d3.select("#circuitsTitle").selectAll("*").remove();
     var selectedOption = $("#circuitSelect option:selected").text();
     console.log(selectedOption);
     makeTimesPlot(selectedOption);

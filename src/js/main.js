@@ -38,7 +38,7 @@ $("#sidenav-trigger").on("click", function(event) {
      $('.sidenav').sidenav('open');
 });
 
-for (let i = 2019; i > 1950; i--) {
+for (let i = 2019; i > 1949; i--) {
     let year = "<option value=" + i + ">" + i + "</option>";
     $("#yearSelect").append(year);
 }
@@ -48,6 +48,7 @@ var tracks = [];
 var racesId = [];
 var racesIdForRank = []; // Array for compute drivers' ranking
 var raceId;
+var sel_year = "";
 var res = [];
 var driv_rank = [];
 var circ_names = [];
