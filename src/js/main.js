@@ -10,6 +10,9 @@ var qualifying = dataset.concat("/qualifying.csv");
 
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 
+var urlImageRequest = "https://cors-anywhere.herokuapp.com/https://it.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&pilicense=any&titles=";
+var driver_urls = {};
+
 var onCloseModal = function() {
     d3.select("#standingPlot").selectAll("*").remove();
     d3.select("#resTable").selectAll("*").remove();

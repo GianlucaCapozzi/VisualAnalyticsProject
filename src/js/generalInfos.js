@@ -16,9 +16,6 @@ var consDonutWidth = $("#racesView").width() * 40 / 45 - marginDonut.left - marg
 var consDonutHeight = $("#racesView").height() - marginDonut.top - marginDonut.bottom;
 
 var data_count = [];
-var driver_urls = {};
-
-var urlImageRequest = "https://cors-anywhere.herokuapp.com/https://it.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&pilicense=any&titles=";
 
 var drInfo = [];
 
