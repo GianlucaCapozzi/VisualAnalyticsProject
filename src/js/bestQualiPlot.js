@@ -226,8 +226,7 @@ function makeTimesPlot(currCirc) {
         .attr("r", 8)
         .attr("stroke", "white")
         .on("mouseover", function(d) {
-            var x_pos = d3.event.pageX;
-            var y_pos = d3.event.pageY;
+            var whereOver = this;
             //console.log(d);
             var findStationIdLink = "https://api.meteostat.net/v1/stations/nearby?lat=" + d.lat + "&lon=" + d.long + "&limit=1&key=RmlE0dX0";
             d3.json(findStationIdLink, function(err, mydata) {
@@ -244,8 +243,8 @@ function makeTimesPlot(currCirc) {
                     }
                     $(".tooltip")
                         .css("transition", "1s")
-                        .css("left", x_pos + "px")
-                        .css("top", y_pos + "px")
+                        .css("left", (parseInt(d3.select(whereOver).attr("cx")) + document.getElementById("modal1").offsetLeft + document.getElementById("modalContent").offsetLeft + document.getElementById("modalContainer").offsetLeft + document.getElementById("bestQualiPlot").offsetLeft + 150) + "px")
+                        .css("top", (parseInt(d3.select(whereOver).attr("cy")) + document.getElementById("bestQualiPlot").offsetTop) + "px")
                         .css("opacity", 1)
                         .css("display", "inline-block")
                         .html("Best qualifying time: " + d.time + "<br/>Temperature max: " + temp_max + "<br/> Temperature min: " + temp_min);

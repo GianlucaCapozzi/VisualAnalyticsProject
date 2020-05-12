@@ -73,7 +73,7 @@ function qualiPlot(standingList) {
         .on("mouseover", function(d) {
             $(".tooltip")
                 .css("transition", "1s")
-                .css("left", (parseInt(d3.select(this).attr("cx")) + document.getElementById("modal1").offsetLeft + document.getElementById("modalContent").offsetLeft + document.getElementById("modalContainer").offsetLeft + document.getElementById("qualiStandingPlot").offsetLeft + 200) + "px")
+                .css("left", (parseInt(d3.select(this).attr("cx")) + document.getElementById("modal1").offsetLeft + document.getElementById("modalContent").offsetLeft + document.getElementById("modalContainer").offsetLeft + document.getElementById("qualiStandingPlot").offsetLeft + 180) + "px")
                 .css("top", (parseInt(d3.select(this).attr("cy")) + document.getElementById("qualiStandingPlot").offsetTop) + "px")
                 .css("opacity", 1)
                 .css("display", "inline-block")
@@ -131,7 +131,7 @@ function updateQualiPlot(standingList) {
             // Add tooltip
             $(".tooltip")
                 .css("transition", "1s")
-                .css("left", (parseInt(d3.select(this).attr("cx")) + document.getElementById("modal1").offsetLeft + document.getElementById("modalContent").offsetLeft + document.getElementById("modalContainer").offsetLeft + document.getElementById("qualiStandingPlot").offsetLeft + 200) + "px")
+                .css("left", (parseInt(d3.select(this).attr("cx")) + document.getElementById("modal1").offsetLeft + document.getElementById("modalContent").offsetLeft + document.getElementById("modalContainer").offsetLeft + document.getElementById("qualiStandingPlot").offsetLeft + 180) + "px")
                 .css("top", (parseInt(d3.select(this).attr("cy")) + document.getElementById("qualiStandingPlot").offsetTop) + "px")
                 .css("opacity", 1)
                 .css("display", "inline-block")
