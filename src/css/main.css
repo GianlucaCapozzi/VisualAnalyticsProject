@@ -85,17 +85,18 @@ html, body, #viewsContainer {
     display: grid;
     grid-gap: 10px;
     grid-template-columns: 50% 50%;
-    grid-template-rows: 10% 6% 6% auto;
+    grid-template-rows: 10% 6% 6% auto auto;
     grid-template-areas:
         "header header"
         "selector selector"
         "title1 title2"
-        "circ quali";
+        "circ quali"
+        "lap percentage";
     background: #222222;
     color: #ffffff;
 }
 
-#circuitsTitle, #circuitsSelector, #circuitPlotTitle, #qualiStandingPlotTitle, #circuitPlot, #qualiStandingPlot {
+#circuitsTitle, #circuitsSelector, #circuitPlotTitle, #qualiStandingPlotTitle, #circuitPlot, #qualiStandingPlot, #lapTimesPlot{
     display: block;
     float: left;
     padding: 10px;

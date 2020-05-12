@@ -357,10 +357,14 @@ function clicked(d) {
                             .css("opacity", 0);
             })
             .on("click", function(d) {
+                console.log(d);
                 d3.select("#circuitPlot").selectAll("*").remove();
                 d3.select("#qualiStandingPlot").selectAll("*").remove();
                 d3.select("#circuitsTitle").selectAll("*").remove();
+                d3.select("#lapTimesPlot").selectAll("*").remove();
                 makeTimesPlot(d.name);
+                getWinPolePercentage(d.circuitId);
+                getLapDistribution(d.circuitId);
                 let active = false, newOpacity = 0.3;
                 g.selectAll("#mapID").style("opacity", newOpacity);
                 g.selectAll("#circleMap").style("opacity", newOpacity);

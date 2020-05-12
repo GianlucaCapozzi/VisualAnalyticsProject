@@ -7,6 +7,7 @@ var driver_standings = dataset.concat("/driver_standings.csv");
 var constructors = dataset.concat("/constructors.csv");
 var constructor_standings = dataset.concat("/constructor_standings.csv");
 var qualifying = dataset.concat("/qualifying.csv");
+var lapTimes = dataset.concat("/lap_times.csv");
 
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 
@@ -57,6 +58,7 @@ var season_races = [];
 var maxDrivers = 0;
 
 var year = $("#yearSelect").val();
+sel_year = year;
 
 $("#homeButton").on("click", function() {
     $("#infoContainer").addClass("scale-out");

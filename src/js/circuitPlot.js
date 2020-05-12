@@ -18,6 +18,7 @@ d3.queue()
     .defer(d3.csv, constructors)
     .await(processBestLaps);
 
+
 function processBestLaps(err, circs, gps, qualis, drivs, constrs) {
     gps.forEach(race => {
         qualis.forEach(quali => {
@@ -155,8 +156,6 @@ function makeTimesPlot(currCirc) {
     currCircTimes.forEach(function(d) {
         parsedData.push(d3.timeParse(specifier)(d.time));
     });
-
-    //console.log(parsedData);
 
     currCircTimes.forEach(function(d) {
         d.year = +d.year;
