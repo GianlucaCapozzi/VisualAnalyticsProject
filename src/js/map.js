@@ -75,8 +75,7 @@ function processRacesByYear(err, circ, rac, res) {
     updateData();
 }
 
-
-$("#yearSelect").on("change", function() {
+function onYearChange(newYear) {
     selectedDrivers = [];
     countries_with_circ = [];
     tracks = [];
@@ -87,7 +86,7 @@ $("#yearSelect").on("change", function() {
     season_drivers = [];
     season_races = [];
     maxDrivers = 0;
-    sel_year = $("#yearSelect").val();
+    sel_year = newYear;
 
     d3.select("#drivChampLabName").selectAll("*").remove();
     d3.select("#drivChampLabImage").selectAll("*").remove();
@@ -140,6 +139,10 @@ $("#yearSelect").on("change", function() {
     d3.select("#racesPlotLegendView").selectAll("*").remove();
     d3.select("#racesView").selectAll("*").remove();
     getRaces();
+}
+
+$("#yearSelect").on("change", function() {
+    onYearChange($("#yearSelect").val());
 });
 
 function getChampions(lastRace) {
@@ -353,7 +356,6 @@ function clicked(d) {
                             .css("opacity", 0);
             })
             .on("click", function(d) {
-                console.log(d);
                 d3.select("#circuitPlot").selectAll("*").remove();
                 d3.select("#qualiStandingPlot").selectAll("*").remove();
                 d3.select("#circuitTitle").selectAll("*").remove();
@@ -372,9 +374,6 @@ function clicked(d) {
                 getStanding();
                 getResults();
                 $('.modal').modal('open');
-            })
-            .on("dbclick", function(d){
-                d3.select("#resTable").selectAll("*").remove();
             });
     });
     var bounds = path.bounds(d),
