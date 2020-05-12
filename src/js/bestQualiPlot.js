@@ -114,8 +114,23 @@ function makeTimesPlot(currCirc) {
     quali_standing.forEach(qs => {
         if(qs.key === currCirc) {
             qs.values.forEach(qsv => {
-                if(parseInt(qsv.key) === sel_year) {
-                    console.log(sel_year)
+                //console.log(currCircTimes[currCircTimes.length-1].year);
+                if(sel_year != "") {
+                    //console.log(sel_year);
+                    currCircTimes.forEach(d => {
+                        if(parseInt(sel_year) === parseInt(d.year)) {
+                             currYear = parseInt(sel_year);
+                        }
+                        else {
+                            currYear = parseInt(currCircTimes[currCircTimes.length-1].year);
+                        }
+                    });
+                }
+                else {
+                    currYear = parseInt(currCircTimes[currCircTimes.length-1].year);
+                }
+                if(parseInt(qsv.key) === currYear) {
+                    console.log(currYear)
                     qualiPlot(qsv.values);
                 }
             });
