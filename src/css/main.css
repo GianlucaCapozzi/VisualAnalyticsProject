@@ -37,12 +37,43 @@ html, body, #viewsContainer {
     color: #ffffff;
 }
 
+.grid-container-modal {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 5% auto 5% auto;
+    background: #222222;
+    color: #ffffff;
+}
+
+.modal {
+    position: absolute;
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 90% !important;
+    border-radius:20px;
+    background-color: #222222 !important;
+    overflow: hidden;
+}
+
+.modal-footer, .modal-header {
+    background-color: #000000 !important;
+}
+
+.modal-header {
+    padding-bottom: 10px;
+}
+
 #mapView, #racesView, #mapViewTitle, #racesViewTitle, #gr_1, #racesPlotLegendView, #resTable, #standingPlot {
     display: block;
     float: left;
     padding: 10px;
     background: #222222;
     color: #ffffff;
+}
+
+#modalContainer {
+    margin-bottom: 50px;
 }
 
 .grid-container-info {
@@ -116,19 +147,6 @@ html, body, #viewsContainer {
     padding: 10px;
 }
 
-.modal {
-    position: absolute;
-    width: 100% !important;
-    height: 100% !important;
-    max-height: 80% !important;
-    border-radius:20px;
-    background-color: #222222 !important;
-}
-
-.modal-footer, .modal-header {
-    background-color: #000000 !important;
-}
-
 div.tooltip {
     position: absolute;
     text-align: center;
@@ -140,6 +158,7 @@ div.tooltip {
     border: 0px;
     border-radius: 8px;
     pointer-events: none;
+    z-index: 99;
 }
 
 @font-face {

@@ -25,7 +25,7 @@ function makeTable(ranking) {
 
     var columns = ["Driver", "Result"];
 
-    d3.select("#resTable").attr("class", "center-align").append('h5').text("Order of Arrival");
+    d3.select("#resTable").attr("class", "center-align");
     var table = d3.select("#resTable").append('table');
 
     var thead = table.append('thead');
@@ -62,6 +62,10 @@ function makeTable(ranking) {
                     .transition()
                     .duration(1000)
                     .style("opacity", 0);
+                d3.selectAll("." + d.Driver.replace(/\./g, "").replace(/\s/g, '')+"forLapTimesPlot")
+                        .transition()
+                        .duration(500)
+                        .style("opacity", 0);
                 d3.selectAll("." + d.Driver.replace(/\./g, "").replace(/\s/g, '') + "ForTable").style("color", "#FFFFFF");
             }
             else {
@@ -78,6 +82,10 @@ function makeTable(ranking) {
                     .transition()
                     .duration(1000)
                     .style("opacity", 1);
+                d3.selectAll("." + d.Driver.replace(/\./g, "").replace(/\s/g, '')+"forLapTimesPlot")
+                        .transition()
+                        .duration(500)
+                        .style("opacity", 1);
                 d3.selectAll("." + d.Driver.replace(/\./g, "").replace(/\s/g, '') + "ForTable").style("color", "#FF0000");
             }
         });

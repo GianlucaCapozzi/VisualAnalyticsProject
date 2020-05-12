@@ -52,7 +52,6 @@ function makePlot() {
     var sWidth = $("#standingPlot").width() * 0.7;
     var sHeight = $("#racesView").height();
 
-    d3.select("#standingPlot").append("h5").text("General Standing");
     var scatPlot = d3.select("#standingPlot").attr("class", "center-align")
                     .append("svg")
                     .attr("width", sWidth + marginPlot.left + marginPlot.right)
@@ -144,8 +143,8 @@ function makePlot() {
             //console.log(driv_rank);
             $(".tooltip")
                 .css("transition", "1s")
-                .css("left", (parseInt(d3.select(this).attr("cx")) + document.getElementById("modal1").offsetLeft) + "px")
-                .css("top", (parseInt(d3.select(this).attr("cy")) + document.getElementById("modal1").offsetTop) + "px")
+                .css("left", (parseInt(d3.select(this).attr("cx")) + document.getElementById("modal1").offsetLeft + document.getElementById("modalContent").offsetLeft + document.getElementById("modalContainer").offsetLeft) + "px")
+                .css("top", (parseInt(d3.select(this).attr("cy")) + document.getElementById("modal1").offsetTop + document.getElementById("modalContent").offsetTop + document.getElementById("modalContainer").offsetTop) + "px")
                 .css("opacity", 1)
                 .css("display", "inline-block")
                 .html(tracks[d.race + firstRound][1]);
@@ -186,6 +185,10 @@ function makePlot() {
                     .transition()
                     .duration(1000)
                     .style("opacity", 0);
+                d3.selectAll("." + d.name.replace(/\./g, "").replace(/\s/g, '')+"forLapTimesPlot")
+                        .transition()
+                        .duration(500)
+                        .style("opacity", 0);
                 d3.selectAll("." + d.name.replace(/\./g, "").replace(/\s/g, '') + "ForTable").style("color", "#FFFFFF");
             }
             else {
@@ -202,6 +205,10 @@ function makePlot() {
                     .transition()
                     .duration(1000)
                     .style("opacity", 1);
+                d3.selectAll("." + d.name.replace(/\./g, "").replace(/\s/g, '')+"forLapTimesPlot")
+                        .transition()
+                        .duration(500)
+                        .style("opacity", 1);
                 d3.selectAll("." + d.name.replace(/\./g, "").replace(/\s/g, '') + "ForTable").style("color", "#FF0000");
             }
         })

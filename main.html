@@ -123,10 +123,7 @@
                 </div>
             </div>
             <div class="grid-item title center-align" id="circuitPlotTitle" style="grid-area: title1">Best Times Evolution</div>
-            <div class="grid-item title center-align" id="qualiStandingPlotTitle" style="grid-area: title2">Qualifying Times</div>
             <div class="grid-item" id="circuitPlot" style="grid-area: circ"></div>
-            <div class="grid-item" id="qualiStandingPlot" style="grid-area: quali"></div>
-            <div class="grid-item" id="lapTimesPlot" style="grid-area: lap"></div>
             <div class="grid-item" id="lapTimesLegend" style="grid-area: legend"></div>
         </div>
 
@@ -152,11 +149,17 @@
             <div class="modal-header">
                 <h4 id="modalTitle" class="center-align"></h4>
             </div>
-            <div class="modal-content">
-                <div id="modalContainer" class="grid-container-home">
-                        <div class="tooltip"></div>
-                        <div class="grid-item" id="standingPlot"></div>
-                        <div class="grid-item" id="resTable"></div>
+            <div class="modal-content" id="modalContent">
+                <div class="tooltip"></div>
+                <div id="modalContainer" class="grid-container-modal">
+                    <div class="grid-item center-align title" id="standingPlotTitle">General Standing</div>
+                    <div class="grid-item center-align title" id="lapTimesPlotTitle">Lap Times</div>
+                    <div class="grid-item" id="standingPlot"></div>
+                    <div class="grid-item" id="lapTimesPlot"></div>
+                    <div class="grid-item center-align title" id="qualiStandingPlotTitle">Qualifying Times</div>
+                    <div class="grid-item center-align title" id="resTableTitle">Order of Arrival</div>
+                    <div class="grid-item" id="qualiStandingPlot"></div>
+                    <div class="grid-item" id="resTable"></div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -177,6 +180,7 @@
         <script src="src/js/racesPlot.js"></script>
         <script src="src/js/table.js"></script>
         <script src="src/js/standingPlot.js"></script>
+        <script src="src/js/qualiStandingPlot.js"></script>
         <script src="src/js/generalInfos.js"></script>
         <script src="src/js/pca.js"></script>
         <script src="src/js/circuitPlot.js"></script>
