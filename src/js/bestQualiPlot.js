@@ -116,12 +116,14 @@ function makeTimesPlot(currCirc) {
             qs.values.forEach(qsv => {
                 //console.log(currCircTimes[currCircTimes.length-1].year);
                 if(sel_year != "") {
-                    //console.log(sel_year);
                     currCircTimes.forEach(d => {
                         if(parseInt(sel_year) === parseInt(d.year)) {
-                             currYear = parseInt(sel_year);
+                            console.log(sel_year);
+                            currYear = parseInt(sel_year);
+                            return;
                         }
                         else {
+                            console.log("AOOOOOO: " + currYear);
                             currYear = parseInt(currCircTimes[currCircTimes.length-1].year);
                         }
                     });
