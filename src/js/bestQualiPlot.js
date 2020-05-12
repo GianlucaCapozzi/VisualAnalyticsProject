@@ -256,8 +256,8 @@ function makeTimesPlot(currCirc) {
                         //console.log(qsv);
                         if(parseInt(qsv.key) === d.year) {
                             //console.log(qsv)
-                            d3.select("#circuitsTitle").selectAll("*").remove();
-                            d3.select("#circuitsTitle").append("h4").text("Circuits Info: " + currCirc + ", Year: " + d.year);
+                            if (d.year === parseInt(sel_year)) d3.select("#qualiStandingPlotTitle").text("Qualifying Times");
+                            else d3.select("#qualiStandingPlotTitle").text("Qualifying Times " + d.year);
                             updateQualiPlot(qsv.values);
                         }
                     })
