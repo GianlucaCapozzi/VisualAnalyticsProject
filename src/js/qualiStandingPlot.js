@@ -5,6 +5,18 @@ var qualiStandingPlotHeight = $("#racesView").height();
 var x_quali, y_quali;
 var qualiStandingPlot;
 
+function plotQualiTime(currCirc) {
+    quali_standing.forEach(qs => {
+        if(qs.key === currCirc) {
+            qs.values.forEach(qsv => {
+                if(parseInt(qsv.key) === parseInt(sel_year)) {
+                    qualiPlot(qsv.values);
+                }
+            });
+        }
+    });
+}
+
 function qualiPlot(standingList) {
     var specifier = "%M:%S.%L";
     var parsedData = [];

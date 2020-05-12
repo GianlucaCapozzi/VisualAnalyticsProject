@@ -359,8 +359,10 @@ function clicked(d) {
                 d3.select("#circuitTitle").selectAll("*").remove();
                 d3.select("#lapTimesPlot").selectAll("*").remove();
                 d3.select("#lapTimesLegend").selectAll("*").remove();
+                d3.select("#pitPlot").selectAll("*").remove();
                 makeTimesPlot(d.name);
-                getWinPolePercentage(d.circuitId);
+                plotQualiTime(d.name);
+                getWinPolePercentage(d.circuitId, sel_year, sel_year);
                 getLapDistribution(d.circuitId);
                 sel_circuit = d.circuitId;
                 getPitStopDistribution(sel_circuit, sel_year, sel_year);

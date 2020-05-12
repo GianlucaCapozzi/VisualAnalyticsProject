@@ -34,6 +34,9 @@ sliderModal.noUiSlider.on('update', function (values, handle) {
 });
 sliderModal.noUiSlider.on('change', function (values, handle) {
     d3.select("#circuitRangeTitle").text("Analysis from " + startYearModal + " to " + endYearModal);
+    d3.select("#pitPlot").selectAll("*").remove();
+    getPitStopDistribution(sel_circuit, startYearModal, endYearModal);
+    getWinPolePercentage(sel_circuit, startYearModal, endYearModal);
 });
 
 d3.queue()
@@ -101,22 +104,11 @@ function processBestLaps(err, circs, gps, qualis, drivs, constrs) {
 function makeTimesPlot(currCirc) {
 
     var currCircTimes = [];
-    var currYear;
 
     bestTimes.forEach(d => {
         if(d.key === currCirc) {
             d.values.forEach(v => {
                 currCircTimes.push({'year': v.year, 'time': v.time, "lat": v.lat, "long": v.long, "date": v.date});
-            });
-        }
-    });
-
-    quali_standing.forEach(qs => {
-        if(qs.key === currCirc) {
-            qs.values.forEach(qsv => {
-                if(parseInt(qsv.key) === parseInt(sel_year)) {
-                    qualiPlot(qsv.values);
-                }
             });
         }
     });
