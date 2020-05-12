@@ -20,10 +20,9 @@ var onCloseModal = function() {
     d3.select("#standingPlot").selectAll("*").remove();
     d3.select("#resTable").selectAll("*").remove();
     d3.select("#qualiStandingPlot").selectAll("*").remove();
-    let active = true, newOpacity = 1;
-    g.selectAll("#mapID").style("opacity", newOpacity);
-    g.selectAll("#circleMap").style("opacity", newOpacity);
-    mapID.active = active;
+    g.selectAll("#mapID").style("opacity", 1);
+    g.selectAll("#circleMap").style("opacity", 1);
+    mapID.active = true;
 };
 
 $(document).ready(function(){

@@ -3,9 +3,9 @@ var racesPlotWidth = $("#racesView").width();
 var racesPlotHeight = $("#racesView").height();
 var aspect = racesPlotWidth / racesPlotHeight;
 
-var firstRound = 0;
+var racesPlot, x, y;
 
-function processRaces(err, drvs, rsts) {
+function processRaces(error, drvs, rsts) {
     season_races = [];
     firstRound = d3.min(racesIdForRank) - 1;
     rsts.forEach(race => {
@@ -18,7 +18,6 @@ function processRaces(err, drvs, rsts) {
             });
         }
     });
-
     // Group by pilots
     season_races = d3.nest()
                         .key(function(d) { return d.driver; })
@@ -33,8 +32,6 @@ function processRaces(err, drvs, rsts) {
         }
         season_races[i].values = season_races[i].values.sort(function(a,b) {return d3.ascending(a.race,b.race);});
     }
-    //console.log(season_races);
-
     makeRacesPlot();
 }
 
@@ -46,8 +43,8 @@ function getRaces() {
 }
 
 function makeRacesPlot() {
-
-    var scatPlot = d3.select("#racesView").attr("class", "center-align").classed("svg-container", true)
+    d3.select("#racesView").selectAll("*").remove();
+    racesPlot = d3.select("#racesView").attr("class", "center-align").classed("svg-container", true)
                     .append("svg")
                     //.attr("width", sWidth + marginRacePlot.left + marginRacePlot.right)
                     //.attr("height", sHeight + marginRacePlot.top + marginRacePlot.bottom)
@@ -66,9 +63,9 @@ function makeRacesPlot() {
         d3.select("#racesView").selectAll("svg").attr('height', Math.round(w / aspect));
     }
 
-    var x = d3.scaleLinear().range([0, racesPlotWidth]);
+    x = d3.scaleLinear().range([0, racesPlotWidth]);
 
-    var y = d3.scaleLinear().range([racesPlotHeight, 0]);
+    y = d3.scaleLinear().range([racesPlotHeight, 0]);
 
     var xAxis = d3.axisBottom(x)
                     .tickFormat(d3.format('d'))
@@ -83,14 +80,14 @@ function makeRacesPlot() {
     y.domain([0, maxDrivers + 1]);
 
     // Add the x axis
-    scatPlot.append("g")
+    racesPlot.append("g")
             .style("font", "20px f1font")
             .attr("class", "x-axis axis")
             .attr("transform", "translate(0," + racesPlotHeight + ")")
             .call(xAxis);
 
     // text label for the x axis
-    scatPlot.append("text")
+    racesPlot.append("text")
         .attr("x", racesPlotWidth/2)
         .attr("y", racesPlotHeight + marginRacePlot.top + 10)
         .style("text-anchor", "middle")
@@ -99,12 +96,12 @@ function makeRacesPlot() {
         .text("Races");
 
     // Add the y axis
-    scatPlot.append("g")
+    racesPlot.append("g")
             .style("font", "20px f1font")
             .attr("class", "y-axis axis")
             .call(yAxis);
 
-    scatPlot.append("text")
+    racesPlot.append("text")
         .attr("transform", "rotate(-90)")
         .attr("y", 0 - marginRacePlot.left)
         .attr("x", 0 - racesPlotHeight / 2)
@@ -118,7 +115,7 @@ function makeRacesPlot() {
     var line = d3.line()
                   .x(function(d) { return x(+d.race) })
                   .y(function(d) { return y(+d.position) })
-    scatPlot.selectAll("lines")
+    racesPlot.selectAll("lines")
         .data(season_races)
         .enter()
         .append("path")
@@ -129,7 +126,7 @@ function makeRacesPlot() {
         .style("fill", "none");
 
     // Add the points
-    scatPlot.selectAll("dots")
+    racesPlot.selectAll("dots")
         .data(season_races)
         .enter()
         .append('g')
@@ -159,7 +156,7 @@ function makeRacesPlot() {
         });
 
     // Add a legend at the end of each line
-    /*scatPlot.selectAll("myLabels")
+    /*racesPlot.selectAll("myLabels")
             .data(season_races)
             .enter()
             .append('g')
@@ -173,6 +170,7 @@ function makeRacesPlot() {
             .style("font-size", 15);*/
 
     // Add a legend (interactive)
+    d3.select("#racesPlotLegendView").selectAll("*").remove();
     var legend = d3.select("#racesPlotLegendView");
     legend.append("div").text("Drivers:").style("width", "100%").attr("class", "title center-align");
     var legendContainer = legend.append("div").attr("class", "legend-grid");

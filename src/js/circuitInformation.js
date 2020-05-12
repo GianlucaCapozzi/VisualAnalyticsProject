@@ -27,7 +27,7 @@ function getWinPolePercentage(circuitId, startYear, endYear) {
             console.log("WINNERS: " + (numEditions));
             var perc = (numPoleWinners * 100) / (numEditions);
             console.log(perc);
-            d3.select("#percentagePoleWinner").html("<h5> % POLE = VICTORY: </h5>" + "<br/>" + perc);
+            d3.select("#percentagePoleWinner").html("<h5> % POLE = VICTORY: </h5>" + "<br/>" + (Math.round(perc * 100) / 100).toFixed(2));
         });
 }
 
@@ -160,7 +160,7 @@ function getPitStopDistribution(circuitId, startYear, endYear) {
                     }
                 });
             }
-            
+
             var nested_pit_times = d3.nest()
                     .key(function(d) { return d.year; })
                     .key(function(d) { return d.lap; })
@@ -173,7 +173,7 @@ function getPitStopDistribution(circuitId, startYear, endYear) {
 
 function makePitPlot(nested_pit_times) {
 
-    console.log(nested_pit_times);
+    //console.log(nested_pit_times);
 
     var pitPlot = d3.select("#pitPlot").attr("class", "center-align")
         .append("svg")
@@ -209,7 +209,7 @@ function makePitPlot(nested_pit_times) {
         .style("fill", "red")
         .style("font", "20px f1font")
         .text("Lap");
-    
+
     var z = d3.scaleLinear()
         .domain([0, d3.max(maxPitsForYear)])
         .range([4, 20]);
@@ -221,8 +221,7 @@ function makePitPlot(nested_pit_times) {
         .style("fill", function(d) {
             return color(d.key);
         })
-        .attr("class", function(d) { 
-            console.log(d);
+        .attr("class", function(d) {
             return "ForPoints" + d.key + " otherLegends"})
         .selectAll("myPoints")
         .data(function(d) {

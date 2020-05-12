@@ -1,7 +1,6 @@
 var map = d3.select("#mapView");
 var width = map.node().getBoundingClientRect().width;
 var height = map.node().getBoundingClientRect().height;
-var firstRun = true;
 
 var active = d3.select(null);
 
@@ -35,13 +34,6 @@ d3.queue()
         .await(processRacesByYear);
 
 function processRacesByYear(err, circ, rac, res) {
-    countries_with_circ = [];
-    tracks = [];
-    racesId = [];
-    racesIdForRank = [];
-    driv_rank = [];
-    season_drivers = [];
-    maxDrivers = 0;
     rac.forEach(r => {
         if(r.year == sel_year) {
             circ.forEach(c => {
@@ -69,8 +61,6 @@ function processRacesByYear(err, circ, rac, res) {
             }
         }
     });
-    //console.log("MAX DRIVERS: "+ maxDrivers);
-    //console.log(racesIdForRank[racesIdForRank.length-1]);
     getChampions(racesIdForRank[racesIdForRank.length-1]);
     updateData();
 }
@@ -99,45 +89,6 @@ function onYearChange(newYear) {
         .defer(d3.csv, results)
         .await(processRacesByYear);
 
-    function processRacesByYear(err, circ, rac, res) {
-
-        rac.forEach(r => {
-            if(r.year == sel_year) {
-                circ.forEach(c => {
-                    if(r.circuitId === c.circuitId) {
-                        if(!tracks.includes(c.name)) {
-                            //console.log(c.name);
-                            countries_with_circ.push(c.country);
-                            tracks[r.raceId] = [c.name, r.name];
-                            racesId[c.name] = r.raceId;
-                            racesIdForRank.push(+r.raceId);
-                        }
-                    }
-                });
-                var locMax = 0;
-                res.forEach(rs => {
-                    if(rs.raceId === r.raceId) {
-                        //console.log("POS ORD: " + rs.positionOrder + " race: " + rs.raceId);
-                        if(parseInt(rs.positionOrder) >= locMax) {
-                            locMax = parseInt(rs.positionOrder);
-                        }
-                    }
-                });
-                if(locMax >= maxDrivers) {
-                    maxDrivers = locMax;
-                }
-            }
-        });
-        //console.log("MAX DRIVERS: " + maxDrivers);
-        getChampions(racesIdForRank[racesIdForRank.length-1]);
-
-        d3.select("#circuitPlot").selectAll("*").remove();
-        d3.select("#qualiStandingPlot").selectAll("*").remove();
-
-        updateData();
-    }
-    d3.select("#racesPlotLegendView").selectAll("*").remove();
-    d3.select("#racesView").selectAll("*").remove();
     getRaces();
 }
 
@@ -152,112 +103,112 @@ function getChampions(lastRace) {
         .defer(d3.csv, constructor_standings)
         .defer(d3.csv, constructors)
         .await(function(er, driv_s, driv, cons_s, cons) {
-            driv_s.forEach(ds => {
-                if(+ds.raceId === lastRace && ds.positionText === "1") {
-                    driv.forEach(d => {
-                        if(ds.driverId === d.driverId) {
-                            var champion = d.forename + " " + d.surname;
-                            selectedDrivers.push(champion);
-                            d3.select("#drivChampLabName")
-                                .append("a")
-                                .text(champion)
-                                .attr("href", driver_urls[champion])
-                                .attr("target", "_blank");
-                            d3.selectAll("." + champion.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot")
-                                .transition()
-                                .duration(1000)
-                                .style("opacity", 1);
-                            d3.selectAll("." + champion.replace(/\./g, "").replace(/\s/g, '') + "forLegend")
-                                .transition()
-                                .duration(1000)
-                                .style("opacity", 1);
-                            d3.json(urlImageRequest + champion, function(err, mydata) {
-                                var firstObj = Object.values(mydata.query.pages)[0];
-                                if(firstObj.hasOwnProperty("original")) {
-                                    let urlImage = firstObj.original.source;
-                                    var img = new Image();
-                                    img.addEventListener("load", function(){
-                                        var imageWidth = this.naturalWidth;
-                                        var imageHeight = this.naturalHeight;
-                                        var ratio = 0;
-                                        var maxWidth = 300, maxHeight = 300;
-                                        // Check if the current width is larger than the max
-                                        if(imageWidth > maxWidth){
-                                            ratio = maxWidth / imageWidth;   // get ratio for scaling image
-                                            imageHeight = imageHeight * ratio;    // Reset height to match scaled image
-                                            imageWidth = imageWidth * ratio;    // Reset width to match scaled image
-                                        }
-
-                                        // Check if current height is larger than max
-                                        if(imageHeight > maxHeight){
-                                            ratio = maxHeight / imageHeight; // get ratio for scaling image
-                                            imageWidth = imageWidth * ratio;    // Reset width to match scaled image
-                                            imageHeight = imageHeight * ratio;    // Reset height to match scaled image
-                                        }
-                                        d3.select("#drivChampLabImage").append("a")
-                                            .attr("href", driver_urls[champion])
-                                            .attr("target", "_blank")
-                                            .append("img")
-                                            .attr("src", urlImage)
-                                            .attr("width", imageWidth)
-                                            .attr("height", imageHeight);
-                                    });
-                                    img.src = urlImage;
-                                }
-                            });
-                        }
-                    })
-                }
-            });
-            cons_s.forEach(cs => {
-                if(+cs.raceId === lastRace && cs.positionText === "1") {
-                    cons.forEach(c => {
-                        if(cs.constructorId === c.constructorId) {
-                            var consChampion = c.name;
-                            d3.select("#consChampLabName")
-                                .append("a")
-                                .text(consChampion)
-                                .attr("href", constructor_urls[consChampion])
-                                .attr("target", "_blank");
-                            d3.json(urlImageRequest + consChampion, function(err, mydata) {
-                                var firstObj = Object.values(mydata.query.pages)[0];
-                                if(firstObj.hasOwnProperty("original")) {
-                                    let urlImage = firstObj.original.source;
-                                    var img = new Image();
-                                    img.addEventListener("load", function(){
-                                        var imageWidth = this.naturalWidth;
-                                        var imageHeight = this.naturalHeight;
-                                        var ratio = 0;
-                                        var maxWidth = 300, maxHeight = 300;
-                                        // Check if the current width is larger than the max
-                                        if(imageWidth > maxWidth){
-                                            ratio = maxWidth / imageWidth;   // get ratio for scaling image
-                                            imageHeight = imageHeight * ratio;    // Reset height to match scaled image
-                                            imageWidth = imageWidth * ratio;    // Reset width to match scaled image
-                                        }
-
-                                        // Check if current height is larger than max
-                                        if(imageHeight > maxHeight){
-                                            ratio = maxHeight / imageHeight; // get ratio for scaling image
-                                            imageWidth = imageWidth * ratio;    // Reset width to match scaled image
-                                            imageHeight = imageHeight * ratio;    // Reset height to match scaled image
-                                        }
-                                        d3.select("#consChampLabImage").append("a")
-                                            .attr("href", constructor_urls[consChampion])
-                                            .attr("target", "_blank")
-                                            .append("img")
-                                            .attr("src", urlImage)
-                                            .attr("width", imageWidth)
-                                            .attr("height", imageHeight);
-                                    });
-                                    img.src = urlImage;
-                                }
-                            });
-                        }
-                    });
-                }
-            });
+        driv_s.forEach(ds => {
+            if(+ds.raceId === lastRace && ds.positionText === "1") {
+                driv.forEach(d => {
+                    if(ds.driverId === d.driverId) {
+                        var champion = d.forename + " " + d.surname;
+                        selectedDrivers.push(champion);
+                        d3.select("#drivChampLabName")
+                            .append("a")
+                            .text(champion)
+                            .attr("href", driver_urls[champion])
+                            .attr("target", "_blank");
+                        d3.selectAll("." + champion.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot")
+                            .transition()
+                            .duration(1000)
+                            .style("opacity", 1);
+                        d3.selectAll("." + champion.replace(/\./g, "").replace(/\s/g, '') + "forLegend")
+                            .transition()
+                            .duration(1000)
+                            .style("opacity", 1);
+                        d3.json(urlImageRequest + champion, function(err, mydata) {
+                            var firstObj = Object.values(mydata.query.pages)[0];
+                            if(firstObj.hasOwnProperty("original")) {
+                                let urlImage = firstObj.original.source;
+                                var img = new Image();
+                                img.addEventListener("load", function(){
+                                    var imageWidth = this.naturalWidth;
+                                    var imageHeight = this.naturalHeight;
+                                    var ratio = 0;
+                                    var maxWidth = 300, maxHeight = 300;
+                                    // Check if the current width is larger than the max
+                                    if(imageWidth > maxWidth){
+                                        ratio = maxWidth / imageWidth;   // get ratio for scaling image
+                                        imageHeight = imageHeight * ratio;    // Reset height to match scaled image
+                                        imageWidth = imageWidth * ratio;    // Reset width to match scaled image
+                                    }
+                                    // Check if current height is larger than max
+                                    if(imageHeight > maxHeight){
+                                        ratio = maxHeight / imageHeight; // get ratio for scaling image
+                                        imageWidth = imageWidth * ratio;    // Reset width to match scaled image
+                                        imageHeight = imageHeight * ratio;    // Reset height to match scaled image
+                                    }
+                                    d3.select("#drivChampLabImage").append("a")
+                                        .attr("href", driver_urls[champion])
+                                        .attr("target", "_blank")
+                                        .append("img")
+                                        .attr("src", urlImage)
+                                        .attr("width", imageWidth)
+                                        .attr("height", imageHeight);
+                                });
+                                img.src = urlImage;
+                            }
+                        });
+                    }
+                })
+            }
         });
+        cons_s.forEach(cs => {
+            if(+cs.raceId === lastRace && cs.positionText === "1") {
+                cons.forEach(c => {
+                    if(cs.constructorId === c.constructorId) {
+                        var consChampion = c.name;
+                        d3.select("#consChampLabName")
+                            .append("a")
+                            .text(consChampion)
+                            .attr("href", constructor_urls[consChampion])
+                            .attr("target", "_blank");
+                        d3.json(urlImageRequest + consChampion, function(err, mydata) {
+                            var firstObj = Object.values(mydata.query.pages)[0];
+                            if(firstObj.hasOwnProperty("original")) {
+                                let urlImage = firstObj.original.source;
+                                var img = new Image();
+                                img.addEventListener("load", function(){
+                                    var imageWidth = this.naturalWidth;
+                                    var imageHeight = this.naturalHeight;
+                                    var ratio = 0;
+                                    var maxWidth = 300, maxHeight = 300;
+                                    // Check if the current width is larger than the max
+                                    if(imageWidth > maxWidth){
+                                        ratio = maxWidth / imageWidth;   // get ratio for scaling image
+                                        imageHeight = imageHeight * ratio;    // Reset height to match scaled image
+                                        imageWidth = imageWidth * ratio;    // Reset width to match scaled image
+                                    }
+
+                                    // Check if current height is larger than max
+                                    if(imageHeight > maxHeight){
+                                        ratio = maxHeight / imageHeight; // get ratio for scaling image
+                                        imageWidth = imageWidth * ratio;    // Reset width to match scaled image
+                                        imageHeight = imageHeight * ratio;    // Reset height to match scaled image
+                                    }
+                                    d3.select("#consChampLabImage").append("a")
+                                        .attr("href", constructor_urls[consChampion])
+                                        .attr("target", "_blank")
+                                        .append("img")
+                                        .attr("src", urlImage)
+                                        .attr("width", imageWidth)
+                                        .attr("height", imageHeight);
+                                });
+                                img.src = urlImage;
+                                $("#loading").css("display", "none"); // Hide chargement
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    });
 }
 
 function updateData() {
@@ -289,26 +240,16 @@ function updateData() {
             .attr("d", path);
 
     });
-
-    if(firstRun) {
-        $("#loading").css("display", "none"); // Hide chargement
-        firstRun = false;
-    }
 }
-
-
 
 // color country
 function colorCountry(country) {
-    //console.log(country.properties.name);
     if (countries_with_circ.includes(country.properties.name)) {
-        //console.log(country.properties.name);
         return '#1CA3DE';
     } else {
         return '#e7d8ad';
     }
 };
-
 
 function clicked(d) {
     if(!countries_with_circ.includes(d.properties.name)) return reset();
@@ -364,10 +305,10 @@ function clicked(d) {
                 d3.select("#pitPlot").selectAll("*").remove();
                 makeTimesPlot(d.name);
                 plotQualiTime(d.name);
-                getWinPolePercentage(d.circuitId, sel_year, sel_year);
+                getWinPolePercentage(d.circuitId, startYearModal, endYearModal);
                 getLapDistribution(d.circuitId);
                 sel_circuit = d.circuitId;
-                getPitStopDistribution(sel_circuit, sel_year, sel_year);
+                getPitStopDistribution(sel_circuit, startYearModal, endYearModal);
                 let active = false, newOpacity = 0.3;
                 g.selectAll("#mapID").style("opacity", newOpacity);
                 g.selectAll("#circleMap").style("opacity", newOpacity);
@@ -402,19 +343,6 @@ function reset() {
     $(".tooltip").css("opacity", 0);
 
     g.selectAll("#mapID").style("opacity", 1);
-
-    res = [];
-    d3.select("#resTable").selectAll("*").remove();
-
-    d3.select("#standingPlot").selectAll("*").remove();
-
-    /*
-    var mapActive = mapID.active ? false : true,
-                    newOpacity = mapActive ? 0.3 : 1;
-                g.selectAll("#mapID").style("opacity", newOpacity);
-                mapID.mapActive = mapActive;
-    */
-
 
     svg.transition()
         .duration(750)
