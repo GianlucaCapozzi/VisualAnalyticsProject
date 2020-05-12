@@ -137,7 +137,7 @@ function makeTimesPlot(currCirc) {
         }
     });
 
-    d3.select("#circuitTitle").text("Circuits Info: " + currCirc + ", Year: " + sel_year);
+    d3.select("#circuitTitle").append("h4").text("Circuits Info: " + currCirc + ", Year: " + sel_year);
 
     var specifier = "%M:%S.%L";
     var parsedData = []
@@ -291,11 +291,3 @@ function makeTimesPlot(currCirc) {
 
 }
 
-d3.select("#circuitSelect").on("change", function(d) {
-    d3.select("#circuitPlot").selectAll("*").remove();
-    d3.select("#qualiStandingPlot").selectAll("*").remove();
-    d3.select("#circuitsTitle").selectAll("*").remove();
-    var selectedOption = $("#circuitSelect option:selected").text();
-    console.log(selectedOption);
-    makeTimesPlot(selectedOption);
-});

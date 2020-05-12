@@ -132,11 +132,9 @@ $("#yearSelect").on("change", function() {
         //console.log("MAX DRIVERS: " + maxDrivers);
         getChampions(racesIdForRank[racesIdForRank.length-1]);
 
-        var firstRound = d3.min(racesIdForRank);
         d3.select("#circuitPlot").selectAll("*").remove();
         d3.select("#qualiStandingPlot").selectAll("*").remove();
         d3.select("#circuitsTitle").selectAll("*").remove();
-        makeTimesPlot(tracks[firstRound][0]);
 
         updateData();
     }
@@ -359,7 +357,7 @@ function clicked(d) {
                 console.log(d);
                 d3.select("#circuitPlot").selectAll("*").remove();
                 d3.select("#qualiStandingPlot").selectAll("*").remove();
-                d3.select("#circuitsTitle").selectAll("*").remove();
+                d3.select("#circuitTitle").selectAll("*").remove();
                 d3.select("#lapTimesPlot").selectAll("*").remove();
                 d3.select("#lapTimesLegend").selectAll("*").remove();
                 makeTimesPlot(d.name);
