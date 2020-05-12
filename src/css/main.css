@@ -67,7 +67,7 @@ html, body, #viewsContainer {
 #mapView, #racesView, #mapViewTitle, #racesViewTitle, #gr_1, #racesPlotLegendView, #standingPlotTitle, #lapTimesPlotTitle, #standingPlot, #lapTimesPlot, #qualiStandingPlotTitle, #resTableTitle, #qualiStandingPlot, #resTable, #circuitTitle, #yearModalSliderContainer, #circuitData, #bestQualiPlotTitle, #pitPlotTitle, #bestQualiPlot, #pitPlot {
     display: block;
     float: left;
-    padding: 0px;
+    padding: 5px;
     background: #222222;
     color: #ffffff;
 }
