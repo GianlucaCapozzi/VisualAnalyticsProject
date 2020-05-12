@@ -64,7 +64,7 @@ html, body, #viewsContainer {
     padding-bottom: 10px;
 }
 
-#mapView, #racesView, #mapViewTitle, #racesViewTitle, #gr_1, #racesPlotLegendView, #standingPlotTitle, #lapTimesPlotTitle, #standingPlot, #lapTimesPlot, #qualiStandingPlotTitle, #resTableTitle, #qualiStandingPlot, #resTable, #circuitTitle, #yearModalSliderContainer, #circuitData, #bestQualiPlotTitle, #pitPlotTitle, #bestQualiPlot, #pitPlot {
+#mapView, #racesView, #mapViewTitle, #racesViewTitle, #gr_1, #racesPlotLegendView, #circuitTitle, #standingPlotTitle, #lapTimesPlotTitle, #standingPlot, #lapTimesPlot, #qualiStandingPlotTitle, #resTableTitle, #qualiStandingPlot, #resTable, #circuitRangeTitle, #yearModalSliderContainer, #circuitData, #bestQualiPlotTitle, #pitPlotTitle, #bestQualiPlot, #pitPlot {
     display: block;
     float: left;
     padding: 5px;
@@ -72,7 +72,7 @@ html, body, #viewsContainer {
     color: #ffffff;
 }
 
-#circuitTitle {
+#circuitTitle, #circuitRangeTitle {
     grid-column: 1 / 3;
 }
 

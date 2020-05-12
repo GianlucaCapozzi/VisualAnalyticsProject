@@ -32,6 +32,9 @@ sliderModal.noUiSlider.on('update', function (values, handle) {
         $("#endYearModal").text(endYearModal);
     }
 });
+sliderModal.noUiSlider.on('change', function (values, handle) {
+    d3.select("#circuitRangeTitle").text("Analysis from " + startYearModal + " to " + endYearModal);
+});
 
 d3.queue()
     .defer(d3.csv, circuits)
@@ -134,7 +137,7 @@ function makeTimesPlot(currCirc) {
         }
     });
 
-    d3.select("#circuitTitle").append("h4").text("Circuits Info: " + currCirc + ", Year: " + currYear);
+    d3.select("#circuitTitle").text("Circuits Info: " + currCirc + ", Year: " + currYear);
 
     var specifier = "%M:%S.%L";
     var parsedData = []
@@ -148,6 +151,7 @@ function makeTimesPlot(currCirc) {
         d.time = d.time;
     });
 
+    d3.select("#bestQualiPlot").selectAll("*").remove();
     var bestTimesPlot = d3.select("#bestQualiPlot").attr("class", "center-align")
         .append("svg")
         .attr("width", circuitPlotWidth + marginCircuitPlot.left + marginCircuitPlot.right)
