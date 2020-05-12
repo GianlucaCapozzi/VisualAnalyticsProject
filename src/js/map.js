@@ -134,7 +134,6 @@ $("#yearSelect").on("change", function() {
 
         d3.select("#circuitPlot").selectAll("*").remove();
         d3.select("#qualiStandingPlot").selectAll("*").remove();
-        d3.select("#circuitsTitle").selectAll("*").remove();
 
         updateData();
     }
