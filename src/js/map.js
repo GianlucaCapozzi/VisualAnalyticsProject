@@ -366,6 +366,8 @@ function clicked(d) {
                 makeTimesPlot(d.name);
                 getWinPolePercentage(d.circuitId);
                 getLapDistribution(d.circuitId);
+                sel_circuit = d.circuitId;
+                getPitStopDistribution(sel_circuit, sel_year, sel_year);
                 let active = false, newOpacity = 0.3;
                 g.selectAll("#mapID").style("opacity", newOpacity);
                 g.selectAll("#circleMap").style("opacity", newOpacity);

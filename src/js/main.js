@@ -8,6 +8,7 @@ var constructors = dataset.concat("/constructors.csv");
 var constructor_standings = dataset.concat("/constructor_standings.csv");
 var qualifying = dataset.concat("/qualifying.csv");
 var lapTimes = dataset.concat("/lap_times.csv");
+var pitStops = dataset.concat("/pit_stops.csv");
 
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 
@@ -51,6 +52,7 @@ var racesId = [];
 var racesIdForRank = []; // Array for compute drivers' ranking
 var raceId;
 var sel_year = "";
+var sel_circuit = "";
 var res = [];
 var driv_rank = [];
 var circ_names = [];

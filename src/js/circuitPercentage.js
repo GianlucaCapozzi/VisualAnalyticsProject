@@ -139,3 +139,24 @@ function makeLapTimesPlot(lap_times, nested_lap_times) {
             .style("opacity", 1);
     }
 }
+
+function getPitStopDistribution(circuitId, startYear, endYear) {
+    d3.queue()
+        .defer(d3.csv, pitStops)
+        .defer(d3.csv, races)
+        .await(function(er, pit_stops, rac) {
+            var pit_list = [];
+            for(var i = parseInt(startYear); i < parseInt(endYear) + 1; i++) {
+                rac.forEach(r => {
+                    if(parseInt(r.year) === i && parseInt(r.circuitId) === parseInt(circuitId)) {
+                        pit_stops.forEach(ps => {
+                            if(parseInt(ps.raceId) === parseInt(r.raceId)) {
+                                pit_list.push({"year" : i, "lap" : ps.lap});
+                            }
+                        });
+                    }
+                });
+            }
+            console.log(pit_list);
+        });
+}
