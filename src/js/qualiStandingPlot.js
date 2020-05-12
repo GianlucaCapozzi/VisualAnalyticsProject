@@ -13,7 +13,7 @@ function qualiPlot(standingList) {
         parsedData.push(d3.timeParse(specifier)(d.time));
     });
 
-    qualiStandingPlot = d3.select("#qualiStandingPlot").attr("class", "center-align").classed("svg-container", true)
+    qualiStandingPlot = d3.select("#qualiStandingPlot").attr("class", "center-align")
         .append("svg")
         .attr("width", qualiStantingPlotWidth + marginQualiStandingPlot.left + marginQualiStandingPlot.right)
         .attr("height", qualiStandingPlotHeight + marginQualiStandingPlot.top + marginQualiStandingPlot.bottom)

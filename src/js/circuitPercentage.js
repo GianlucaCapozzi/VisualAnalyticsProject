@@ -65,7 +65,7 @@ function makeLapTimesPlot(lap_times, nested_lap_times) {
         parsedData.push(d3.timeParse(specifier)(d.time));
     });
 
-    var lapTimesPlot = d3.select("#lapTimesPlot").attr("class", "center-align").classed("svg-container", true)
+    var lapTimesPlot = d3.select("#lapTimesPlot").attr("class", "center-align")
         .append("svg")
         .attr("width", lapPlotWidth + marginLapPlot.left + marginLapPlot.right)
         .attr("height", lapPlotHeight + marginLapPlot.top + marginLapPlot.bottom)

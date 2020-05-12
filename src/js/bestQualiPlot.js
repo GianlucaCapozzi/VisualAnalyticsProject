@@ -1,13 +1,37 @@
 
 var marginCircuitPlot = {top: 30, right: 100, bottom: 20, left: 140}
-var circuitPlotWidth = $("#racesView").width() * 50/45 - marginCircuitPlot.left - marginCircuitPlot.right;
-var circuitPlotHeight = $("#racesView").height() - marginCircuitPlot.top - marginCircuitPlot.bottom;
+var circuitPlotWidth = $("#racesView").width() * 50/45 * 0.7;
+var circuitPlotHeight = $("#racesView").height();
 var heightUpdated = 0;
-
-var currentCircuit = "Albert Park Grand Prix Circuit";
 
 var bestTimes = [];
 var quali_standing = [];
+
+var startYearModal = 1950, endYearModal = 2019;
+
+var sliderModal = document.getElementById('yearSliderModal');
+noUiSlider.create(sliderModal, {
+   start: [1950, 2019],
+   connect: true,
+   step: 1,
+   range: {
+       'min': 1950,
+       'max': 2019
+   },
+   format: wNumb({
+       decimals: 0
+   })
+});
+sliderModal.noUiSlider.on('update', function (values, handle) {
+    if(handle == 0) {
+        startYearModal = values[handle];
+        $("#startYearModal").text(startYearModal);
+    }
+    else {
+        endYearModal = values[handle];
+        $("#endYearModal").text(endYearModal);
+    }
+});
 
 d3.queue()
     .defer(d3.csv, circuits)
@@ -69,49 +93,12 @@ function processBestLaps(err, circs, gps, qualis, drivs, constrs) {
     for(let i = 0; i < bestTimes.length; i++) {
         bestTimes[i].values = bestTimes[i].values.sort(function(a, b) { return d3.ascending(+a.year, +b.year)});
     }
-
-    //console.log(quali_standing);
-
-    d3.queue()
-        .defer(d3.csv, circuits)
-        .await(populateCircSel);
-}
-
-var tracks_to_show = [];
-
-
-function populateCircSel(err, crts) {
-    tracks_to_show = [];
-    crts.forEach(circ => {
-        bestTimes.forEach(bt => {
-            if(circ.name === bt.key && !tracks_to_show.includes(circ.name)) tracks_to_show.push(circ.name);
-        });
-    });
-    //console.log(tracks_to_show);
-    tracks_to_show.forEach(track => {
-        //console.log(track);
-        let tr = "<option value=" + track + ">" + track + "</option>";
-        //console.log(tr);
-        $("#circuitSelect").append(tr);
-    })
-    $("#circuitSelect").formSelect();
-
-    makeTimesPlot(currentCircuit);
-
 }
 
 function makeTimesPlot(currCirc) {
 
-    console.log(tracks_to_show[0]);
-
-    if(!tracks_to_show.includes(currCirc)) {
-        currCirc = tracks_to_show[0];
-    }
-
     var currCircTimes = [];
     var currYear;
-
-    //console.log(sel_year);
 
     bestTimes.forEach(d => {
         if(d.key === currCirc) {
@@ -147,7 +134,7 @@ function makeTimesPlot(currCirc) {
         }
     });
 
-    d3.select("#circuitsTitle").append("h4").text("Circuits Info: " + currCirc + ", Year: " + currYear);
+    d3.select("#circuitTitle").append("h4").text("Circuits Info: " + currCirc + ", Year: " + currYear);
 
     var specifier = "%M:%S.%L";
     var parsedData = []
@@ -161,15 +148,10 @@ function makeTimesPlot(currCirc) {
         d.time = d.time;
     });
 
-    //console.log(currCircTimes);
-
-    var bestTimesPlot = d3.select("#circuitPlot").classed("svg-container", true)
+    var bestTimesPlot = d3.select("#bestQualiPlot").attr("class", "center-align")
         .append("svg")
-        //.attr("width", circuitPlotWidth + marginCircuitPlot.left + marginCircuitPlot.right)
-        //.attr("height", circuitPlotWidth + marginCircuitPlot.top + marginCircuitPlot.bottom)
-        .attr("preserveAspectRatio", "xMinYMin meet")
-        .attr("viewBox", "0 0 " + (circuitPlotWidth + marginCircuitPlot.left + marginCircuitPlot.right) + " " + (circuitPlotHeight + marginCircuitPlot.top + marginCircuitPlot.bottom))
-        .classed("svg-content-responsive", true)
+        .attr("width", circuitPlotWidth + marginCircuitPlot.left + marginCircuitPlot.right)
+        .attr("height", circuitPlotWidth + marginCircuitPlot.top + marginCircuitPlot.bottom)
         .append("g")
         .attr("transform", "translate(" + marginCircuitPlot.left + "," + marginCircuitPlot.top + ")");
 
@@ -182,8 +164,8 @@ function makeTimesPlot(currCirc) {
                     .style("font", "20px f1font")
                     .attr("class", "x-axis axis")
                     .call(d3.axisBottom(x)
-                            .tickValues(currCircTimes.map(function(d) { return +d.year; }))
-                            .tickFormat(d3.format("d"))
+                    .tickValues(currCircTimes.map(function(d) { return +d.year; }))
+                    .tickFormat(d3.format("d"))
                     );
 
     gXAxis.selectAll("text")

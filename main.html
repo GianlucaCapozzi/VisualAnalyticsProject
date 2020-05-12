@@ -113,21 +113,6 @@
             </div>
         </div>
 
-        <div id="circuitContainer" class="scale-transition scale-out grid-container-circuits center-align">
-            <div class="grid-item title center-align" id="circuitsTitle" style="grid-area: header"></div>
-            <div class="grid-item" id="circuitsSelector" style="grid-area: selector">
-                <div class="row">
-                    <div class="input-field col s12">
-                        <select id="circuitSelect"></select>
-                    </div>
-                </div>
-            </div>
-            <div class="grid-item title center-align" id="circuitPlotTitle" style="grid-area: title1">Best Times Evolution</div>
-            <div class="grid-item" id="circuitPlot" style="grid-area: circ"></div>
-            <div class="grid-item" id="lapTimesLegend" style="grid-area: legend"></div>
-        </div>
-
-
         <div class="tooltip"></div>
 
         <!-- Menu -->
@@ -140,7 +125,6 @@
             <li id="firstMenuButton"><a><button type="button" id="homeButton" class="waves-effect waves-red btn"><i class="material-icons left">home</i>Home</button></a></li>
             <li><a><button type="button" id="infoButton" class="waves-effect waves-red btn"><i class="material-icons left">info</i>General Info</button></a></li>
             <li><a><button type="button" id="pcaButton" class="waves-effect waves-red btn"><i class="material-icons left">graphic_eq</i>Correlations</button></a></li>
-            <li><a><button type="button" id="circuitButton" class="waves-effect waves-red btn"><i class="material-icons left">timeline</i>Times Update</button></a></li>
         </ul>
 
         <!-- Modal Structure -->
@@ -160,6 +144,20 @@
                     <div class="grid-item center-align title" id="resTableTitle">Order of Arrival</div>
                     <div class="grid-item" id="qualiStandingPlot"></div>
                     <div class="grid-item" id="resTable"></div>
+                    <div class="grid-item center-align title" id="circuitTitle"></div>
+                    <div class="grid-item normalText center-align" id="yearModalSliderContainer">
+                        <div class="grid-item normalText center-align" id="startYearModal">1950</div>
+                        <div class="grid-item center-align" id="yearSliderModal"></div>
+                        <div class="grid-item normalText center-align" id="endYearModal">2019</div>
+                    </div>
+                    <div class="grid-item normalText center-align" id="circuitData">
+                        <div class="grid-item normalText center-align" id="bestDriverTime">Best Time</div>
+                        <div class="grid-item normalText center-align" id="percentagePoleWinner">%</div>
+                    </div>
+                    <div class="grid-item center-align title" id="bestQualiPlotTitle">Best Quali Time</div>
+                    <div class="grid-item center-align title" id="pitPlotTitle">Pit Stops</div>
+                    <div class="grid-item" id="bestQualiPlot"></div>
+                    <div class="grid-item" id="pitPlot"></div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -183,7 +181,7 @@
         <script src="src/js/qualiStandingPlot.js"></script>
         <script src="src/js/generalInfos.js"></script>
         <script src="src/js/pca.js"></script>
-        <script src="src/js/circuitPlot.js"></script>
+        <script src="src/js/bestQualiPlot.js"></script>
         <script src="src/js/circuitPercentage.js"></script>
 
     </body>
