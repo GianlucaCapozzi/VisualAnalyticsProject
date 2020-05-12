@@ -91,12 +91,12 @@ html, body, #viewsContainer {
         "selector selector"
         "title1 title2"
         "circ quali"
-        "lap percentage";
+        "lap legend";
     background: #222222;
     color: #ffffff;
 }
 
-#circuitsTitle, #circuitsSelector, #circuitPlotTitle, #qualiStandingPlotTitle, #circuitPlot, #qualiStandingPlot, #lapTimesPlot{
+#circuitsTitle, #circuitsSelector, #circuitPlotTitle, #qualiStandingPlotTitle, #circuitPlot, #qualiStandingPlot, #lapTimesPlot, #lapTimesLegend{
     display: block;
     float: left;
     padding: 10px;

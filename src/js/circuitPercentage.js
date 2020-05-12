@@ -66,6 +66,8 @@ function makeLapTimesPlot(lap_times, nested_lap_times) {
     lap_times.forEach(function(d) {
         parsedData.push(d3.timeParse(specifier)(d.time));
     });
+
+    console.log(nested_lap_times);
     
     var lapTimesPlot = d3.select("#lapTimesPlot").attr("class", "center-align").classed("svg-container", true)
         .append("svg")
@@ -132,6 +134,7 @@ function makeLapTimesPlot(lap_times, nested_lap_times) {
         .enter()
         .append("path")
         .attr("fill", "none")
+        .attr("class", function(d) { return d.key.replace(/\./g, "").replace(/\s/g, '') + "forLapTimesPlot otherLapDrivers"})
         .attr("stroke", function(d) { return color(d.key); })
         .attr("stroke-widht", 1.5)
         .attr("d", function(d) {
@@ -139,6 +142,51 @@ function makeLapTimesPlot(lap_times, nested_lap_times) {
                 .x(function(d) { return x(+d.lap)})
                 .y(function(d) { return y(d3.timeParse(specifier)(d.time)); })
                 (d.values)
+        });
+    
+    var legend = d3.select("#lapTimesLegend");
+    legend.append("div").text("Drivers:").style("width", "100%").attr("class", "title center-align");
+    var legendContainer = legend.append("div").attr("class", "legend-grid");
+    legendContainer.selectAll("myLegend")
+        .data(nested_lap_times)
+        .enter()
+        .append("h6")
+        .style("float", "left")
+        .style("margin-right", "5px")
+        .style("color", function(d) { return color(d.key); })
+        .style("opacity", 0.5)
+        .attr("class", function(d) { return d.key.replace(/\./g, "").replace(/\s/g, '') + "forLapLegend" })
+        .text(function(d) { return d.key; })
+        .on("click", function(d) {
+            var currOpacity = d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, '') + "forLapTimesPlot").style("opacity");
+            if(currOpacity == 1) {
+                d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, '') + "forLapLegend")
+                    .transition()
+                    .duration(1000)
+                    .style("opacity", 0.5);
+                d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, '') + "forLapTimesPlot")
+                    .transition()
+                    .duration(1000)
+                    .style("opacity", 0);    
+            }
+            else {
+                d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, '') + "forLapLegend")
+                    .transition()
+                    .duration(1000)
+                    .style("opacity", 1);
+                d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, '') + "forLapTimesPlot")
+                    .transition()
+                    .duration(1000)
+                    .style("opacity", 1);
+            }
         })
+        .on("mouseover", function(d) {
+            d3.select(this).style("opacity", 1);
+        });
+
+    d3.selectAll(".otherLapDrivers")
+        .transition()
+        .duration(500)
+        .style("opacity", 0);
 
 }

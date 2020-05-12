@@ -362,6 +362,7 @@ function clicked(d) {
                 d3.select("#qualiStandingPlot").selectAll("*").remove();
                 d3.select("#circuitsTitle").selectAll("*").remove();
                 d3.select("#lapTimesPlot").selectAll("*").remove();
+                d3.select("#lapTimesLegend").selectAll("*").remove();
                 makeTimesPlot(d.name);
                 getWinPolePercentage(d.circuitId);
                 getLapDistribution(d.circuitId);
