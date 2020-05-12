@@ -43,7 +43,7 @@ function processRacesByYear(err, circ, rac, res) {
     season_drivers = [];
     maxDrivers = 0;
     rac.forEach(r => {
-        if(r.year == year) {
+        if(r.year == sel_year) {
             circ.forEach(c => {
                 if(r.circuitId === c.circuitId) {
                     if(!tracks.includes(c.name)) {
@@ -87,8 +87,7 @@ $("#yearSelect").on("change", function() {
     season_drivers = [];
     season_races = [];
     maxDrivers = 0;
-    let year = $("#yearSelect").val();
-    sel_year = year;
+    sel_year = $("#yearSelect").val();
 
     d3.select("#drivChampLabName").selectAll("*").remove();
     d3.select("#drivChampLabImage").selectAll("*").remove();
@@ -104,7 +103,7 @@ $("#yearSelect").on("change", function() {
     function processRacesByYear(err, circ, rac, res) {
 
         rac.forEach(r => {
-            if(r.year == year) {
+            if(r.year == sel_year) {
                 circ.forEach(c => {
                     if(r.circuitId === c.circuitId) {
                         if(!tracks.includes(c.name)) {

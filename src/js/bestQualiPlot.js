@@ -114,30 +114,15 @@ function makeTimesPlot(currCirc) {
     quali_standing.forEach(qs => {
         if(qs.key === currCirc) {
             qs.values.forEach(qsv => {
-                //console.log(currCircTimes[currCircTimes.length-1].year);
-                if(sel_year != "") {
-                    //console.log(sel_year);
-                    currCircTimes.forEach(d => {
-                        if(parseInt(sel_year) === parseInt(d.year)) {
-                             currYear = parseInt(sel_year);
-                        }
-                        else {
-                            currYear = parseInt(currCircTimes[currCircTimes.length-1].year);
-                        }
-                    });
-                }
-                else {
-                    currYear = parseInt(currCircTimes[currCircTimes.length-1].year);
-                }
-                if(parseInt(qsv.key) === currYear) {
-                    console.log(currYear)
+                if(parseInt(qsv.key) === sel_year) {
+                    console.log(sel_year)
                     qualiPlot(qsv.values);
                 }
             });
         }
     });
 
-    d3.select("#circuitTitle").text("Circuits Info: " + currCirc + ", Year: " + currYear);
+    d3.select("#circuitTitle").text("Circuits Info: " + currCirc + ", Year: " + sel_year);
 
     var specifier = "%M:%S.%L";
     var parsedData = []

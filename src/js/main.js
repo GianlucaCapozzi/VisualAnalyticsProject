@@ -51,7 +51,6 @@ var tracks = [];
 var racesId = [];
 var racesIdForRank = []; // Array for compute drivers' ranking
 var raceId;
-var sel_year = "";
 var sel_circuit = "";
 var res = [];
 var driv_rank = [];
@@ -60,8 +59,7 @@ var season_drivers = [];
 var season_races = [];
 var maxDrivers = 0;
 
-var year = $("#yearSelect").val();
-sel_year = year;
+var sel_year = $("#yearSelect").val();
 
 $("#homeButton").on("click", function() {
     $("#infoContainer").addClass("scale-out");
