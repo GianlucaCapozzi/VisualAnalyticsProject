@@ -10,11 +10,12 @@ function plotQualiTime(currCirc) {
         if(qs.key === currCirc) {
             qs.values.forEach(qsv => {
                 if(parseInt(qsv.key) === parseInt(sel_year)) {
-                    qualiPlot(qsv.values);
+                    return qualiPlot(qsv.values);
                 }
             });
         }
     });
+    return $("#qualiStandingPlot").html("<img src='src/images/noData.gif'>");
 }
 
 function qualiPlot(standingList) {
@@ -38,13 +39,11 @@ function qualiPlot(standingList) {
     var xAxis = d3.axisBottom(x_quali)
                     .tickFormat(d3.format('d'))
                     .ticks(standingList.length - 1);
-
     var yAxis = d3.axisLeft(y_quali)
                     .tickFormat(d3.timeFormat("%M:%S.%L"));
 
     x_quali.domain([0, standingList.length]);
     y_quali.domain([d3.min(parsedData), d3.max(parsedData)]);
-
 
     var gXAxis = qualiStandingPlot.append("g")
         .attr("transform", "translate(0," + qualiStandingPlotHeight + ")")
@@ -103,63 +102,64 @@ function qualiPlot(standingList) {
         .attr("cy", function(d) { return y_quali(d3.timeParse(specifier)(d.time)); })
         .attr("r", 8)
         .attr("stroke", function(d){ return color(d.constructor) });
-
 }
 
 function updateQualiPlot(standingList) {
-    var specifier = "%M:%S.%L";
-    var parsedData = [];
+    if (standingList.length == 0) $("#qualiStandingPlot").html("<img src='src/images/noData.gif'>");
+    else {
+        var specifier = "%M:%S.%L";
+        var parsedData = [];
 
-    standingList.forEach(function(d) {
-        parsedData.push(d3.timeParse(specifier)(d.time));
-    });
+        standingList.forEach(function(d) {
+            parsedData.push(d3.timeParse(specifier)(d.time));
+        });
 
-    x_quali.domain([0, standingList.length]);
-    y_quali.domain([d3.min(parsedData), d3.max(parsedData)]);
+        x_quali.domain([0, standingList.length]);
+        y_quali.domain([d3.min(parsedData), d3.max(parsedData)]);
 
-    var xAxis = d3.axisBottom(x_quali)
-                    .tickFormat(d3.format('d'))
-                    .ticks(standingList.length - 1);
+        var xAxis = d3.axisBottom(x_quali)
+                        .tickFormat(d3.format('d'))
+                        .ticks(standingList.length - 1);
 
-    d3.select("#qualiStandingPlot").selectAll(".qualiDots").remove();
+        d3.select("#qualiStandingPlot").selectAll(".qualiDots").remove();
 
-    qualiStandingPlot.select(".x-axis.axis")
-        .transition()
-        .duration(1000)
-        .call(xAxis);
+        qualiStandingPlot.select(".x-axis.axis")
+            .transition()
+            .duration(1000)
+            .call(xAxis);
 
-    qualiStandingPlot.select(".y-axis.axis")
-        .transition()
-        .duration(1000)
-        .call(d3.axisLeft(y_quali)
-        .tickFormat(d3.timeFormat("%M:%S.%L")));
+        qualiStandingPlot.select(".y-axis.axis")
+            .transition()
+            .duration(1000)
+            .call(d3.axisLeft(y_quali)
+            .tickFormat(d3.timeFormat("%M:%S.%L")));
 
-    var dots = qualiStandingPlot.selectAll("dots")
-        .data(standingList)
-        .enter()
-        .append("circle")
-        .attr("class", "qualiDots")
-        .on("mouseover", function(d) {
-            // Add tooltip
-            $(".tooltip")
-                .css("transition", "1s")
-                .css("left", (parseInt(d3.select(this).attr("cx")) + document.getElementById("modal1").offsetLeft + document.getElementById("modalContent").offsetLeft + document.getElementById("modalContainer").offsetLeft + document.getElementById("qualiStandingPlot").offsetLeft + 180) + "px")
-                .css("top", (parseInt(d3.select(this).attr("cy")) + document.getElementById("qualiStandingPlot").offsetTop) + "px")
-                .css("opacity", 1)
-                .css("display", "inline-block")
-                .html("<h5>" + d.driver + "</h5>" + "<br/>Position: " + d.position + "<br/>Constructor: " + d.constructor + "<br/>Time: " + d.time);
+        var dots = qualiStandingPlot.selectAll("dots")
+            .data(standingList)
+            .enter()
+            .append("circle")
+            .attr("class", "qualiDots")
+            .on("mouseover", function(d) {
+                // Add tooltip
+                $(".tooltip")
+                    .css("transition", "1s")
+                    .css("left", (parseInt(d3.select(this).attr("cx")) + document.getElementById("modal1").offsetLeft + document.getElementById("modalContent").offsetLeft + document.getElementById("modalContainer").offsetLeft + document.getElementById("qualiStandingPlot").offsetLeft + 180) + "px")
+                    .css("top", (parseInt(d3.select(this).attr("cy")) + document.getElementById("qualiStandingPlot").offsetTop) + "px")
+                    .css("opacity", 1)
+                    .css("display", "inline-block")
+                    .html("<h5>" + d.driver + "</h5>" + "<br/>Position: " + d.position + "<br/>Constructor: " + d.constructor + "<br/>Time: " + d.time);
+                })
+            .on("mouseout", function(d) {
+                $(".tooltip")
+                    .css("transition", "1s")
+                    .css("opacity", 0);
             })
-        .on("mouseout", function(d) {
-            $(".tooltip")
-                .css("transition", "1s")
-                .css("opacity", 0);
-        })
-        .style("fill", function(d){ return color(d.constructor) })
-        .transition()
-        .duration(2000)
-        .attr("cx", function(d) { return x_quali(+d.position); })
-        .attr("cy", function(d) { return y_quali(d3.timeParse(specifier)(d.time)); })
-        .attr("r", 8)
-        .attr("stroke", function(d){ return color(d.constructor) });
-
+            .style("fill", function(d){ return color(d.constructor) })
+            .transition()
+            .duration(2000)
+            .attr("cx", function(d) { return x_quali(+d.position); })
+            .attr("cy", function(d) { return y_quali(d3.timeParse(specifier)(d.time)); })
+            .attr("r", 8)
+            .attr("stroke", function(d){ return color(d.constructor) });
+    }
 }

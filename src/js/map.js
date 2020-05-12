@@ -309,10 +309,9 @@ function clicked(d) {
                 getLapDistribution(d.circuitId);
                 sel_circuit = d.circuitId;
                 getPitStopDistribution(sel_circuit, startYearModal, endYearModal);
-                let active = false, newOpacity = 0.3;
-                g.selectAll("#mapID").style("opacity", newOpacity);
-                g.selectAll("#circleMap").style("opacity", newOpacity);
-                mapID.active = active;
+                g.selectAll("#mapID").style("opacity", 0.3);
+                g.selectAll("#circleMap").style("opacity", 0.3);
+                mapID.active = false;
                 raceId = racesId[d.name];
                 getStanding();
                 getResults();

@@ -58,6 +58,7 @@ function getLapDistribution(circuitId) {
                 makeLapTimesPlot(lap_times_set, nested_lap_times);
             });
     }
+    else $("#lapTimesPlot").html("<img src='src/images/noData.gif'>");
 }
 
 function makeLapTimesPlot(lap_times, nested_lap_times) {
@@ -88,7 +89,7 @@ function makeLapTimesPlot(lap_times, nested_lap_times) {
         .style("font", "20px f1font")
         .attr("class", "x-axis axis")
         .call(d3.axisBottom(x)
-            .ticks(20));
+        .ticks(20));
 
     // Text label for the x axis
     lapTimesPlot.append("text")
@@ -103,7 +104,7 @@ function makeLapTimesPlot(lap_times, nested_lap_times) {
         .style("font", "20px f1font")
         .attr("class", "y-axis axis")
         .call(d3.axisLeft(y)
-            .tickFormat(d3.timeFormat("%M:%S.%L")));
+        .tickFormat(d3.timeFormat("%M:%S.%L")));
 
     // Text label for the y axis
     lapTimesPlot.append("text")
@@ -128,7 +129,7 @@ function makeLapTimesPlot(lap_times, nested_lap_times) {
             return d3.line()
                 .x(function(d) { return x(+d.lap)})
                 .y(function(d) { return y(d3.timeParse(specifier)(d.time)); })
-                (d.values)
+            (d.values)
         });
 
     d3.selectAll(".otherLapDrivers")
@@ -172,125 +173,128 @@ function getPitStopDistribution(circuitId, startYear, endYear) {
 }
 
 function makePitPlot(nested_pit_times) {
-
     //console.log(nested_pit_times);
 
-    var pitPlot = d3.select("#pitPlot").attr("class", "center-align")
-        .append("svg")
-        .attr("width", lapPlotWidth + marginLapPlot.left + marginLapPlot.right)
-        .attr("height", lapPlotHeight + marginLapPlot.top + marginLapPlot.bottom)
-        .append("g")
-        .attr("transform", "translate(" + marginLapPlot.left + "," + marginLapPlot.top + ")");
+    // No Data
+    if (nested_pit_times.length == 0) $("#pitPlot").html("<img src='src/images/noData.gif'>");
+    else {
+        var pitPlot = d3.select("#pitPlot").attr("class", "center-align")
+            .append("svg")
+            .attr("width", lapPlotWidth + marginLapPlot.left + marginLapPlot.right)
+            .attr("height", lapPlotHeight + marginLapPlot.top + marginLapPlot.bottom)
+            .append("g")
+            .attr("transform", "translate(" + marginLapPlot.left + "," + marginLapPlot.top + ")");
 
-    var maxLapsForYear = [];
-    var maxPitsForYear = [];
+        var maxLapsForYear = [];
+        var maxPitsForYear = [];
 
-    nested_pit_times.forEach(ns => {
-        maxLapsForYear.push(d3.max(ns.values, function(d) { return +d.key; }));
-        maxPitsForYear.push(d3.max(ns.values, function(d) { return +d.value; }));
-    });
+        nested_pit_times.forEach(ns => {
+            maxLapsForYear.push(d3.max(ns.values, function(d) { return +d.key; }));
+            maxPitsForYear.push(d3.max(ns.values, function(d) { return +d.value; }));
+        });
 
-    var x = d3.scaleLinear()
-        .domain([0, d3.max(maxLapsForYear)])
-        .range([0, lapPlotWidth]);
+        var x = d3.scaleLinear()
+            .domain([0, d3.max(maxLapsForYear)])
+            .range([0, lapPlotWidth]);
 
-    pitPlot.append("g")
-        .attr("transform", "translate(0," + lapPlotHeight + ")")
-        .style("font", "20px f1font")
-        .attr("class", "x-axis axis")
-        .call(d3.axisBottom(x)
-                .ticks(20));
+        pitPlot.append("g")
+            .attr("transform", "translate(0," + lapPlotHeight + ")")
+            .style("font", "20px f1font")
+            .attr("class", "x-axis axis")
+            .call(d3.axisBottom(x)
+                    .ticks(20));
 
-    // Text label for the x axis
-    pitPlot.append("text")
-        .attr("x", lapPlotWidth/2)
-        .attr("y", lapPlotHeight + marginLapPlot.top)
-        .style("text-anchor", "middle")
-        .style("fill", "red")
-        .style("font", "20px f1font")
-        .text("Lap");
+        // Text label for the x axis
+        pitPlot.append("text")
+            .attr("x", lapPlotWidth/2)
+            .attr("y", lapPlotHeight + marginLapPlot.top)
+            .style("text-anchor", "middle")
+            .style("fill", "red")
+            .style("font", "20px f1font")
+            .text("Lap");
 
-    var z = d3.scaleLinear()
-        .domain([0, d3.max(maxPitsForYear)])
-        .range([4, 20]);
+        var z = d3.scaleLinear()
+            .domain([0, d3.max(maxPitsForYear)])
+            .range([4, 20]);
 
-    pitPlot.selectAll("dot")
-        .data(nested_pit_times)
-        .enter()
-        .append('g')
-        .style("fill", function(d) {
-            return color(d.key);
-        })
-        .attr("class", function(d) {
-            return "ForPoints" + d.key + " otherLegends"})
-        .selectAll("myPoints")
-        .data(function(d) {
-            return d.values;
-        })
-        .enter()
-        .append("circle")
-        .attr("cx", function(d) { return x(d.key); })
-        .attr("cy", 400)
-        .attr("r", function(d) { return z(2*(+d.value)); })
-        .attr("stroke", "white")
-        .style("opacity", 0.7)
-        .attr("stroke-widht", 1.5)
-        .on("mouseover", function(d) {
-            // Add tooltip
-            $(".tooltip")
-                .css("transition", "1s")
-                .css("left", (parseInt(d3.select(this).attr("cx")) + document.getElementById("modal1").offsetLeft + document.getElementById("modalContent").offsetLeft + document.getElementById("modalContainer").offsetLeft + document.getElementById("pitPlot").offsetLeft + 200) + "px")
-                .css("top", (parseInt(d3.select(this).attr("cy")) + document.getElementById("pitPlot").offsetTop) + "px")
-                .css("opacity", 1)
-                .css("display", "inline-block")
-                .html("Lap:" + d.key + "<br/> Number of pits: " + d.value);
+        pitPlot.selectAll("dot")
+            .data(nested_pit_times)
+            .enter()
+            .append('g')
+            .style("fill", function(d) {
+                return color(d.key);
             })
-        .on("mouseout", function(d) {
-            $(".tooltip")
-                .css("transition", "1s")
-                .css("opacity", 0);
+            .attr("class", function(d) {
+                return "ForPoints" + d.key + " otherLegends"})
+            .selectAll("myPoints")
+            .data(function(d) {
+                return d.values;
+            })
+            .enter()
+            .append("circle")
+            .attr("cx", function(d) { return x(d.key); })
+            .attr("cy", 400)
+            .attr("r", function(d) { return z(2*(+d.value)); })
+            .attr("stroke", "white")
+            .style("opacity", 0.7)
+            .attr("stroke-widht", 1.5)
+            .on("mouseover", function(d) {
+                // Add tooltip
+                $(".tooltip")
+                    .css("transition", "1s")
+                    .css("left", (parseInt(d3.select(this).attr("cx")) + document.getElementById("modal1").offsetLeft + document.getElementById("modalContent").offsetLeft + document.getElementById("modalContainer").offsetLeft + document.getElementById("pitPlot").offsetLeft + 200) + "px")
+                    .css("top", (parseInt(d3.select(this).attr("cy")) + document.getElementById("pitPlot").offsetTop) + "px")
+                    .css("opacity", 1)
+                    .css("display", "inline-block")
+                    .html("Lap:" + d.key + "<br/> Number of pits: " + d.value);
+                })
+            .on("mouseout", function(d) {
+                $(".tooltip")
+                    .css("transition", "1s")
+                    .css("opacity", 0);
+            });
+
+        var years = [];
+        nested_pit_times.forEach(d => {
+            years.push(d.key);
         });
 
-    var years = [];
-    nested_pit_times.forEach(d => {
-        years.push(d.key);
-    });
+        var legSize = 20;
+        pitPlot.selectAll("pitLeg")
+            .data(years)
+            .enter()
+            .append("circle")
+            .attr("cx", 0)
+            .attr("cy", function(d,i){ return 10 + i*(legSize+5)}) // 100 is where the first dot appears. 25 is the distance between dots
+            .attr("r", 10)
+            .attr("class", function(d) { return  "ForLegend" + d + " otherLegends"})
+            .style("fill", function(d) { return color(d) })
+            .on("click", function(d) {
+                var currOpacity = d3.selectAll(".ForPoints" + d).style("opacity");
+                if(currOpacity == 1) {
+                    d3.selectAll(".ForPoints" + d)
+                        .transition()
+                        .duration(1000)
+                        .style("opacity", 0.1);
+                }
+                else {
+                    d3.selectAll(".ForPoints" + d)
+                        .transition()
+                        .duration(1000)
+                        .style("opacity", 1);
+                }
+            });
 
-    var legSize = 20;
-    pitPlot.selectAll("pitLeg")
-        .data(years)
-        .enter()
-        .append("circle")
-        .attr("cx", 0)
-        .attr("cy", function(d,i){ return 10 + i*(legSize+5)}) // 100 is where the first dot appears. 25 is the distance between dots
-        .attr("r", 10)
-        .attr("class", function(d) { return  "ForLegend" + d + " otherLegends"})
-        .style("fill", function(d) { return color(d) })
-        .on("click", function(d) {
-            var currOpacity = d3.selectAll(".ForPoints" + d).style("opacity");
-            if(currOpacity == 1) {
-                d3.selectAll(".ForPoints" + d)
-                    .transition()
-                    .duration(1000)
-                    .style("opacity", 0.1);
-            }
-            else {
-                d3.selectAll(".ForPoints" + d)
-                    .transition()
-                    .duration(1000)
-                    .style("opacity", 1);
-            }
-        });
-
-    pitPlot.selectAll("pitLabels")
-        .data(years)
-        .enter()
-        .append("text")
-        .attr("x", legSize*.8)
-        .attr("y", function(d,i){ return i * (legSize + 5) + (legSize/2)}) // 100 is where the first dot appears. 25 is the distance between dots
-        .style("fill", function(d){ return color(d)})
-        .text(function(d){ return d})
-        .attr("text-anchor", "left")
-        .style("alignment-baseline", "middle");
+        pitPlot.selectAll("pitLabels")
+            .data(years)
+            .enter()
+            .append("text")
+            .attr("x", legSize*.8)
+            .attr("y", function(d,i){ return i * (legSize + 5) + (legSize/2)}) // 100 is where the first dot appears. 25 is the distance between dots
+            .style("fill", function(d){ return color(d)})
+            .text(function(d){ return d})
+            .attr("text-anchor", "left")
+            .style("alignment-baseline", "middle");
+    }
 
 }
