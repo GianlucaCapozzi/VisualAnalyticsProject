@@ -72,9 +72,6 @@ $("#homeButton").on("click", function() {
     $("#pcaContainer").addClass("scale-out");
     $("#pcaContainer").width("0%");
     $("#pcaContainer").height("0%");
-    $("#circuitContainer").addClass("scale-out");
-    $("#circuitContainer").width("0%");
-    $("#circuitContainer").height("0%");
     $("#viewsContainer").removeClass("scale-out");
     $("#viewsContainer").width("100%");
     $("#viewsContainer").height("100%");
@@ -95,9 +92,6 @@ $("#infoButton").on("click", function() {
     $("#pcaContainer").addClass("scale-out");
     $("#pcaContainer").width("0%");
     $("#pcaContainer").height("0%");
-    $("#circuitContainer").addClass("scale-out");
-    $("#circuitContainer").width("0%");
-    $("#circuitContainer").height("0%");
     $("#infoContainer").removeClass("scale-out");
     $("#infoContainer").width("100%");
     $("#infoContainer").height("100%");
@@ -116,29 +110,6 @@ $("#pcaButton").on("click", function() {
     $("#pcaContainer").removeClass("scale-out");
     $("#pcaContainer").width("100%");
     $("#pcaContainer").height("100%");
-    $("#circuitContainer").addClass("scale-out");
-    $("#circuitContainer").width("0%");
-    $("#circuitContainer").height("0%");
-    $("#pca-thing-2").removeClass("scale-out");
-    $("#pca-thing-1").removeClass("scale-out");
-});
-
-$("#circuitButton").on("click", function() {
-    $("#home-thing-1").addClass("scale-out");
-    $("#home-thing-2").addClass("scale-out");
-    $("#home-thing-3").addClass("scale-out");
-    $("#viewsContainer").addClass("scale-out");
-    $("#viewsContainer").width("0%");
-    $("#viewsContainer").height("0%");
-    $("#infoContainer").addClass("scale-out");
-    $("#infoContainer").width("0%");
-    $("#infoContainer").height("0%");
-    $("#pcaContainer").addClass("scale-out");
-    $("#pcaContainer").width("0%");
-    $("#pcaContainer").height("0%");
-    $("#circuitContainer").removeClass("scale-out");
-    $("#circuitContainer").width("100%");
-    $("#circuitContainer").height("100%");
     $("#pca-thing-2").removeClass("scale-out");
     $("#pca-thing-1").removeClass("scale-out");
 });
