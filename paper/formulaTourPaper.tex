@@ -33,7 +33,7 @@
 	\begin{center}
 		\centering
 		\includegraphics[width=\textwidth]{allViews}
-		\captionof{figure}{Framework Views: (a) Home view, with world interactive map, winners of the season and interactive drivers trend; (b) Circuit view, with drivers standing and final ranking of the race; (c) General info view, with best driver and constructor,  most successfull drivers and constructors; (d) Correlations view, with scatter plot showing correlation between driver's or constructor's nationality and wins; (e) Circuit info view, with scatter plot showing time trend in the years for each circuit; (f) Menu}
+		\captionof{figure}{Framework Views: (a) Home view, with world interactive map, winners of the season and interactive drivers trend; (b) General info view, with best driver and constructor,  most successfull drivers and constructors; (c) Correlations view, with scatter plot showing correlation between driver's or constructor's nationality and wins; (d) Clicked map view, with drivers standing and final ranking of the race, lap and qualifying times of the drivers, circuit records, best qualifying times and pit stops;}
 	\end{center}
 	\rule{\textwidth}{1pt} \\ \\
 	\begin{abstract}
@@ -114,7 +114,7 @@ The fourth is a table showing the order of arrival of the selected race. \\
 After this first four graphs, which depends on the selected year, it's possible to see a range slider that allows to dynamically modify subsequent information and graphs over an interval of years. By default the max range is selected. \\
 Then there are some useful text information, such as the best lap time on the selected circuit and the percentage of winners starting from the pole. \\
 The fifth graph shows the evolution of the lap times during the years for the selected circuit. The lap times that are considered for creating this view are the pole position times for each Grand Prix over the years, so the fastest time recorded during the qualifyings. Further information about the selection of this lap time are provided in the Analytics section. On the x axis there are the years for which the best lap time is available while the y-axis shows the times at intervals of different frequencies (the frequency depends on the number of different lap times for each year that we have for each circuit). \\
-Finally the last graph shows the pit stops.
+Finally the last graph shows the pit stops, in which there is a circle for each lap in which there is a pit stop. Circle's radius depends on pit stop's number in those lap. The circles are colored differently according to the year.
 
 \subsection{General info view}
 \begin{center}
