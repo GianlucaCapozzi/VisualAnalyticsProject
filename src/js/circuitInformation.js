@@ -118,7 +118,7 @@ function makeLapTimesPlot(lap_times, nested_lap_times) {
         .attr("class", "x-axis axis")
         .call(d3.axisBottom(x)
             .ticks(20));
-    
+
     gXAxis.selectAll("text")
         .style("text-anchor", "end")
         .attr("dx", "-.8em")

@@ -34,9 +34,9 @@ sliderModal.noUiSlider.on('update', function (values, handle) {
 });
 sliderModal.noUiSlider.on('change', function (values, handle) {
     d3.select("#circuitRangeTitle").text("Analysis from " + startYearModal + " to " + endYearModal);
-    getBestQualiData(sel_circuit_name, startYearModal, endYearModal, true);
-    getPitStopDistribution(sel_circuit, startYearModal, endYearModal, true);
     getWinPolePercentage(sel_circuit, startYearModal, endYearModal);
+    getPitStopDistribution(sel_circuit, startYearModal, endYearModal, true);
+    getBestQualiData(sel_circuit_name, startYearModal, endYearModal, true);
 });
 
 d3.queue()
@@ -116,13 +116,13 @@ function getBestQualiData(currCirc, startTime, endTime, update) {
             });
         }
     });
+    getBestLapEver(JSON.parse(JSON.stringify(currCircTimes)));
     if(update == false) {
         makeBestQualiPlot(currCircTimes, currCirc);
     }
     else {
         updateBestQualiPlot(currCircTimes, currCirc);
     }
-    getBestLapEver(currCircTimes);
 }
 
 var bestTimesPlot;
