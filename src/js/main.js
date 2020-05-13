@@ -51,6 +51,7 @@ var racesId = [];
 var racesIdForRank = []; // Array for compute drivers' ranking
 var raceId;
 var sel_circuit = "";
+var sel_circuit_name = "";
 var res = [];
 var driv_rank = [];
 var circ_names = [];

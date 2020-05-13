@@ -303,12 +303,13 @@ function clicked(d) {
                 d3.select("#lapTimesPlot").selectAll("*").remove();
                 d3.select("#lapTimesLegend").selectAll("*").remove();
                 d3.select("#pitPlot").selectAll("*").remove();
-                makeTimesPlot(d.name);
-                plotQualiTime(d.name);
+                sel_circuit_name = d.name;
+                getBestQualiData(sel_circuit_name, startYearModal, endYearModal, false);
+                plotQualiTime(sel_circuit_name);
                 getWinPolePercentage(d.circuitId, startYearModal, endYearModal);
                 getLapDistribution(d.circuitId);
                 sel_circuit = d.circuitId;
-                getPitStopDistribution(sel_circuit, startYearModal, endYearModal);
+                getPitStopDistribution(sel_circuit, startYearModal, endYearModal, false);
                 g.selectAll("#mapID").style("opacity", 0.3);
                 g.selectAll("#circleMap").style("opacity", 0.3);
                 mapID.active = false;

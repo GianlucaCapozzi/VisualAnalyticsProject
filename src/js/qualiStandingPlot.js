@@ -15,7 +15,7 @@ function plotQualiTime(currCirc) {
             });
         }
     });
-    return $("#qualiStandingPlot").html("<img src='src/images/noData.gif'>");
+    //return $("#qualiStandingPlot").html("<img src='src/images/noData.gif'>");
 }
 
 function qualiPlot(standingList) {
@@ -134,7 +134,7 @@ function updateQualiPlot(standingList) {
             .call(d3.axisLeft(y_quali)
             .tickFormat(d3.timeFormat("%M:%S.%L")));
 
-        var dots = qualiStandingPlot.selectAll("dots")
+        qualiStandingPlot.selectAll("dots")
             .data(standingList)
             .enter()
             .append("circle")
@@ -157,6 +157,9 @@ function updateQualiPlot(standingList) {
             .style("fill", function(d){ return color(d.constructor) })
             .transition()
             .duration(2000)
+            .delay(function(d, i) {
+                return i / standingList.length * 500;
+            })
             .attr("cx", function(d) { return x_quali(+d.position); })
             .attr("cy", function(d) { return y_quali(d3.timeParse(specifier)(d.time)); })
             .attr("r", 8)
