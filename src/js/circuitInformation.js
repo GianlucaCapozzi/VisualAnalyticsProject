@@ -28,7 +28,10 @@ function getWinPolePercentage(circuitId, startYear, endYear) {
             //console.log("WINNERS: " + (numEditions));
             var perc = (numPoleWinners * 100) / (numEditions);
             //console.log(perc);
-            d3.select("#percentagePoleWinner").html("<h5> % POLE = VICTORY: </h5>" + (Math.round(perc * 100) / 100).toFixed(2) + "%");
+            var editedPerc;
+            if (isNaN(perc)) editedPerc = "n.d.";
+            else editedPerc = (Math.round(perc * 100) / 100).toFixed(2) + "%";
+            d3.select("#percentagePoleWinner").html("<h5> % POLE = VICTORY: </h5>" + editedPerc);
         });
 }
 
@@ -81,8 +84,10 @@ function getBestLapEver(currCircTimes) {
     })
 
     var bestEl = currCircTimes.filter(function(d) { return d.time === bestLap; });
-
-    d3.select("#bestDriverTime").html("<h5>FASTEST LAP</h5>" + "Time: " + formatLap(bestEl[0].time) + "<br/>Year: " + bestEl[0].year + "<br/>Driver: " + bestEl[0].driver + "<br/>Constructor: " + bestEl[0]);
+    var bestRecord;
+    if(bestEl.length == 0) bestRecord = "n.d.";
+    else bestRecord = "Time: " + formatLap(bestEl[0].time) + "<br/>Year: " + bestEl[0].year + "<br/>Driver: " + bestEl[0].driver + "<br/>Constructor: " + bestEl[0].constructor;
+    d3.select("#bestDriverTime").html("<h5>FASTEST LAP</h5>" + bestRecord);
 
 
 }
