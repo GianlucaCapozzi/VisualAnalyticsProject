@@ -118,11 +118,13 @@ function getBestQualiData(currCirc, startTime, endTime, update) {
     });
     if(update == false) {
         makeBestQualiPlot(currCircTimes, currCirc);
+        getBestLapEver(currCircTimes);
     }
     else {
         updateBestQualiPlot(currCircTimes, currCirc);
+        getBestLapEver(currCircTimes);
     }
-    getBestLapEver(currCircTimes);
+    //getBestLapEver(currCircTimes);
 }
 
 var bestTimesPlot;
