@@ -54,21 +54,21 @@ function processBestLaps(err, circs, gps, qualis, drivs, constrs) {
             if(quali.raceId === race.raceId) {
                 circs.forEach(t => {
                     if(race.circuitId === t.circuitId) {
-                        if(quali.position === "1") {
-                            if(quali.q3 != "\\N" && quali.q3 != "") {
-                                bestTimes.push({"circuit": t.name, "time": quali.q3, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date });
-                            }
-                            else if((quali.q3 === "\\N" || quali.q3 === "") && quali.q2 != "\\N" && quali.q2 != "") {
-                                bestTimes.push({"circuit": t.name, "time": quali.q2, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date });
-                            }
-                            else if((quali.q2 === "\\N" || quali.q2 === "") && quali.q1 != "\\N" && quali.q1 != "") {
-                                bestTimes.push({"circuit": t.name, "time": quali.q1, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date });
-                            }
-                        }
                         drivs.forEach(d => {
                             if(d.driverId === quali.driverId) {
                                 constrs.forEach(c => {
                                     if(c.constructorId === quali.constructorId) {
+                                        if(quali.position === "1") {
+                                            if(quali.q3 != "\\N" && quali.q3 != "") {
+                                                bestTimes.push({"circuit": t.name, "time": quali.q3, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date, "driver": d.forename + " " + d.surname, "constructor" : c.name });
+                                            }
+                                            else if((quali.q3 === "\\N" || quali.q3 === "") && quali.q2 != "\\N" && quali.q2 != "") {
+                                                bestTimes.push({"circuit": t.name, "time": quali.q2, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date, "driver": d.forename + " " + d.surname, "constructor" : c.name });
+                                            }
+                                            else if((quali.q2 === "\\N" || quali.q2 === "") && quali.q1 != "\\N" && quali.q1 != "") {
+                                                bestTimes.push({"circuit": t.name, "time": quali.q1, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date, "driver": d.forename + " " + d.surname, "constructor" : c.name });
+                                            }
+                                        }
                                         if(quali.q3 != "\\N" && quali.q3 != "") {
                                             quali_standing.push({"circuit": t.name, "time": quali.q3, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date, "driver": d.forename + " " + d.surname, "constructor" : c.name, "position" : quali.position });
                                         }
@@ -111,7 +111,7 @@ function getBestQualiData(currCirc, startTime, endTime, update) {
         if(d.key === currCirc) {
             d.values.forEach(v => {
                 if(parseInt(v.year) >= parseInt(startTime) && parseInt(v.year) <= parseInt(endTime)){
-                    currCircTimes.push({'year': v.year, 'time': v.time, "lat": v.lat, "long": v.long, "date": v.date});
+                    currCircTimes.push({'year': v.year, 'time': v.time, "lat": v.lat, "long": v.long, "date": v.date, "driver": v.driver , "constructor" : v.constructor });
                 }
             });
         }
@@ -122,6 +122,7 @@ function getBestQualiData(currCirc, startTime, endTime, update) {
     else {
         updateBestQualiPlot(currCircTimes, currCirc);
     }
+    getBestLapEver(currCircTimes);
 }
 
 var bestTimesPlot;
@@ -258,7 +259,7 @@ function makeBestQualiPlot(currCircTimes, currCirc) {
                         .css("top", (parseInt(d3.select(whereOver).attr("cy")) + document.getElementById("bestQualiPlot").offsetTop) + "px")
                         .css("opacity", 1)
                         .css("display", "inline-block")
-                        .html("Best qualifying time: " + d.time + "<br/>Temperature max: " + temp_max + "<br/> Temperature min: " + temp_min);
+                        .html("Best qualifying time: " + d.time + "<br/>Temperature max: " + temp_max + "<br/> Temperature min: " + temp_min + "<br/> Driver: " + d.driver + "</br> Constructor: " + d.constructor);
                 });
             });
         })
@@ -390,7 +391,7 @@ function updateBestQualiPlot(currCircTimes, currCirc) {
                             .css("top", (parseInt(d3.select(whereOver).attr("cy")) + document.getElementById("bestQualiPlot").offsetTop) + "px")
                             .css("opacity", 1)
                             .css("display", "inline-block")
-                            .html("Best qualifying time: " + d.time + "<br/>Temperature max: " + temp_max + "<br/> Temperature min: " + temp_min);
+                            .html("Best qualifying time: " + d.time + "<br/>Temperature max: " + temp_max + "<br/> Temperature min: " + temp_min + "<br/> Driver: " + d.driver + "</br> Constructor: " + d.constructor);
                     });
                 });
             })

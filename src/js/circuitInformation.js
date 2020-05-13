@@ -28,7 +28,7 @@ function getWinPolePercentage(circuitId, startYear, endYear) {
             //console.log("WINNERS: " + (numEditions));
             var perc = (numPoleWinners * 100) / (numEditions);
             //console.log(perc);
-            d3.select("#percentagePoleWinner").html("<h5> % POLE = VICTORY: </h5>" + "<br/>" + (Math.round(perc * 100) / 100).toFixed(2));
+            d3.select("#percentagePoleWinner").html("<h5> % POLE = VICTORY: </h5>" + (Math.round(perc * 100) / 100).toFixed(2) + "%");
         });
 }
 
@@ -65,6 +65,26 @@ function getLapDistribution(circuitId) {
         $("#noDataGifLTP").removeClass("scale-out");
         $("#noDataGifLTP").removeClass("no-dimension");
     }
+}
+
+function getBestLapEver(currCircTimes) {
+    var specifier = "%M:%S.%L";
+
+    var formatLap = d3.timeFormat(specifier);
+
+    currCircTimes.forEach(d => {
+        d.time = d3.timeParse(specifier)(d.time);
+    });
+
+    var bestLap = d3.min(currCircTimes, function(d) {
+        return d.time;
+    })
+
+    var bestEl = currCircTimes.filter(function(d) { return d.time === bestLap; });
+
+    d3.select("#bestDriverTime").html("<h5>FASTEST LAP</h5>" + "Time: " + formatLap(bestEl[0].time) + "<br/>Year: " + bestEl[0].year + "<br/>Driver: " + bestEl[0].driver + "<br/>Constructor: " + bestEl[0].constructor);
+
+
 }
 
 function makeLapTimesPlot(lap_times, nested_lap_times) {
