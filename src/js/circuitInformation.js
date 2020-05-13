@@ -82,7 +82,7 @@ function getBestLapEver(currCircTimes) {
 
     var bestEl = currCircTimes.filter(function(d) { return d.time === bestLap; });
 
-    d3.select("#bestDriverTime").html("<h5>FASTEST LAP</h5>" + "Time: " + formatLap(bestEl[0].time) + "<br/>Year: " + bestEl[0].year + "<br/>Driver: " + bestEl[0].driver + "<br/>Constructor: " + bestEl[0].constructor);
+    d3.select("#bestDriverTime").html("<h5>FASTEST LAP</h5>" + "Time: " + formatLap(bestEl[0].time) + "<br/>Year: " + bestEl[0].year + "<br/>Driver: " + bestEl[0].driver + "<br/>Constructor: " + bestEl[0]);
 
 
 }
@@ -455,7 +455,9 @@ function updatePitPlot(nested_pit_times) {
             .data(years)
             .enter()
             .append("text")
-            .attr("class", "pitForUpdate")
+            .attr("class", function(d) {
+                return "ForPoints" + d + " pitForUpdate"
+            })
             .attr("x", legSize*.8)
             .attr("y", function(d,i){ return i * (legSize + 5) + (legSize/2)}) // 100 is where the first dot appears. 25 is the distance between dots
             .style("fill", function(d){ return color(d)})
