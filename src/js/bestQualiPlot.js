@@ -336,6 +336,9 @@ function updateBestQualiPlot(currCircTimes, currCirc) {
             .data([currCircTimes])
             .transition()
             .duration(2000)
+            .delay(function(d, i) {
+                return i / currCircTimes.length * 500;
+            })
             .attrTween("d", function(d) {
                 var previous = d3.select(this).attr('d');
                 var current = line(d);

@@ -85,17 +85,23 @@ function makeLapTimesPlot(lap_times, nested_lap_times) {
         .domain([d3.min(parsedData), d3.max(parsedData)])
         .range([lapPlotHeight, 0]);
 
-    lapTimesPlot.append("g")
+    var gXAxis = lapTimesPlot.append("g")
         .attr("transform", "translate(0," + lapPlotHeight + ")")
         .style("font", "20px f1font")
         .attr("class", "x-axis axis")
         .call(d3.axisBottom(x)
-        .ticks(20));
+            .ticks(20));
+    
+    gXAxis.selectAll("text")
+        .style("text-anchor", "end")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", "rotate(-65)");
 
     // Text label for the x axis
     lapTimesPlot.append("text")
         .attr("x", lapPlotWidth/2)
-        .attr("y", lapPlotHeight + marginLapPlot.top)
+        .attr("y", lapPlotHeight + marginLapPlot.top + 10)
         .style("text-anchor", "middle")
         .style("fill", "red")
         .style("font", "20px f1font")
