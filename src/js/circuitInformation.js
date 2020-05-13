@@ -24,16 +24,18 @@ function getWinPolePercentage(circuitId, startYear, endYear) {
                     }
                 }
             });
-            console.log("POLE WINNERS: " + numPoleWinners);
-            console.log("WINNERS: " + (numEditions));
+            //console.log("POLE WINNERS: " + numPoleWinners);
+            //console.log("WINNERS: " + (numEditions));
             var perc = (numPoleWinners * 100) / (numEditions);
-            console.log(perc);
+            //console.log(perc);
             d3.select("#percentagePoleWinner").html("<h5> % POLE = VICTORY: </h5>" + "<br/>" + (Math.round(perc * 100) / 100).toFixed(2));
         });
 }
 
 function getLapDistribution(circuitId) {
     if(parseInt(sel_year) >= 2011) {
+        $("#noDataGifLTP").addClass("scale-out");
+        $("#noDataGifLTP").addClass("no-dimension");
         d3.queue()
             .defer(d3.csv, races)
             .defer(d3.csv, drivers)
@@ -59,7 +61,10 @@ function getLapDistribution(circuitId) {
                 makeLapTimesPlot(lap_times_set, nested_lap_times);
             });
     }
-    else $("#lapTimesPlot").html("<img src='src/images/noData.gif'>");
+    else {
+        $("#noDataGifLTP").removeClass("scale-out");
+        $("#noDataGifLTP").removeClass("no-dimension");
+    }
 }
 
 function makeLapTimesPlot(lap_times, nested_lap_times) {
@@ -72,6 +77,8 @@ function makeLapTimesPlot(lap_times, nested_lap_times) {
 
     var lapTimesPlot = d3.select("#lapTimesPlot").attr("class", "center-align")
         .append("svg")
+        .attr("class", "scale-transition")
+        .attr("id", "lapTimesPlotID")
         .attr("width", lapPlotWidth + marginLapPlot.left + marginLapPlot.right)
         .attr("height", lapPlotHeight + marginLapPlot.top + marginLapPlot.bottom)
         .append("g")
@@ -168,14 +175,12 @@ function getPitStopDistribution(circuitId, startYear, endYear, update) {
                     .key(function(d) { return d.lap; })
                     .rollup(function(d) { return d.length; })
                     .entries(pit_list);
-            //console.log(nested_pit_times);
             if(update == false) {
                 makePitPlot(nested_pit_times);
             }
             else {
                 updatePitPlot(nested_pit_times);
             }
-           //makePitPlot(nested_pit_times);
         });
 }
 
@@ -183,138 +188,150 @@ var x_pit, z_pit;
 var pitPlot;
 
 function makePitPlot(nested_pit_times) {
-    //console.log(nested_pit_times);
+    $("#noDataGifPP").addClass("scale-out");
+    $("#noDataGifPP").addClass("no-dimension");
 
-    // No Data
-    if (nested_pit_times.length == 0) $("#pitPlot").html("<img src='src/images/noData.gif'>");
-    else {
-        pitPlot = d3.select("#pitPlot").attr("class", "center-align")
-            .append("svg")
-            .attr("width", lapPlotWidth + marginLapPlot.left + marginLapPlot.right)
-            .attr("height", lapPlotHeight + marginLapPlot.top + marginLapPlot.bottom)
-            .append("g")
-            .attr("transform", "translate(" + marginLapPlot.left + "," + marginLapPlot.top + ")");
+    pitPlot = d3.select("#pitPlot").attr("class", "center-align")
+        .append("svg")
+        .attr("class", "scale-transition")
+        .attr("id", "pitPlotID")
+        .attr("width", lapPlotWidth + marginLapPlot.left + marginLapPlot.right)
+        .attr("height", lapPlotHeight + marginLapPlot.top + marginLapPlot.bottom)
+        .append("g")
+        .attr("transform", "translate(" + marginLapPlot.left + "," + marginLapPlot.top + ")");
 
-        var maxLapsForYear = [];
-        var maxPitsForYear = [];
+    var maxLapsForYear = [];
+    var maxPitsForYear = [];
 
-        nested_pit_times.forEach(ns => {
-            maxLapsForYear.push(d3.max(ns.values, function(d) { return +d.key; }));
-            maxPitsForYear.push(d3.max(ns.values, function(d) { return +d.value; }));
+    nested_pit_times.forEach(ns => {
+        maxLapsForYear.push(d3.max(ns.values, function(d) { return +d.key; }));
+        maxPitsForYear.push(d3.max(ns.values, function(d) { return +d.value; }));
+    });
+
+    x_pit = d3.scaleLinear()
+        .domain([0, d3.max(maxLapsForYear)])
+        .range([0, lapPlotWidth]);
+
+    pitPlot.append("g")
+        .attr("transform", "translate(0," + lapPlotHeight + ")")
+        .style("font", "20px f1font")
+        .attr("class", "x-axis axis")
+        .call(d3.axisBottom(x_pit)
+        .ticks(20));
+
+    // Text label for the x axis
+    pitPlot.append("text")
+        .attr("x", lapPlotWidth/2)
+        .attr("y", lapPlotHeight + marginLapPlot.top)
+        .style("text-anchor", "middle")
+        .style("fill", "red")
+        .style("font", "20px f1font")
+        .text("Lap");
+
+    z_pit = d3.scaleLinear()
+        .domain([0, d3.max(maxPitsForYear)])
+        .range([4, 20]);
+
+    pitPlot.selectAll("dots")
+        .data(nested_pit_times)
+        .enter()
+        .append('g')
+        .style("fill", function(d) {
+            return color(d.key);
+        })
+        .attr("class", function(d) { return "ForPoints" + d.key + " pitForUpdate"})
+        .selectAll("myPoints")
+        .data(function(d) {
+            return d.values;
+        })
+        .enter()
+        .append("circle")
+        .attr("cx", function(d) { return x_pit(d.key); })
+        .attr("cy", 400)
+        .attr("r", function(d) { return z_pit(+d.value) * (lapPlotWidth/goodCircleWidth); })
+        .attr("stroke", "white")
+        .style("opacity", 0.7)
+        .attr("stroke-widht", 1.5)
+        .on("mouseover", function(d) {
+            // Add tooltip
+            $(".tooltip")
+                .css("transition", "1s")
+                .css("left", (parseInt(d3.select(this).attr("cx")) + document.getElementById("modal1").offsetLeft + document.getElementById("modalContent").offsetLeft + document.getElementById("modalContainer").offsetLeft + document.getElementById("pitPlot").offsetLeft + 200) + "px")
+                .css("top", (parseInt(d3.select(this).attr("cy")) + document.getElementById("pitPlot").offsetTop) + "px")
+                .css("opacity", 1)
+                .css("display", "inline-block")
+                .html("Lap:" + d.key + "<br/> Number of pits: " + d.value);
+            })
+        .on("mouseout", function(d) {
+            $(".tooltip")
+                .css("transition", "1s")
+                .css("opacity", 0);
         });
 
-        x_pit = d3.scaleLinear()
-            .domain([0, d3.max(maxLapsForYear)])
-            .range([0, lapPlotWidth]);
+    var years = [];
+    nested_pit_times.forEach(d => {
+        years.push(d.key);
+    });
 
-        pitPlot.append("g")
-            .attr("transform", "translate(0," + lapPlotHeight + ")")
-            .style("font", "20px f1font")
-            .attr("class", "x-axis axis")
-            .call(d3.axisBottom(x_pit)
-                    .ticks(20));
-
-        // Text label for the x axis
-        pitPlot.append("text")
-            .attr("x", lapPlotWidth/2)
-            .attr("y", lapPlotHeight + marginLapPlot.top)
-            .style("text-anchor", "middle")
-            .style("fill", "red")
-            .style("font", "20px f1font")
-            .text("Lap");
-
-        z_pit = d3.scaleLinear()
-            .domain([0, d3.max(maxPitsForYear)])
-            .range([4, 20]);
-
-        pitPlot.selectAll("dots")
-            .data(nested_pit_times)
-            .enter()
-            .append('g')
-            .style("fill", function(d) {
-                return color(d.key);
-            })
-            .attr("class", function(d) { return "ForPoints" + d.key + " pitForUpdate"})
-            .selectAll("myPoints")
-            .data(function(d) {
-                return d.values;
-            })
-            .enter()
-            .append("circle")
-            .attr("cx", function(d) { return x_pit(d.key); })
-            .attr("cy", 400)
-            .attr("r", function(d) { return z_pit(+d.value) * (lapPlotWidth/goodCircleWidth); })
-            .attr("stroke", "white")
-            .style("opacity", 0.7)
-            .attr("stroke-widht", 1.5)
-            .on("mouseover", function(d) {
-                // Add tooltip
-                $(".tooltip")
-                    .css("transition", "1s")
-                    .css("left", (parseInt(d3.select(this).attr("cx")) + document.getElementById("modal1").offsetLeft + document.getElementById("modalContent").offsetLeft + document.getElementById("modalContainer").offsetLeft + document.getElementById("pitPlot").offsetLeft + 200) + "px")
-                    .css("top", (parseInt(d3.select(this).attr("cy")) + document.getElementById("pitPlot").offsetTop) + "px")
-                    .css("opacity", 1)
-                    .css("display", "inline-block")
-                    .html("Lap:" + d.key + "<br/> Number of pits: " + d.value);
-                })
-            .on("mouseout", function(d) {
-                $(".tooltip")
-                    .css("transition", "1s")
-                    .css("opacity", 0);
-            });
-
-        var years = [];
-        nested_pit_times.forEach(d => {
-            years.push(d.key);
+    var legSize = 20;
+    pitPlot.selectAll("pitLeg")
+        .data(years)
+        .enter()
+        .append("circle")
+        .attr("cx", 0)
+        .attr("cy", function(d,i){ return 10 + i*(legSize+5)}) // 100 is where the first dot appears. 25 is the distance between dots
+        .attr("r", 10)
+        .attr("class", function(d) { return  "ForLegend" + d + " pitForUpdate"})
+        .style("fill", function(d) { return color(d) })
+        .on("click", function(d) {
+            var currOpacity = d3.selectAll(".ForPoints" + d).style("opacity");
+            if(currOpacity == 1) {
+                d3.selectAll(".ForPoints" + d)
+                    .transition()
+                    .duration(1000)
+                    .style("opacity", 0.1);
+            }
+            else {
+                d3.selectAll(".ForPoints" + d)
+                    .transition()
+                    .duration(1000)
+                    .style("opacity", 1);
+            }
         });
 
-        var legSize = 20;
-        pitPlot.selectAll("pitLeg")
-            .data(years)
-            .enter()
-            .append("circle")
-            .attr("cx", 0)
-            .attr("cy", function(d,i){ return 10 + i*(legSize+5)}) // 100 is where the first dot appears. 25 is the distance between dots
-            .attr("r", 10)
-            .attr("class", function(d) { return  "ForLegend" + d + " pitForUpdate"})
-            .style("fill", function(d) { return color(d) })
-            .on("click", function(d) {
-                var currOpacity = d3.selectAll(".ForPoints" + d).style("opacity");
-                if(currOpacity == 1) {
-                    d3.selectAll(".ForPoints" + d)
-                        .transition()
-                        .duration(1000)
-                        .style("opacity", 0.1);
-                }
-                else {
-                    d3.selectAll(".ForPoints" + d)
-                        .transition()
-                        .duration(1000)
-                        .style("opacity", 1);
-                }
-            });
+    pitPlot.selectAll("pitLabels")
+        .data(years)
+        .enter()
+        .append("text")
+        .attr("class", function(d) { return "ForPoints" + d + " pitForUpdate"})
+        .attr("x", legSize*.8)
+        .attr("y", function(d,i){ return i * (legSize + 5) + (legSize/2)}) // 100 is where the first dot appears. 25 is the distance between dots
+        .style("fill", function(d){ return color(d)})
+        .text(function(d){ return d})
+        .attr("text-anchor", "left")
+        .style("alignment-baseline", "middle");
 
-        pitPlot.selectAll("pitLabels")
-            .data(years)
-            .enter()
-            .append("text")
-            .attr("class", function(d) { return "ForPoints" + d + " pitForUpdate"})
-            .attr("x", legSize*.8)
-            .attr("y", function(d,i){ return i * (legSize + 5) + (legSize/2)}) // 100 is where the first dot appears. 25 is the distance between dots
-            .style("fill", function(d){ return color(d)})
-            .text(function(d){ return d})
-            .attr("text-anchor", "left")
-            .style("alignment-baseline", "middle");
+    if (nested_pit_times.length == 0) {
+        $("#pitPlotID").addClass("scale-out");
+        $("#pitPlotID").addClass("no-dimension");
+        $("#noDataGifPP").removeClass("scale-out");
+        $("#noDataGifPP").removeClass("no-dimension");
     }
-
 }
 
 function updatePitPlot(nested_pit_times) {
 
-    console.log("IN UPDATE PIT");
-
-    if(nested_pit_times.length == 0) $("#pitPlot").html("<img src='src/images/noData.gif'>");
+    if(nested_pit_times.length == 0) {
+        $("#pitPlotID").addClass("scale-out");
+        $("#pitPlotID").addClass("no-dimension");
+        $("#noDataGifPP").removeClass("scale-out");
+        $("#noDataGifPP").removeClass("no-dimension");
+    }
     else {
+        $("#noDataGifPP").addClass("scale-out");
+        $("#noDataGifPP").addClass("no-dimension");
+        $("#pitPlotID").removeClass("scale-out");
+        $("#pitPlotID").removeClass("no-dimension");
         var maxLapsForYear = [];
         var maxPitsForYear = [];
 

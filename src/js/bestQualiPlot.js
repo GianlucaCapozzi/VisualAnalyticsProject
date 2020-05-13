@@ -128,166 +128,180 @@ var bestTimesPlot;
 var x_bestQuali, y_bestQuali;
 
 function makeBestQualiPlot(currCircTimes, currCirc) {
+    $("#noDataGifBQP").addClass("scale-out");
+    $("#noDataGifBQP").addClass("no-dimension");
 
-    if (currCircTimes.length == 0) $("#bestQualiPlot").html("<img src='src/images/noData.gif'>");
-    else {
+    var specifier = "%M:%S.%L";
+    var parsedData = []
 
-        var specifier = "%M:%S.%L";
-        var parsedData = []
+    currCircTimes.forEach(function(d) {
+        parsedData.push(d3.timeParse(specifier)(d.time));
+    });
 
-        currCircTimes.forEach(function(d) {
-            parsedData.push(d3.timeParse(specifier)(d.time));
-        });
+    currCircTimes.forEach(function(d) {
+        d.year = +d.year;
+        d.time = d.time;
+    });
 
-        currCircTimes.forEach(function(d) {
-            d.year = +d.year;
-            d.time = d.time;
-        });
+    bestTimesPlot = d3.select("#bestQualiPlot").attr("class", "center-align")
+        .append("svg")
+        .attr("class", "scale-transition")
+        .attr("id", "bestTimesPlotID")
+        .attr("width", circuitPlotWidth + marginCircuitPlot.left + marginCircuitPlot.right)
+        .attr("height", circuitPlotWidth + marginCircuitPlot.top + marginCircuitPlot.bottom)
+        .append("g")
+        .attr("transform", "translate(" + marginCircuitPlot.left + "," + marginCircuitPlot.top + ")");
 
-        bestTimesPlot = d3.select("#bestQualiPlot").attr("class", "center-align")
-            .append("svg")
-            .attr("width", circuitPlotWidth + marginCircuitPlot.left + marginCircuitPlot.right)
-            .attr("height", circuitPlotWidth + marginCircuitPlot.top + marginCircuitPlot.bottom)
-            .append("g")
-            .attr("transform", "translate(" + marginCircuitPlot.left + "," + marginCircuitPlot.top + ")");
+    x_bestQuali = d3.scaleLinear().range([0, circuitPlotWidth]);
 
-        x_bestQuali = d3.scaleLinear().range([0, circuitPlotWidth]);
+    x_bestQuali.domain([d3.min(currCircTimes, function(d) { return +d.year; }), d3.max(currCircTimes, function(d) { return +d.year; })]);
 
-        x_bestQuali.domain([d3.min(currCircTimes, function(d) { return +d.year; }), d3.max(currCircTimes, function(d) { return +d.year; })]);
-
-        var gXAxis = bestTimesPlot.append("g")
-                        .attr("transform", "translate(0," + circuitPlotHeight + ")")
-                        .style("font", "20px f1font")
-                        .attr("class", "x-axis axis")
-                        .call(d3.axisBottom(x_bestQuali)
-                            .tickValues(currCircTimes.map(function(d) { return +d.year; }))
-                            .tickFormat(d3.format("d"))
-                        );
-
-        gXAxis.selectAll("text")
-                .style("text-anchor", "end")
-                .attr("dx", "-.8em")
-                .attr("dy", ".15em")
-                .attr("transform", "rotate(-65)");
-
-
-        // Find the maxLabel height, adjust the height accordingly and transform the x axis.
-        var maxWidth = 0;
-        gXAxis.selectAll("text").each(function () {
-        	var boxWidth = this.getBBox().width;
-        	if (boxWidth > maxWidth) maxWidth = boxWidth;
-        });
-
-        heightUpdated = circuitPlotHeight - maxWidth - 30;
-        gXAxis.attr("transform", "translate(0," + heightUpdated + ")");
-
-        // text label for the x axis
-        bestTimesPlot.append("text")
-                    .attr("x", circuitPlotWidth/2)
-                    .attr("y", heightUpdated + marginCircuitPlot.top + marginCircuitPlot.bottom + 30)
-                    .style("text-anchor", "middle")
-                    .style("fill", "red")
+    var gXAxis = bestTimesPlot.append("g")
+                    .attr("transform", "translate(0," + circuitPlotHeight + ")")
                     .style("font", "20px f1font")
-                    .text("Years");
+                    .attr("class", "x-axis axis")
+                    .call(d3.axisBottom(x_bestQuali)
+                    .tickValues(currCircTimes.map(function(d) { return +d.year; }))
+                    .tickFormat(d3.format("d"))
+                    );
+
+    gXAxis.selectAll("text")
+            .style("text-anchor", "end")
+            .attr("dx", "-.8em")
+            .attr("dy", ".15em")
+            .attr("transform", "rotate(-65)");
 
 
-        y_bestQuali = d3.scaleLinear().range([heightUpdated, 0]);
-        y_bestQuali.domain([d3.min(parsedData), d3.max(parsedData)]);
+    // Find the maxLabel height, adjust the height accordingly and transform the x axis.
+    var maxWidth = 0;
+    gXAxis.selectAll("text").each(function () {
+    	var boxWidth = this.getBBox().width;
+    	if (boxWidth > maxWidth) maxWidth = boxWidth;
+    });
 
-        bestTimesPlot.append("g")
-            .style("font", "20px f1font")
-            .attr("class", "y-axis axis")
-            .call(d3.axisLeft(y_bestQuali)
-                    .tickFormat(d3.timeFormat("%M:%S.%L"))
-        );
+    heightUpdated = circuitPlotHeight - maxWidth - 30;
+    gXAxis.attr("transform", "translate(0," + heightUpdated + ")");
 
-        // text label for the y axis
-        bestTimesPlot.append("text")
-            .attr("transform", "rotate(-90)")
-            .attr("y", 0 - marginCircuitPlot.left)
-            .attr("x", 0 - heightUpdated / 2)
-            .attr("dy", "1em")
-            .style("text-anchor", "middle")
-            .style("fill", "red")
-            .style("font", "20px f1font")
-            .text("Times");
-
-        var line = d3.line()
-            .x(function(d) { return x_bestQuali(d.year); })
-            .y(function(d) { return y_bestQuali(d3.timeParse(specifier)(d.time)); });
+    // text label for the x axis
+    bestTimesPlot.append("text")
+                .attr("x", circuitPlotWidth/2)
+                .attr("y", heightUpdated + marginCircuitPlot.top + marginCircuitPlot.bottom + 30)
+                .style("text-anchor", "middle")
+                .style("fill", "red")
+                .style("font", "20px f1font")
+                .text("Years");
 
 
-        bestTimesPlot.append("path")
-            .data([currCircTimes])
-            .attr("d", line)
-            .attr("class", "bestQuali")
-            .attr("stroke", "steelblue")
-            .style("stroke-width", 4)
-            .style("fill", "none");
+    y_bestQuali = d3.scaleLinear().range([heightUpdated, 0]);
+    y_bestQuali.domain([d3.min(parsedData), d3.max(parsedData)]);
 
-        bestTimesPlot.selectAll("dots")
-            .data(currCircTimes)
-            .enter()
-            .append("circle")
-            .style("fill", "steelblue")
-            .attr("cx", function(d) { return x_bestQuali(d.year); })
-            .attr("cy", function(d) { return y_bestQuali(d3.timeParse(specifier)(d.time)); })
-            .attr("r", 8)
-            .attr("class", "bestQuali")
-            .attr("stroke", "white")
-            .on("mouseover", function(d) {
-                var whereOver = this;
-                //console.log(d);
-                var findStationIdLink = "https://api.meteostat.net/v1/stations/nearby?lat=" + d.lat + "&lon=" + d.long + "&limit=1&key=RmlE0dX0";
-                d3.json(findStationIdLink, function(err, mydata) {
-                    var stationId = mydata.data[0].id;
-                    //console.log(stationId);
-                    var weatherLink = "https://api.meteostat.net/v1/history/daily?station=" + stationId + "&start=" + d.date + "&end=" + d.date + "&key=RmlE0dX0"
-                    d3.json(weatherLink, function(err, newdata) {
-                        //console.log(newdata);
-                        var temp_max = "n.d."
-                        var temp_min = "n.d."
-                        if(Array.isArray(newdata.data) && newdata.data.length) {
-                            temp_max = newdata.data[0].temperature_max;
-                            temp_min = newdata.data[0].temperature_min;
-                        }
-                        $(".tooltip")
-                            .css("transition", "1s")
-                            .css("left", (parseInt(d3.select(whereOver).attr("cx")) + document.getElementById("modal1").offsetLeft + document.getElementById("modalContent").offsetLeft + document.getElementById("modalContainer").offsetLeft + document.getElementById("bestQualiPlot").offsetLeft + 150) + "px")
-                            .css("top", (parseInt(d3.select(whereOver).attr("cy")) + document.getElementById("bestQualiPlot").offsetTop) + "px")
-                            .css("opacity", 1)
-                            .css("display", "inline-block")
-                            .html("Best qualifying time: " + d.time + "<br/>Temperature max: " + temp_max + "<br/> Temperature min: " + temp_min);
-                    });
-                });
-            })
-            .on("mouseout", function(d) {
-                $(".tooltip")
-                    .css("transition", "1s")
-                    .css("opacity", 0);
-            })
-            .on("click", function(d) {
-                quali_standing.forEach(qs => {
-                    if(qs.key === currCirc) {
-                        qs.values.forEach(qsv => {
-                            //console.log(qsv);
-                            if(parseInt(qsv.key) === d.year) {
-                                //console.log(qsv)
-                                if (d.year === parseInt(sel_year)) d3.select("#qualiStandingPlotTitle").text("Qualifying Times");
-                                else d3.select("#qualiStandingPlotTitle").text("Qualifying Times " + d.year);
-                                updateQualiPlot(qsv.values);
-                            }
-                        })
+    bestTimesPlot.append("g")
+        .style("font", "20px f1font")
+        .attr("class", "y-axis axis")
+        .call(d3.axisLeft(y_bestQuali)
+        .tickFormat(d3.timeFormat("%M:%S.%L"))
+    );
+
+    // text label for the y axis
+    bestTimesPlot.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - marginCircuitPlot.left)
+        .attr("x", 0 - heightUpdated / 2)
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .style("fill", "red")
+        .style("font", "20px f1font")
+        .text("Times");
+
+    var line = d3.line()
+        .x(function(d) { return x_bestQuali(d.year); })
+        .y(function(d) { return y_bestQuali(d3.timeParse(specifier)(d.time)); });
+
+
+    bestTimesPlot.append("path")
+        .data([currCircTimes])
+        .attr("d", line)
+        .attr("class", "bestQuali")
+        .attr("stroke", "steelblue")
+        .style("stroke-width", 4)
+        .style("fill", "none");
+
+    bestTimesPlot.selectAll("dots")
+        .data(currCircTimes)
+        .enter()
+        .append("circle")
+        .style("fill", "steelblue")
+        .attr("cx", function(d) { return x_bestQuali(d.year); })
+        .attr("cy", function(d) { return y_bestQuali(d3.timeParse(specifier)(d.time)); })
+        .attr("r", 8)
+        .attr("class", "bestQuali")
+        .attr("stroke", "white")
+        .on("mouseover", function(d) {
+            var whereOver = this;
+            //console.log(d);
+            var findStationIdLink = "https://api.meteostat.net/v1/stations/nearby?lat=" + d.lat + "&lon=" + d.long + "&limit=1&key=RmlE0dX0";
+            d3.json(findStationIdLink, function(err, mydata) {
+                var stationId = mydata.data[0].id;
+                //console.log(stationId);
+                var weatherLink = "https://api.meteostat.net/v1/history/daily?station=" + stationId + "&start=" + d.date + "&end=" + d.date + "&key=RmlE0dX0"
+                d3.json(weatherLink, function(err, newdata) {
+                    //console.log(newdata);
+                    var temp_max = "n.d."
+                    var temp_min = "n.d."
+                    if(Array.isArray(newdata.data) && newdata.data.length) {
+                        temp_max = newdata.data[0].temperature_max;
+                        temp_min = newdata.data[0].temperature_min;
                     }
-                })
+                    $(".tooltip")
+                        .css("transition", "1s")
+                        .css("left", (parseInt(d3.select(whereOver).attr("cx")) + document.getElementById("modal1").offsetLeft + document.getElementById("modalContent").offsetLeft + document.getElementById("modalContainer").offsetLeft + document.getElementById("bestQualiPlot").offsetLeft + 150) + "px")
+                        .css("top", (parseInt(d3.select(whereOver).attr("cy")) + document.getElementById("bestQualiPlot").offsetTop) + "px")
+                        .css("opacity", 1)
+                        .css("display", "inline-block")
+                        .html("Best qualifying time: " + d.time + "<br/>Temperature max: " + temp_max + "<br/> Temperature min: " + temp_min);
+                });
             });
+        })
+        .on("mouseout", function(d) {
+            $(".tooltip")
+                .css("transition", "1s")
+                .css("opacity", 0);
+        })
+        .on("click", function(d) {
+            quali_standing.forEach(qs => {
+                if(qs.key === currCirc) {
+                    qs.values.forEach(qsv => {
+                        //console.log(qsv);
+                        if(parseInt(qsv.key) === d.year) {
+                            //console.log(qsv)
+                            if (d.year === parseInt(sel_year)) d3.select("#qualiStandingPlotTitle").text("Qualifying Times");
+                            else d3.select("#qualiStandingPlotTitle").text("Qualifying Times " + d.year);
+                            updateQualiPlot(qsv.values);
+                        }
+                    })
+                }
+            })
+        });
+    if (currCircTimes.length == 0) {
+        $("#bestTimesPlotID").addClass("scale-out");
+        $("#bestTimesPlotID").addClass("no-dimension");
+        $("#noDataGifBQP").removeClass("scale-out");
+        $("#noDataGifBQP").removeClass("no-dimension");
     }
 }
 
 function updateBestQualiPlot(currCircTimes, currCirc) {
-    console.log("In UPDATE BEST");
-    if (currCircTimes.length == 0) $("#bestQualiPlot").html("<img src='src/images/noData.gif'>");
+    if (currCircTimes.length == 0) {
+        $("#bestTimesPlotID").addClass("scale-out");
+        $("#bestTimesPlotID").addClass("no-dimension");
+        $("#noDataGifBQP").removeClass("scale-out");
+        $("#noDataGifBQP").removeClass("no-dimension");
+    }
     else{
+        $("#noDataGifBQP").addClass("scale-out");
+        $("#noDataGifBQP").addClass("no-dimension");
+        $("#bestTimesPlotID").removeClass("scale-out");
+        $("#bestTimesPlotID").removeClass("no-dimension");
         var specifier = "%M:%S.%L";
         var parsedData = []
 
@@ -319,19 +333,19 @@ function updateBestQualiPlot(currCircTimes, currCirc) {
                 .attr("dx", "-.8em")
                 .attr("dy", ".15em")
                 .attr("transform", "rotate(-65)");
-        
+
         bestTimesPlot.select(".y-axis.axis")
             .transition()
             .duration(1000)
             .call(d3.axisLeft(y_bestQuali)
                 .tickFormat(d3.timeFormat("%M:%S.%L")));
 
-        
+
         var line = d3.line()
             .x(function(d) { return x_bestQuali(d.year); })
             .y(function(d) { return y_bestQuali(d3.timeParse(specifier)(d.time)); });
-    
-    
+
+
         bestTimesPlot.append("path")
             .data([currCircTimes])
             .transition()

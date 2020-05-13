@@ -19,7 +19,6 @@ var constructor_urls = {};
 var onCloseModal = function() {
     d3.select("#standingPlot").selectAll("*").remove();
     d3.select("#resTable").selectAll("*").remove();
-    d3.select("#qualiStandingPlot").selectAll("*").remove();
     g.selectAll("#mapID").style("opacity", 1);
     g.selectAll("#circleMap").style("opacity", 1);
     mapID.active = true;

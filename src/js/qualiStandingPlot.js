@@ -6,19 +6,24 @@ var x_quali, y_quali;
 var qualiStandingPlot;
 
 function plotQualiTime(currCirc) {
+    var nodata = true;
     quali_standing.forEach(qs => {
         if(qs.key === currCirc) {
             qs.values.forEach(qsv => {
                 if(parseInt(qsv.key) === parseInt(sel_year)) {
-                    return qualiPlot(qsv.values);
+                    nodata = false;
+                    qualiPlot(qsv.values);
                 }
             });
         }
     });
-    //return $("#qualiStandingPlot").html("<img src='src/images/noData.gif'>");
+    if (nodata) qualiPlot([]);
 }
 
 function qualiPlot(standingList) {
+    $("#noDataGifQSP").addClass("scale-out");
+    $("#noDataGifQSP").addClass("no-dimension");
+
     var specifier = "%M:%S.%L";
     var parsedData = [];
 
@@ -28,6 +33,8 @@ function qualiPlot(standingList) {
 
     qualiStandingPlot = d3.select("#qualiStandingPlot").attr("class", "center-align")
         .append("svg")
+        .attr("class", "scale-transition")
+        .attr("id", "qualiStandingPlotID")
         .attr("width", qualiStantingPlotWidth + marginQualiStandingPlot.left + marginQualiStandingPlot.right)
         .attr("height", qualiStandingPlotHeight + marginQualiStandingPlot.top + marginQualiStandingPlot.bottom)
         .append("g")
@@ -102,11 +109,26 @@ function qualiPlot(standingList) {
         .attr("cy", function(d) { return y_quali(d3.timeParse(specifier)(d.time)); })
         .attr("r", 8)
         .attr("stroke", function(d){ return color(d.constructor) });
+    if (standingList.length == 0) {
+        $("#qualiStandingPlotID").addClass("scale-out");
+        $("#qualiStandingPlotID").addClass("no-dimension");
+        $("#noDataGifQSP").removeClass("scale-out");
+        $("#noDataGifQSP").removeClass("no-dimension");
+    }
 }
 
 function updateQualiPlot(standingList) {
-    if (standingList.length == 0) $("#qualiStandingPlot").html("<img src='src/images/noData.gif'>");
+    if (standingList.length == 0) {
+        $("#qualiStandingPlotID").addClass("scale-out");
+        $("#qualiStandingPlotID").addClass("no-dimension");
+        $("#noDataGifQSP").removeClass("scale-out");
+        $("#noDataGifQSP").removeClass("no-dimension");
+    }
     else {
+        $("#noDataGifQSP").addClass("scale-out");
+        $("#noDataGifQSP").addClass("no-dimension");
+        $("#qualiStandingPlotID").removeClass("scale-out");
+        $("#qualiStandingPlotID").removeClass("no-dimension");
         var specifier = "%M:%S.%L";
         var parsedData = [];
 

@@ -332,3 +332,8 @@ a:active {
 .noUi-target.noUi-horizontal .noUi-tooltip {
 	background-color: red;
 }
+
+.no-dimension {
+    width: 0%;
+    height: 0%;
+}

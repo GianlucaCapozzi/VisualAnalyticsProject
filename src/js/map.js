@@ -297,12 +297,11 @@ function clicked(d) {
                             .css("opacity", 0);
             })
             .on("click", function(d) {
-                d3.select("#circuitPlot").selectAll("*").remove();
-                d3.select("#qualiStandingPlot").selectAll("*").remove();
+                d3.select("#qualiStandingPlotID").remove();
+                d3.select("#bestTimesPlotID").remove();
                 d3.select("#circuitTitle").selectAll("*").remove();
-                d3.select("#lapTimesPlot").selectAll("*").remove();
-                d3.select("#lapTimesLegend").selectAll("*").remove();
-                d3.select("#pitPlot").selectAll("*").remove();
+                d3.select("#lapTimesPlotID").remove();
+                d3.select("#pitPlotID").remove();
                 sel_circuit_name = d.name;
                 getBestQualiData(sel_circuit_name, startYearModal, endYearModal, false);
                 plotQualiTime(sel_circuit_name);

@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
     <meta charset="utf-8">
-
     <head>
         <title>FormulaTour</title>
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
         <link rel="shortcut icon" href="src/images/icon.ico"/> <!--Tab icon-->
         <link rel="stylesheet" type="text/css" href="src/css/nouislider.css" />
         <link href="src/css/materialIcons.css" rel="stylesheet"> <!--Google Icon Font-->
@@ -140,10 +142,10 @@
                     <div class="grid-item center-align title" id="standingPlotTitle">General Standing</div>
                     <div class="grid-item center-align title" id="lapTimesPlotTitle">Lap Times</div>
                     <div class="grid-item" id="standingPlot"></div>
-                    <div class="grid-item" id="lapTimesPlot"></div>
+                    <div class="grid-item" id="lapTimesPlot"><img class ="scale-transition scale-out no-dimension" id="noDataGifLTP" src="src/images/noData.gif"></div>
                     <div class="grid-item center-align title" id="qualiStandingPlotTitle">Qualifying Times</div>
                     <div class="grid-item center-align title" id="resTableTitle">Order of Arrival</div>
-                    <div class="grid-item" id="qualiStandingPlot"></div>
+                    <div class="grid-item" id="qualiStandingPlot"><img class ="scale-transition scale-out no-dimension" id="noDataGifQSP" src="src/images/noData.gif"></div>
                     <div class="grid-item" id="resTable"></div>
                     <div class="grid-item center-align title" id="circuitRangeTitle">Analysis from 1950 to 2019</div>
                     <div class="grid-item normalText center-align" id="yearModalSliderContainer">
@@ -157,8 +159,8 @@
                     </div>
                     <div class="grid-item center-align title" id="bestQualiPlotTitle">Best Qualifying Time</div>
                     <div class="grid-item center-align title" id="pitPlotTitle">Pit Stops</div>
-                    <div class="grid-item" id="bestQualiPlot"></div>
-                    <div class="grid-item" id="pitPlot"></div>
+                    <div class="grid-item" id="bestQualiPlot"><img class ="scale-transition scale-out no-dimension" id="noDataGifBQP" src="src/images/noData.gif"></div>
+                    <div class="grid-item" id="pitPlot"><img class ="scale-transition scale-out no-dimension" id="noDataGifPP" src="src/images/noData.gif"></div>
                 </div>
             </div>
             <div class="modal-footer">
