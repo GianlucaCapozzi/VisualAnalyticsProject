@@ -4,8 +4,6 @@ var height = map.node().getBoundingClientRect().height;
 
 var active = d3.select(null);
 
-var selectedDrivers = [];
-
 var projection = d3.geoEquirectangular()
     .center([0, 15]) // set centre to further North as we are cropping more off bottom of map
     .scale(width / 6) // scale to fit group width
@@ -27,17 +25,11 @@ var rect = svg.append("rect")
 
 var g = svg.append("g");
 
-d3.queue()
-        .defer(d3.csv, circuits)
-        .defer(d3.csv, races)
-        .defer(d3.csv, results)
-        .await(processRacesByYear);
-
-function processRacesByYear(err, circ, rac, res) {
+function processRacesByYear(circ, rac, res) {
     rac.forEach(r => {
         if(r.year == sel_year) {
             circ.forEach(c => {
-                if(r.circuitId === c.circuitId) {
+                if(r.circuitId == c.circuitId) {
                     if(!tracks.includes(c.name)) {
                         //console.log(c.name);
                         countries_with_circ.push(c.country);
@@ -49,7 +41,39 @@ function processRacesByYear(err, circ, rac, res) {
             });
             var locMax = 0;
             res.forEach(rs => {
-                if(rs.raceId === r.raceId) {
+                if(rs.raceId == r.raceId) {
+                    //console.log("POS ORD: " + rs.positionOrder + " race: " + rs.raceId);
+                    if(parseInt(rs.grid) >= locMax) {
+                        locMax = parseInt(rs.grid);
+                    }
+                }
+            });
+            if(locMax >= maxDrivers) {
+                maxDrivers = locMax;
+            }
+        }
+    });
+    getChampions(racesIdForRank[racesIdForRank.length-1]);
+    updateData();
+}
+
+function processRacesByYear2(err, circ, rac, res) {
+    rac.forEach(r => {
+        if(r.year == sel_year) {
+            circ.forEach(c => {
+                if(r.circuitId == c.circuitId) {
+                    if(!tracks.includes(c.name)) {
+                        //console.log(c.name);
+                        countries_with_circ.push(c.country);
+                        tracks[r.raceId] = [c.name, r.name];
+                        racesId[c.name] = r.raceId;
+                        racesIdForRank.push(+r.raceId);
+                    }
+                }
+            });
+            var locMax = 0;
+            res.forEach(rs => {
+                if(rs.raceId == r.raceId) {
                     //console.log("POS ORD: " + rs.positionOrder + " race: " + rs.raceId);
                     if(parseInt(rs.grid) >= locMax) {
                         locMax = parseInt(rs.grid);
@@ -84,10 +108,10 @@ function onYearChange(newYear) {
     d3.select("#consChampLabImage").selectAll("*").remove();
 
     d3.queue()
-        .defer(d3.csv, circuits)
-        .defer(d3.csv, races)
-        .defer(d3.csv, results)
-        .await(processRacesByYear);
+        .defer(d3.json, circuits)
+        .defer(d3.json, races)
+        .defer(d3.json, results)
+        .await(processRacesByYear2);
 
     getRaces();
 }
@@ -98,15 +122,15 @@ $("#yearSelect").on("change", function() {
 
 function getChampions(lastRace) {
     d3.queue()
-        .defer(d3.csv, driver_standings)
-        .defer(d3.csv, drivers)
-        .defer(d3.csv, constructor_standings)
-        .defer(d3.csv, constructors)
+        .defer(d3.json, driver_standings)
+        .defer(d3.json, drivers)
+        .defer(d3.json, constructor_standings)
+        .defer(d3.json, constructors)
         .await(function(er, driv_s, driv, cons_s, cons) {
         driv_s.forEach(ds => {
-            if(+ds.raceId === lastRace && ds.positionText === "1") {
+            if(+ds.raceId == lastRace && ds.positionText == "1") {
                 driv.forEach(d => {
-                    if(ds.driverId === d.driverId) {
+                    if(ds.driverId == d.driverId) {
                         var champion = d.forename + " " + d.surname;
                         selectedDrivers.push(champion);
                         d3.select("#drivChampLabName")
@@ -114,14 +138,6 @@ function getChampions(lastRace) {
                             .text(champion)
                             .attr("href", driver_urls[champion])
                             .attr("target", "_blank");
-                        d3.selectAll("." + champion.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot")
-                            .transition()
-                            .duration(1000)
-                            .style("opacity", 1);
-                        d3.selectAll("." + champion.replace(/\./g, "").replace(/\s/g, '') + "forLegend")
-                            .transition()
-                            .duration(1000)
-                            .style("opacity", 1);
                         d3.json(urlImageRequest + champion, function(err, mydata) {
                             var firstObj = Object.values(mydata.query.pages)[0];
                             if(firstObj.hasOwnProperty("original")) {
@@ -160,9 +176,9 @@ function getChampions(lastRace) {
             }
         });
         cons_s.forEach(cs => {
-            if(+cs.raceId === lastRace && cs.positionText === "1") {
+            if(+cs.raceId == lastRace && cs.positionText == "1") {
                 cons.forEach(c => {
-                    if(cs.constructorId === c.constructorId) {
+                    if(cs.constructorId == c.constructorId) {
                         var consChampion = c.name;
                         d3.select("#consChampLabName")
                             .append("a")
@@ -201,7 +217,6 @@ function getChampions(lastRace) {
                                         .attr("height", imageHeight);
                                 });
                                 img.src = urlImage;
-                                $("#loading").css("display", "none"); // Hide chargement
                             }
                         });
                     }
@@ -253,19 +268,19 @@ function colorCountry(country) {
 
 function clicked(d) {
     if(!countries_with_circ.includes(d.properties.name)) return reset();
-    if (active.node() === this) return reset();
+    if (active.node() == this) return reset();
     reset();
     active.classed("active", false);
     active = d3.select(this).classed("active", true);
     var loc = d.properties.name;
 
-    d3.csv(circuits, function(error2, data){
+    d3.json(circuits, function(error2, data){
         g.selectAll("circle")
             .data(data
             .filter(function(d) {
                 var isInTrack = false;
                 tracks.forEach(t => {
-                    if(t[0] === d.name) { isInTrack = true; }
+                    if(t[0] == d.name) { isInTrack = true; }
                 });
                 return d.country == loc && countries_with_circ.includes(d.country) && isInTrack;
             }))

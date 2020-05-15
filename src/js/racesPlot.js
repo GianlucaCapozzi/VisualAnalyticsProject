@@ -11,7 +11,7 @@ function processRaces(error, drvs, rsts) {
     rsts.forEach(race => {
         if (racesIdForRank.includes(+race.raceId)) {
             drvs.forEach(driver => {
-                if(driver.driverId === race.driverId) {
+                if(driver.driverId == race.driverId) {
                     let driverName = driver.forename + " " + driver.surname;
                     season_races.push({ 'driver' : driverName, 'race' : race.raceId - firstRound, 'position' : race.position });
                 }
@@ -37,8 +37,8 @@ function processRaces(error, drvs, rsts) {
 
 function getRaces() {
     d3.queue()
-        .defer(d3.csv, drivers)
-        .defer(d3.csv, results)
+        .defer(d3.json, drivers)
+        .defer(d3.json, results)
         .await(processRaces);
 }
 
@@ -231,6 +231,16 @@ function makeRacesPlot() {
         .duration(500)
         .style("opacity", 0);
 
-}
+    // Select winner
+    for(var i = 0; i < selectedDrivers.length; i++) {
+        d3.selectAll("." + selectedDrivers[i].replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot")
+            .transition()
+            .duration(1000)
+            .style("opacity", 1);
+        d3.selectAll("." + selectedDrivers[i].replace(/\./g, "").replace(/\s/g, '') + "forLegend")
+            .transition()
+            .duration(1000)
+            .style("opacity", 1);
+    }
 
-getRaces();
+}

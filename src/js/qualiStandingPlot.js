@@ -8,9 +8,9 @@ var qualiStandingPlot;
 function plotQualiTime(currCirc) {
     var nodata = true;
     quali_standing.forEach(qs => {
-        if(qs.key === currCirc) {
+        if(qs.key == currCirc) {
             qs.values.forEach(qsv => {
-                if(parseInt(qsv.key) === parseInt(sel_year)) {
+                if(parseInt(qsv.key) == parseInt(sel_year)) {
                     nodata = false;
                     qualiPlot(qsv.values);
                 }

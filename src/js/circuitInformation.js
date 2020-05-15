@@ -5,18 +5,18 @@ var goodCircleWidth = 500;
 
 function getWinPolePercentage(circuitId, startYear, endYear) {
     d3.queue()
-        .defer(d3.csv, races)
-        .defer(d3.csv, results)
+        .defer(d3.json, races)
+        .defer(d3.json, results)
         .await(function(er, rac, res) {
             var numPoleWinners = 0;
             var numEditions = 0;
             rac.forEach(rc => {
                 if(parseInt(rc.year) >= parseInt(startYear) && parseInt(rc.year) <= parseInt(endYear)) {
-                    if(parseInt(rc.circuitId) === parseInt(circuitId)) {
+                    if(parseInt(rc.circuitId) == parseInt(circuitId)) {
                         numEditions += 1;
                         res.forEach(rs => {
-                            if(parseInt(rs.raceId) === parseInt(rc.raceId)) {
-                                if(parseInt(rs.grid) === 1 && parseInt(rs.positionOrder) === 1){
+                            if(parseInt(rs.raceId) == parseInt(rc.raceId)) {
+                                if(parseInt(rs.grid) == 1 && parseInt(rs.positionOrder) == 1){
                                     numPoleWinners += 1;
                                 }
                             }
@@ -40,17 +40,17 @@ function getLapDistribution(circuitId) {
         $("#noDataGifLTP").addClass("scale-out");
         $("#noDataGifLTP").addClass("no-dimension");
         d3.queue()
-            .defer(d3.csv, races)
-            .defer(d3.csv, drivers)
-            .defer(d3.csv, lapTimes)
+            .defer(d3.json, races)
+            .defer(d3.json, drivers)
+            .defer(d3.json, lapTimes)
             .await(function(err, rac, driv, lTimes) {
                 var lap_times_set = [];
                 rac.forEach(rc => {
-                    if(parseInt(rc.circuitId) === parseInt(circuitId) && parseInt(rc.year) === parseInt(sel_year)) {
+                    if(parseInt(rc.circuitId) == parseInt(circuitId) && parseInt(rc.year) == parseInt(sel_year)) {
                         lTimes.forEach(lt => {
-                            if(parseInt(lt.raceId) === parseInt(rc.raceId)) {
+                            if(parseInt(lt.raceId) == parseInt(rc.raceId)) {
                                 driv.forEach(dr => {
-                                    if(parseInt(lt.driverId) === parseInt(dr.driverId)) {
+                                    if(parseInt(lt.driverId) == parseInt(dr.driverId)) {
                                         lap_times_set.push({"driver" : dr.forename + " " + dr.surname, "lap" : lt.lap, "time" : lt.time});
                                     }
                                 })
@@ -83,7 +83,7 @@ function getBestLapEver(currCircTimes) {
         return d.time;
     })
 
-    var bestEl = currCircTimes.filter(function(d) { return d.time === bestLap; });
+    var bestEl = currCircTimes.filter(function(d) { return d.time == bestLap; });
     var bestRecord;
     if(bestEl.length == 0) bestRecord = "n.d.";
     else bestRecord = "Time: " + formatLap(bestEl[0].time) + "<br/>Year: " + bestEl[0].year + "<br/>Driver: " + bestEl[0].driver + "<br/>Constructor: " + bestEl[0].constructor;
@@ -185,15 +185,15 @@ function makeLapTimesPlot(lap_times, nested_lap_times) {
 
 function getPitStopDistribution(circuitId, startYear, endYear, update) {
     d3.queue()
-        .defer(d3.csv, pitStops)
-        .defer(d3.csv, races)
+        .defer(d3.json, pitStops)
+        .defer(d3.json, races)
         .await(function(er, pit_stops, rac) {
             var pit_list = [];
             for(var i = parseInt(startYear); i < parseInt(endYear) + 1; i++) {
                 rac.forEach(r => {
-                    if(parseInt(r.year) === i && parseInt(r.circuitId) === parseInt(circuitId)) {
+                    if(parseInt(r.year) == i && parseInt(r.circuitId) == parseInt(circuitId)) {
                         pit_stops.forEach(ps => {
-                            if(parseInt(ps.raceId) === parseInt(r.raceId)) {
+                            if(parseInt(ps.raceId) == parseInt(r.raceId)) {
                                 pit_list.push({"year" : i, "lap" : ps.lap});
                             }
                         });

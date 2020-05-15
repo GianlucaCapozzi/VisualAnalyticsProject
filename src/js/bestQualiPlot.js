@@ -40,42 +40,42 @@ sliderModal.noUiSlider.on('change', function (values, handle) {
 });
 
 d3.queue()
-    .defer(d3.csv, circuits)
-    .defer(d3.csv, races)
-    .defer(d3.csv, qualifying)
-    .defer(d3.csv, drivers)
-    .defer(d3.csv, constructors)
+    .defer(d3.json, circuits)
+    .defer(d3.json, races)
+    .defer(d3.json, qualifying)
+    .defer(d3.json, drivers)
+    .defer(d3.json, constructors)
     .await(processBestLaps);
 
 
 function processBestLaps(err, circs, gps, qualis, drivs, constrs) {
     gps.forEach(race => {
         qualis.forEach(quali => {
-            if(quali.raceId === race.raceId) {
+            if(quali.raceId == race.raceId) {
                 circs.forEach(t => {
-                    if(race.circuitId === t.circuitId) {
+                    if(race.circuitId == t.circuitId) {
                         drivs.forEach(d => {
-                            if(d.driverId === quali.driverId) {
+                            if(d.driverId == quali.driverId) {
                                 constrs.forEach(c => {
-                                    if(c.constructorId === quali.constructorId) {
-                                        if(quali.position === "1") {
+                                    if(c.constructorId == quali.constructorId) {
+                                        if(quali.position == "1") {
                                             if(quali.q3 != "\\N" && quali.q3 != "") {
                                                 bestTimes.push({"circuit": t.name, "time": quali.q3, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date, "driver": d.forename + " " + d.surname, "constructor" : c.name });
                                             }
-                                            else if((quali.q3 === "\\N" || quali.q3 === "") && quali.q2 != "\\N" && quali.q2 != "") {
+                                            else if((quali.q3 == "\\N" || quali.q3 == "") && quali.q2 != "\\N" && quali.q2 != "") {
                                                 bestTimes.push({"circuit": t.name, "time": quali.q2, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date, "driver": d.forename + " " + d.surname, "constructor" : c.name });
                                             }
-                                            else if((quali.q2 === "\\N" || quali.q2 === "") && quali.q1 != "\\N" && quali.q1 != "") {
+                                            else if((quali.q2 == "\\N" || quali.q2 == "") && quali.q1 != "\\N" && quali.q1 != "") {
                                                 bestTimes.push({"circuit": t.name, "time": quali.q1, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date, "driver": d.forename + " " + d.surname, "constructor" : c.name });
                                             }
                                         }
                                         if(quali.q3 != "\\N" && quali.q3 != "") {
                                             quali_standing.push({"circuit": t.name, "time": quali.q3, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date, "driver": d.forename + " " + d.surname, "constructor" : c.name, "position" : quali.position });
                                         }
-                                        else if((quali.q3 === "\\N" || quali.q3 === "") && quali.q2 != "\\N" && quali.q2 != "") {
+                                        else if((quali.q3 == "\\N" || quali.q3 == "") && quali.q2 != "\\N" && quali.q2 != "") {
                                             quali_standing.push({"circuit": t.name, "time": quali.q2, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date, "driver": d.forename + " " + d.surname, "constructor" : c.name, "position" : quali.position });
                                         }
-                                        else if((quali.q2 === "\\N" || quali.q2 === "") && quali.q1 != "\\N" && quali.q1 != "") {
+                                        else if((quali.q2 == "\\N" || quali.q2 == "") && quali.q1 != "\\N" && quali.q1 != "") {
                                             quali_standing.push({"circuit": t.name, "time": quali.q1, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date, "driver": d.forename + " " + d.surname, "constructor" : c.name, "position" : quali.position });
                                         }
                                     }
@@ -108,7 +108,7 @@ function getBestQualiData(currCirc, startTime, endTime, update) {
     var currCircTimes = [];
 
     bestTimes.forEach(d => {
-        if(d.key === currCirc) {
+        if(d.key == currCirc) {
             d.values.forEach(v => {
                 if(parseInt(v.year) >= parseInt(startTime) && parseInt(v.year) <= parseInt(endTime)){
                     currCircTimes.push({'year': v.year, 'time': v.time, "lat": v.lat, "long": v.long, "date": v.date, "driver": v.driver , "constructor" : v.constructor });
@@ -270,12 +270,12 @@ function makeBestQualiPlot(currCircTimes, currCirc) {
         })
         .on("click", function(d) {
             quali_standing.forEach(qs => {
-                if(qs.key === currCirc) {
+                if(qs.key == currCirc) {
                     qs.values.forEach(qsv => {
                         //console.log(qsv);
-                        if(parseInt(qsv.key) === d.year) {
+                        if(parseInt(qsv.key) == d.year) {
                             //console.log(qsv)
-                            if (d.year === parseInt(sel_year)) d3.select("#qualiStandingPlotTitle").text("Qualifying Times");
+                            if (d.year == parseInt(sel_year)) d3.select("#qualiStandingPlotTitle").text("Qualifying Times");
                             else d3.select("#qualiStandingPlotTitle").text("Qualifying Times " + d.year);
                             updateQualiPlot(qsv.values);
                         }
@@ -402,12 +402,12 @@ function updateBestQualiPlot(currCircTimes, currCirc) {
             })
             .on("click", function(d) {
                 quali_standing.forEach(qs => {
-                    if(qs.key === currCirc) {
+                    if(qs.key == currCirc) {
                         qs.values.forEach(qsv => {
                             //console.log(qsv);
-                            if(parseInt(qsv.key) === d.year) {
+                            if(parseInt(qsv.key) == d.year) {
                                 //console.log(qsv)
-                                if (d.year === parseInt(sel_year)) d3.select("#qualiStandingPlotTitle").text("Qualifying Times");
+                                if (d.year == parseInt(sel_year)) d3.select("#qualiStandingPlotTitle").text("Qualifying Times");
                                 else d3.select("#qualiStandingPlotTitle").text("Qualifying Times " + d.year);
                                 updateQualiPlot(qsv.values);
                             }

@@ -31,7 +31,6 @@ var consInfo = [];
 
 var lastRacesId = [];
 
-
 var csChampPlot;
 
 var startYear = 1950, endYear = 2019;
@@ -86,25 +85,24 @@ slider.noUiSlider.on('change', function (values, handle) {
     getVictories();
     getTopChampDrivers();
     getTopChampCons();
-    
+
 });
 
-
-function processResults(err, drvs, cons, rsts, rcs) {
+function processResults(drvs, cons, rsts, rcs) {
     driver_wins = [];
     constructor_wins = [];
     rcs.forEach(race => {
         rsts.forEach(grandPrix => {
-            if(race.raceId === grandPrix.raceId) {
+            if(race.raceId == grandPrix.raceId) {
                 drvs.forEach(driv => {
-                    if(driv.driverId === grandPrix.driverId && +grandPrix.position == 1) {
+                    if(driv.driverId == grandPrix.driverId && +grandPrix.position == 1) {
                         let driverName = driv.forename + " " + driv.surname;
                         driver_wins.push({'driver' : driverName, 'year' : race.year});
                         driver_urls[driverName] = driv.url;
                     }
                 });
                 cons.forEach(c => {
-                    if(c.constructorId === grandPrix.constructorId && +grandPrix.position == 1) {
+                    if(c.constructorId == grandPrix.constructorId && +grandPrix.position == 1) {
                         constructor_wins.push({'constructor' : c.name, 'year' : race.year});
                         constructor_urls[c.name] = c.url;
                     }
@@ -154,11 +152,7 @@ function getVictories() {
         .entries(selYearsConsWins)
         .sort(function(a, b) {return d3.descending(a.value, b.value)});
 
-    //cons_count.slice(0, 10).forEach(c => {
-    //    getConsInfo(c.key);
-    //});
-
-    console.log("GENERAL UPDATE: " + general_update);
+    //console.log("GENERAL UPDATE: " + general_update);
     if(general_update == false) {
         plotBestDrivers(data_count.slice(0, 10));
         plotConstructors(cons_count.slice(0, 10));
@@ -262,33 +256,24 @@ function getVictories() {
 
 }
 
-function getDrivInfo() {
-    //console.log("In driv info");
-    d3.queue()
-        .defer(d3.csv, drivers)
-        .defer(d3.csv, results)
-        .defer(d3.csv, constructors)
-        .await(function(err, ds, rs, cs) {
-            ds.forEach(d => {
-                //if(d.forename + " " + d.surname === driv) {
-                var driv = d.forename + " " + d.surname;
-                drInfo[driv] = [d.dob, d.nationality, [], 0, 0];
-                rs.forEach(r => {
-                    cs.forEach(c => {
-                        if(r.constructorId === c.constructorId && r.driverId === d.driverId) {
-                            if(!drInfo[driv][2].includes(c.name)) {
-                                drInfo[driv][2].push(c.name);
-                            }
-                            drInfo[driv][3] += 1;
-                            if(+r.position == 1 || +r.position == 2 || +r.position == 3) {
-                                drInfo[driv][4] += 1;
-                            }
-                        }
-                    });
-                });
-                //}
+function getDrivInfo(ds, rs, cs) {
+    ds.forEach(d => {
+        var driv = d.forename + " " + d.surname;
+        drInfo[driv] = [d.dob, d.nationality, [], 0, 0];
+        rs.forEach(r => {
+            cs.forEach(c => {
+                if(r.constructorId == c.constructorId && r.driverId == d.driverId) {
+                    if(!drInfo[driv][2].includes(c.name)) {
+                        drInfo[driv][2].push(c.name);
+                    }
+                    drInfo[driv][3] += 1;
+                    if(+r.position == 1 || +r.position == 2 || +r.position == 3) {
+                        drInfo[driv][4] += 1;
+                    }
+                }
             });
         });
+    });
 }
 
 var x_bdPlot, y_bdPlot;
@@ -432,7 +417,7 @@ function updatePlotBestDrivers(bestDrivers) {
         .transition()
         .duration(5000)
         .call(d3.axisBottom(x_bdPlot));
-    
+
     gXAxis.selectAll("text")
         .style("text-anchor", "end")
         .attr("dx", "-.8em")
@@ -523,30 +508,23 @@ function updatePlotBestDrivers(bestDrivers) {
 
 }
 
-function getConsInfo() {
+function getConsInfo(rs, cs) {
     var lastProcRace = "";
-    d3.queue()
-        .defer(d3.csv, results)
-        .defer(d3.csv, constructors)
-        .await(function(err, rs, cs) {
-            cs.forEach(c => {
-                //if(c.name === constr) {
-                    var constr = c.name;
-                    consInfo[constr] = [c.nationality, 0, 0];
-                    rs.forEach(r => {
-                        if(r.constructorId == c.constructorId) {
-                            if(r.raceId != lastProcRace) {
-                                consInfo[constr][1] += 1;
-                                lastProcRace = r.raceId;
-                            }
-                            if(+r.position == 1 || +r.position == 2 || +r.position == 3) {
-                                consInfo[constr][2] += 1;
-                            }
-                        }
-                    });
-                //}
-            });
+    cs.forEach(c => {
+        var constr = c.name;
+        consInfo[constr] = [c.nationality, 0, 0];
+        rs.forEach(r => {
+            if(r.constructorId == c.constructorId) {
+                if(r.raceId != lastProcRace) {
+                    consInfo[constr][1] += 1;
+                    lastProcRace = r.raceId;
+                }
+                if(+r.position == 1 || +r.position == 2 || +r.position == 3) {
+                    consInfo[constr][2] += 1;
+                }
+            }
         });
+    });
 }
 
 var x_bcPlot, y_bcPlot;
@@ -779,11 +757,11 @@ function updatePlotConstructors(constructorWins) {
 
 }
 
-function getLastRaces(err, GPs) {
+function getLastRaces(GPs) {
     var gpsByYear = [];
     for (var i = parseInt(startYear); i <= parseInt(endYear); i++) {
         GPs.forEach(gp => {
-            if(parseInt(gp.year) === i) {
+            if(parseInt(gp.year) == i) {
                 gpsByYear.push({ 'id' : +gp.raceId, 'year' : +gp.year });
             }
         });
@@ -795,12 +773,12 @@ function getLastRaces(err, GPs) {
     }
 }
 
-function processDriversChampionships(err, drivs, stands) {
+function processDriversChampionships(drivs, stands) {
     lastRacesId.forEach(lastRace => {
         stands.forEach(st => {
-            if(parseInt(st.raceId) === lastRace.id) {
+            if(parseInt(st.raceId) == lastRace.id) {
                 drivs.forEach(dr => {
-                    if(dr.driverId === st.driverId && parseInt(st.position) == 1) {
+                    if(dr.driverId == st.driverId && parseInt(st.position) == 1) {
                         driv_champ_wins.push({'driver' : dr.forename + " " + dr.surname, 'year' : +lastRace.year});
                     }
                 });
@@ -1005,7 +983,7 @@ function updatePlotDrivChamps(champions) {
         .style("opacity", 0.7)
         .each(function(d) {
             this._current = {
-                startAngle: d.startAngle, 
+                startAngle: d.startAngle,
                 endAngle: d.startAngle
             };
         })
@@ -1115,12 +1093,12 @@ function updatePlotDrivChamps(champions) {
 
 }
 
-function processConstructorsChampionships(err, consts, stands) {
+function processConstructorsChampionships(consts, stands) {
     lastRacesId.forEach(lastRace => {
         stands.forEach(st => {
-            if(parseInt(st.raceId) === lastRace.id) {
+            if(parseInt(st.raceId) == lastRace.id) {
                 consts.forEach(con => {
-                    if(con.constructorId === st.constructorId && parseInt(st.position) == 1) {
+                    if(con.constructorId == st.constructorId && parseInt(st.position) == 1) {
                         cons_champ_wins.push({'constructor' : con.name, 'year' : +lastRace.year});
                     }
                 });
@@ -1160,7 +1138,7 @@ function getTopChampCons() {
     if(selYearsConsChamps.length - shownChamp != 0) {
         cons_top_10.push({'key' : 'others', 'value' : selYearsConsChamps.length - shownChamp});
     }
-    
+
     if(general_update == false) {
         plotConsChamps(cons_top_10);
     }
@@ -1316,7 +1294,7 @@ function updatePlotConsChamp(champions) {
         .style("opacity", 0.7)
         .each(function(d) {
             this._current = {
-                startAngle: d.startAngle, 
+                startAngle: d.startAngle,
                 endAngle: d.startAngle
             };
         })
@@ -1426,28 +1404,3 @@ function updatePlotConsChamp(champions) {
     d3.select("#bestConstructorWC").text(champions[0].value + " world championships");
 
 }
-
-// Initialize
-d3.queue()
-    .defer(d3.csv, drivers)
-    .defer(d3.csv, constructors)
-    .defer(d3.csv, results)
-    .defer(d3.csv, races)
-    .await(processResults);
-
-d3.queue()
-    .defer(d3.csv, races)
-    .await(getLastRaces);
-
-d3.queue()
-    .defer(d3.csv, drivers)
-    .defer(d3.csv, driver_standings)
-    .await(processDriversChampionships);
-
-d3.queue()
-    .defer(d3.csv, constructors)
-    .defer(d3.csv, constructor_standings)
-    .await(processConstructorsChampionships);
-
-getDrivInfo();
-getConsInfo();

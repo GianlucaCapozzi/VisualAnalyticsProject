@@ -10,11 +10,11 @@ function processStanding(err, drvs, stnds) {
     racesIdForRank.forEach( rId => {
         //console.log(rId);
         stnds.forEach(stand => {
-            if(rId <= parseInt(raceId) && parseInt(stand.raceId) === rId) {
+            if(rId <= parseInt(raceId) && parseInt(stand.raceId) == rId) {
                 drvs.forEach(driver => {
-                    if(driver.driverId === stand.driverId) {
+                    if(driver.driverId == stand.driverId) {
                         driv_rank.push({'driver' : driver.forename + " " + driver.surname, 'race' : stand.raceId - firstRound, 'position' : stand.position});
-                        if(rId === parseInt(raceId) && parseInt(stand.position) === 1) {
+                        if(rId == parseInt(raceId) && parseInt(stand.position) == 1) {
                             curr_leader = driver.forename + " " + driver.surname;
                         }
                     }
@@ -40,8 +40,8 @@ function processStanding(err, drvs, stnds) {
 
 function getStanding() {
     d3.queue()
-        .defer(d3.csv, drivers)
-        .defer(d3.csv, driver_standings)
+        .defer(d3.json, drivers)
+        .defer(d3.json, driver_standings)
         .await(processStanding);
 }
 

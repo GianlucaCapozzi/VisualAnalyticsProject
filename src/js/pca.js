@@ -10,7 +10,7 @@ var marginPca = {top: 10, right: 10, bottom: 50, left: 50};
 var pcaWidth = $("#racesView").width() * 50 / 45 - marginPca.left - marginPca.right;
 var pcaHeight = $("#racesView").height() - marginPca.top - marginPca.bottom;
 
-function populate(err, drvs, cons) {
+function populatePCASelector(drvs, cons) {
     driverNationalities = [];
     constructorNationalities = [];
     drvs.forEach(driver => {
@@ -30,11 +30,6 @@ function populate(err, drvs, cons) {
     });
     $('#pcaConstructorSelect').formSelect();
 }
-
-d3.queue()
-    .defer(d3.csv, drivers)
-    .defer(d3.csv, constructors)
-    .await(populate);
 
 var currentDriverNationality = "British", currentConstructorNationality = "British";
 

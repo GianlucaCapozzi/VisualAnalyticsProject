@@ -1,20 +1,22 @@
 var dataset = "src/formula-1-race-data";
-var circuits = dataset.concat("/circuits.csv");
-var races = dataset.concat("/races.csv");
-var drivers = dataset.concat("/drivers.csv");
-var results = dataset.concat("/results.csv");
-var driver_standings = dataset.concat("/driver_standings.csv");
-var constructors = dataset.concat("/constructors.csv");
-var constructor_standings = dataset.concat("/constructor_standings.csv");
-var qualifying = dataset.concat("/qualifying.csv");
-var lapTimes = dataset.concat("/lap_times.csv");
-var pitStops = dataset.concat("/pit_stops.csv");
+var circuits = dataset.concat("/circuits.json");
+var races = dataset.concat("/races.json");
+var drivers = dataset.concat("/drivers.json");
+var results = dataset.concat("/results.json");
+var driver_standings = dataset.concat("/driver_standings.json");
+var constructors = dataset.concat("/constructors.json");
+var constructor_standings = dataset.concat("/constructor_standings.json");
+var qualifying = dataset.concat("/qualifying.json");
+var lapTimes = dataset.concat("/lap_times.json");
+var pitStops = dataset.concat("/pit_stops.json");
 
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 
 var urlImageRequest = "https://cors-anywhere.herokuapp.com/https://it.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&pilicense=any&titles=";
 var driver_urls = {};
 var constructor_urls = {};
+
+var selectedDrivers = [];
 
 var onCloseModal = function() {
     d3.select("#standingPlot").selectAll("*").remove();
@@ -121,3 +123,32 @@ function removeA(arr) {
     }
     return arr;
 }
+
+function initializeAllViews(error, drivers, constructors, results, races, circuits, driverStandings, constructorStandings) {
+    // Home View
+    processRacesByYear(circuits, races, results);
+    getRaces();
+
+    //General Info View
+    processResults(drivers, constructors, results, races);
+    getLastRaces(races);
+    processDriversChampionships(drivers, driverStandings);
+    processConstructorsChampionships(constructors, constructorStandings);
+    getDrivInfo(drivers, results, constructors);
+    getConsInfo(results, constructors);
+
+    // PCA View
+    populatePCASelector(drivers, constructors);
+    $("#loading").css("display", "none"); // Hide chargement
+}
+
+// Initialize
+d3.queue()
+    .defer(d3.json, drivers)
+    .defer(d3.json, constructors)
+    .defer(d3.json, results)
+    .defer(d3.json, races)
+    .defer(d3.json, circuits)
+    .defer(d3.json, driver_standings)
+    .defer(d3.json, constructor_standings)
+    .await(initializeAllViews);

@@ -1,9 +1,9 @@
 function processRace(err, drvs, rsts) {
     res = [];
     rsts.forEach(race => {
-        if(race.raceId === raceId) {
+        if(race.raceId == raceId) {
             drvs.forEach(driver => {
-                if(driver.driverId === race.driverId) {
+                if(driver.driverId == race.driverId) {
                     res.push({ 'Driver' : driver.forename + " " + driver.surname, 'Result' : race.positionText });
                 }
             });
@@ -16,8 +16,8 @@ function processRace(err, drvs, rsts) {
 
 function getResults() {
     d3.queue()
-        .defer(d3.csv, drivers)
-        .defer(d3.csv, results)
+        .defer(d3.json, drivers)
+        .defer(d3.json, results)
         .await(processRace);
 }
 
