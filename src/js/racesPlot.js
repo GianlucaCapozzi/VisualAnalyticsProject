@@ -5,19 +5,18 @@ var aspect = racesPlotWidth / racesPlotHeight;
 
 var racesPlot, x, y;
 
-function processRaces(error, drvs, rsts) {
+function getRaces() {
     season_races = [];
     firstRound = d3.min(racesIdForRank) - 1;
-    rsts.forEach(race => {
-        if (racesIdForRank.includes(+race.raceId)) {
-            drvs.forEach(driver => {
-                if(driver.driverId == race.driverId) {
-                    let driverName = driver.forename + " " + driver.surname;
-                    season_races.push({ 'driver' : driverName, 'race' : race.raceId - firstRound, 'position' : race.position });
-                }
-            });
+    allResults.forEach(ar => {
+        if(racesIdForRank.includes(+ar.raceId)) {
+            if(parseInt(ar.maxDriv) >= maxDrivers) {
+                maxDrivers = parseInt(ar.maxDriv);
+            }
+            season_races.push({'driver' : ar.driver, 'race' : ar.raceId - firstRound, 'position' : ar.position});
         }
     });
+
     // Group by pilots
     season_races = d3.nest()
                         .key(function(d) { return d.driver; })
@@ -35,12 +34,6 @@ function processRaces(error, drvs, rsts) {
     makeRacesPlot();
 }
 
-function getRaces() {
-    d3.queue()
-        .defer(d3.json, drivers)
-        .defer(d3.json, results)
-        .await(processRaces);
-}
 
 function makeRacesPlot() {
     d3.select("#racesView").selectAll("*").remove();

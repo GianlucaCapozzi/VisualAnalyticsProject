@@ -25,7 +25,7 @@ function processStanding(err, drvs, stnds) {
 
     //console.log(tracks);
 
-    // Group by pilots
+    // Group by drivers
     driv_rank = d3.nest()
                         .key(function(d) { return d.driver; })
                         .entries(driv_rank)

@@ -50,6 +50,8 @@ var countries_with_circ = [];
 var tracks = [];
 var racesId = [];
 var racesIdForRank = []; // Array for compute drivers' ranking
+var allRaces = [];
+var allResults = [];
 var raceId;
 var sel_circuit = "";
 var sel_circuit_name = "";
@@ -125,10 +127,9 @@ function removeA(arr) {
 }
 
 function initializeAllViews(error, drivers, constructors, results, races, circuits, driverStandings, constructorStandings) {
-    // Home View
-    processRacesByYear(circuits, races, results);
-    getRaces();
 
+    processAllRaces(circuits, races, results, drivers);
+    
     //General Info View
     processResults(drivers, constructors, results, races);
     getLastRaces(races);
@@ -136,6 +137,10 @@ function initializeAllViews(error, drivers, constructors, results, races, circui
     processConstructorsChampionships(constructors, constructorStandings);
     getDrivInfo(drivers, results, constructors);
     getConsInfo(results, constructors);
+
+    // Home View
+    processRacesByYear(circuits, races, results);
+    getRaces();
 
     // PCA View
     populatePCASelector(drivers, constructors);

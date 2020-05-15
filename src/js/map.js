@@ -25,6 +25,7 @@ var rect = svg.append("rect")
 
 var g = svg.append("g");
 
+/*
 function processRacesByYear(circ, rac, res) {
     rac.forEach(r => {
         if(r.year == sel_year) {
@@ -53,41 +54,50 @@ function processRacesByYear(circ, rac, res) {
             }
         }
     });
-    getChampions(racesIdForRank[racesIdForRank.length-1]);
+    getChampions();
     updateData();
 }
+*/
 
-function processRacesByYear2(err, circ, rac, res) {
-    rac.forEach(r => {
+function processRacesByYear() {
+    allRaces.forEach(r => {
         if(r.year == sel_year) {
-            circ.forEach(c => {
-                if(r.circuitId == c.circuitId) {
-                    if(!tracks.includes(c.name)) {
-                        //console.log(c.name);
-                        countries_with_circ.push(c.country);
-                        tracks[r.raceId] = [c.name, r.name];
-                        racesId[c.name] = r.raceId;
-                        racesIdForRank.push(+r.raceId);
-                    }
-                }
-            });
-            var locMax = 0;
-            res.forEach(rs => {
-                if(rs.raceId == r.raceId) {
-                    //console.log("POS ORD: " + rs.positionOrder + " race: " + rs.raceId);
-                    if(parseInt(rs.grid) >= locMax) {
-                        locMax = parseInt(rs.grid);
-                    }
-                }
-            });
-            if(locMax >= maxDrivers) {
-                maxDrivers = locMax;
+            if(!tracks.includes(r.circuitName)) {
+                countries_with_circ.push(r.circuitCountry);
+                tracks[r.raceId] = [r.circuitName, r.raceName];
+                racesId[r.circuitName] = r.raceId;
+                racesIdForRank.push(+r.raceId);
             }
         }
     });
-    getChampions(racesIdForRank[racesIdForRank.length-1]);
+    getChampions();
     updateData();
 }
+
+function processAllRaces(circ, rac, res, drivs) {
+    rac.forEach(r => {
+        circ.forEach(c => {
+            if(r.circuitId == c.circuitId) {
+                allRaces.push({'raceId' : r.raceId, 'raceName' : r.name, 'circuitName' : c.name, 'circuitCountry' : c.country, 'year' : r.year});
+            }
+        });
+        var locMax = 0;
+        res.forEach(rs => {
+            if(rs.raceId == r.raceId) {
+                drivs.forEach(dr => {
+                    if(dr.driverId == rs.driverId) {
+                        if(parseInt(rs.grid) >= locMax) {
+                            locMax = +rs.grid;
+                        }
+                        allResults.push({'raceId' : r.raceId, 'driver' : dr.forename + " " + dr.surname, 'position' : rs.position, 'grid' : rs.grid, 'maxDriv' : locMax});
+                    }
+                });
+            }
+        });
+    });
+}
+
+
 
 function onYearChange(newYear) {
     selectedDrivers = [];
@@ -107,12 +117,7 @@ function onYearChange(newYear) {
     d3.select("#consChampLabName").selectAll("*").remove();
     d3.select("#consChampLabImage").selectAll("*").remove();
 
-    d3.queue()
-        .defer(d3.json, circuits)
-        .defer(d3.json, races)
-        .defer(d3.json, results)
-        .await(processRacesByYear2);
-
+    processRacesByYear();
     getRaces();
 }
 
@@ -120,110 +125,96 @@ $("#yearSelect").on("change", function() {
     onYearChange($("#yearSelect").val());
 });
 
-function getChampions(lastRace) {
-    d3.queue()
-        .defer(d3.json, driver_standings)
-        .defer(d3.json, drivers)
-        .defer(d3.json, constructor_standings)
-        .defer(d3.json, constructors)
-        .await(function(er, driv_s, driv, cons_s, cons) {
-        driv_s.forEach(ds => {
-            if(+ds.raceId == lastRace && ds.positionText == "1") {
-                driv.forEach(d => {
-                    if(ds.driverId == d.driverId) {
-                        var champion = d.forename + " " + d.surname;
-                        selectedDrivers.push(champion);
-                        d3.select("#drivChampLabName")
-                            .append("a")
-                            .text(champion)
+function getChampions() {
+    console.log("SEL_YEAR: " + sel_year);
+    driv_champ_wins.forEach(dcw => {
+        if(parseInt(dcw.year) === parseInt(sel_year)) {
+            var champion = dcw.driver;
+            selectedDrivers.push(champion);
+            d3.select("#drivChampLabName")
+                .append("a")
+                .text(champion)
+                .attr("href", driver_urls[champion])
+                .attr("target", "_blank");
+            d3.json(urlImageRequest + champion, function(err, mydata) {
+                var firstObj = Object.values(mydata.query.pages)[0];
+                if(firstObj.hasOwnProperty("original")) {
+                    let urlImage = firstObj.original.source;
+                    var img = new Image();
+                    img.addEventListener("load", function(){
+                        var imageWidth = this.naturalWidth;
+                        var imageHeight = this.naturalHeight;
+                        var ratio = 0;
+                        var maxWidth = 300, maxHeight = 300;
+                        // Check if the current width is larger than the max
+                        if(imageWidth > maxWidth){
+                            ratio = maxWidth / imageWidth;   // get ratio for scaling image
+                            imageHeight = imageHeight * ratio;    // Reset height to match scaled image
+                            imageWidth = imageWidth * ratio;    // Reset width to match scaled image
+                        }
+                        // Check if current height is larger than max
+                        if(imageHeight > maxHeight){
+                            ratio = maxHeight / imageHeight; // get ratio for scaling image
+                            imageWidth = imageWidth * ratio;    // Reset width to match scaled image
+                            imageHeight = imageHeight * ratio;    // Reset height to match scaled image
+                        }
+                        d3.select("#drivChampLabImage").append("a")
                             .attr("href", driver_urls[champion])
-                            .attr("target", "_blank");
-                        d3.json(urlImageRequest + champion, function(err, mydata) {
-                            var firstObj = Object.values(mydata.query.pages)[0];
-                            if(firstObj.hasOwnProperty("original")) {
-                                let urlImage = firstObj.original.source;
-                                var img = new Image();
-                                img.addEventListener("load", function(){
-                                    var imageWidth = this.naturalWidth;
-                                    var imageHeight = this.naturalHeight;
-                                    var ratio = 0;
-                                    var maxWidth = 300, maxHeight = 300;
-                                    // Check if the current width is larger than the max
-                                    if(imageWidth > maxWidth){
-                                        ratio = maxWidth / imageWidth;   // get ratio for scaling image
-                                        imageHeight = imageHeight * ratio;    // Reset height to match scaled image
-                                        imageWidth = imageWidth * ratio;    // Reset width to match scaled image
-                                    }
-                                    // Check if current height is larger than max
-                                    if(imageHeight > maxHeight){
-                                        ratio = maxHeight / imageHeight; // get ratio for scaling image
-                                        imageWidth = imageWidth * ratio;    // Reset width to match scaled image
-                                        imageHeight = imageHeight * ratio;    // Reset height to match scaled image
-                                    }
-                                    d3.select("#drivChampLabImage").append("a")
-                                        .attr("href", driver_urls[champion])
-                                        .attr("target", "_blank")
-                                        .append("img")
-                                        .attr("src", urlImage)
-                                        .attr("width", imageWidth)
-                                        .attr("height", imageHeight);
-                                });
-                                img.src = urlImage;
-                            }
-                        });
-                    }
-                })
-            }
-        });
-        cons_s.forEach(cs => {
-            if(+cs.raceId == lastRace && cs.positionText == "1") {
-                cons.forEach(c => {
-                    if(cs.constructorId == c.constructorId) {
-                        var consChampion = c.name;
-                        d3.select("#consChampLabName")
-                            .append("a")
-                            .text(consChampion)
-                            .attr("href", constructor_urls[consChampion])
-                            .attr("target", "_blank");
-                        d3.json(urlImageRequest + consChampion, function(err, mydata) {
-                            var firstObj = Object.values(mydata.query.pages)[0];
-                            if(firstObj.hasOwnProperty("original")) {
-                                let urlImage = firstObj.original.source;
-                                var img = new Image();
-                                img.addEventListener("load", function(){
-                                    var imageWidth = this.naturalWidth;
-                                    var imageHeight = this.naturalHeight;
-                                    var ratio = 0;
-                                    var maxWidth = 300, maxHeight = 300;
-                                    // Check if the current width is larger than the max
-                                    if(imageWidth > maxWidth){
-                                        ratio = maxWidth / imageWidth;   // get ratio for scaling image
-                                        imageHeight = imageHeight * ratio;    // Reset height to match scaled image
-                                        imageWidth = imageWidth * ratio;    // Reset width to match scaled image
-                                    }
-
-                                    // Check if current height is larger than max
-                                    if(imageHeight > maxHeight){
-                                        ratio = maxHeight / imageHeight; // get ratio for scaling image
-                                        imageWidth = imageWidth * ratio;    // Reset width to match scaled image
-                                        imageHeight = imageHeight * ratio;    // Reset height to match scaled image
-                                    }
-                                    d3.select("#consChampLabImage").append("a")
-                                        .attr("href", constructor_urls[consChampion])
-                                        .attr("target", "_blank")
-                                        .append("img")
-                                        .attr("src", urlImage)
-                                        .attr("width", imageWidth)
-                                        .attr("height", imageHeight);
-                                });
-                                img.src = urlImage;
-                            }
-                        });
-                    }
-                });
-            }
-        });
+                            .attr("target", "_blank")
+                            .append("img")
+                            .attr("src", urlImage)
+                            .attr("width", imageWidth)
+                            .attr("height", imageHeight);
+                    });
+                    img.src = urlImage;
+                }
+            });
+        }
     });
+    cons_champ_wins.forEach(ccw => {
+        if(parseInt(ccw.year) === parseInt(sel_year)) {
+            var consChampion = ccw.constructor;
+            d3.select("#consChampLabName")
+                .append("a")
+                .text(consChampion)
+                .attr("href", constructor_urls[consChampion])
+                .attr("target", "_blank");
+            d3.json(urlImageRequest + consChampion, function(err, mydata) {
+                var firstObj = Object.values(mydata.query.pages)[0];
+                if(firstObj.hasOwnProperty("original")) {
+                    let urlImage = firstObj.original.source;
+                    var img = new Image();
+                    img.addEventListener("load", function(){
+                        var imageWidth = this.naturalWidth;
+                        var imageHeight = this.naturalHeight;
+                        var ratio = 0;
+                        var maxWidth = 300, maxHeight = 300;
+                        // Check if the current width is larger than the max
+                        if(imageWidth > maxWidth){
+                            ratio = maxWidth / imageWidth;   // get ratio for scaling image
+                            imageHeight = imageHeight * ratio;    // Reset height to match scaled image
+                            imageWidth = imageWidth * ratio;    // Reset width to match scaled image
+                        }
+
+                        // Check if current height is larger than max
+                        if(imageHeight > maxHeight){
+                            ratio = maxHeight / imageHeight; // get ratio for scaling image
+                            imageWidth = imageWidth * ratio;    // Reset width to match scaled image
+                            imageHeight = imageHeight * ratio;    // Reset height to match scaled image
+                        }
+                        d3.select("#consChampLabImage").append("a")
+                            .attr("href", constructor_urls[consChampion])
+                            .attr("target", "_blank")
+                            .append("img")
+                            .attr("src", urlImage)
+                            .attr("width", imageWidth)
+                            .attr("height", imageHeight);
+                    });
+                    img.src = urlImage;
+                }
+            });
+        }
+    })
 }
 
 function updateData() {
