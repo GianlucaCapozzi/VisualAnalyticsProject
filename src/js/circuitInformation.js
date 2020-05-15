@@ -243,17 +243,23 @@ function makePitPlot(nested_pit_times) {
         .domain([0, d3.max(maxLapsForYear)])
         .range([0, lapPlotWidth]);
 
-    pitPlot.append("g")
+    var gXAxis = pitPlot.append("g")
         .attr("transform", "translate(0," + lapPlotHeight + ")")
         .style("font", "20px f1font")
         .attr("class", "x-axis axis")
         .call(d3.axisBottom(x_pit)
-        .ticks(20));
+            .ticks(20));
+    
+    gXAxis.selectAll("text")
+        .style("text-anchor", "end")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", "rotate(-65)");
 
     // Text label for the x axis
     pitPlot.append("text")
         .attr("x", lapPlotWidth/2)
-        .attr("y", lapPlotHeight + marginLapPlot.top)
+        .attr("y", lapPlotHeight + marginLapPlot.top + 10)
         .style("text-anchor", "middle")
         .style("fill", "red")
         .style("font", "20px f1font")
@@ -378,11 +384,17 @@ function updatePitPlot(nested_pit_times) {
 
         d3.select("#pitPlot").selectAll(".pitForUpdate").remove();
 
-        pitPlot.select(".x-axis.axis")
+        var gXAxis = pitPlot.select(".x-axis.axis")
             .transition()
             .duration(1000)
             .call(d3.axisBottom(x_pit)
                     .ticks(20));
+        
+        gXAxis.selectAll("text")
+            .style("text-anchor", "end")
+            .attr("dx", "-.8em")
+            .attr("dy", ".15em")
+            .attr("transform", "rotate(-65)");
 
         pitPlot.selectAll("dots")
             .data(nested_pit_times)

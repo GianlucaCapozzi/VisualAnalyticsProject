@@ -25,40 +25,6 @@ var rect = svg.append("rect")
 
 var g = svg.append("g");
 
-/*
-function processRacesByYear(circ, rac, res) {
-    rac.forEach(r => {
-        if(r.year == sel_year) {
-            circ.forEach(c => {
-                if(r.circuitId == c.circuitId) {
-                    if(!tracks.includes(c.name)) {
-                        //console.log(c.name);
-                        countries_with_circ.push(c.country);
-                        tracks[r.raceId] = [c.name, r.name];
-                        racesId[c.name] = r.raceId;
-                        racesIdForRank.push(+r.raceId);
-                    }
-                }
-            });
-            var locMax = 0;
-            res.forEach(rs => {
-                if(rs.raceId == r.raceId) {
-                    //console.log("POS ORD: " + rs.positionOrder + " race: " + rs.raceId);
-                    if(parseInt(rs.grid) >= locMax) {
-                        locMax = parseInt(rs.grid);
-                    }
-                }
-            });
-            if(locMax >= maxDrivers) {
-                maxDrivers = locMax;
-            }
-        }
-    });
-    getChampions();
-    updateData();
-}
-*/
-
 function processRacesByYear() {
     allRaces.forEach(r => {
         if(r.year == sel_year) {
@@ -118,7 +84,7 @@ function onYearChange(newYear) {
     d3.select("#consChampLabImage").selectAll("*").remove();
 
     processRacesByYear();
-    getRaces();
+    getRaces(true);
 }
 
 $("#yearSelect").on("change", function() {
@@ -229,7 +195,8 @@ function updateData() {
         g.selectAll("path")
             .data(topojson.feature(world, world.objects.countries)
             .features.filter(d => d.properties.name != "Antarctica"))
-            .enter().append("path")
+            .enter()
+            .append("path")
             .attr("id", "mapID")
             .attr("d", path)
             .attr("class", "feature")
@@ -237,6 +204,8 @@ function updateData() {
 
         // Color countries with at least one circuit
         g.selectAll("path")
+            .transition()
+            .duration(2000)
             .style("fill", colorCountry);
 
         // Insert borders

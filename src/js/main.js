@@ -140,7 +140,7 @@ function initializeAllViews(error, drivers, constructors, results, races, circui
 
     // Home View
     processRacesByYear(circuits, races, results);
-    getRaces();
+    getRaces(false);
 
     // PCA View
     populatePCASelector(drivers, constructors);

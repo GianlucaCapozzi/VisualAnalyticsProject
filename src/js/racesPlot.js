@@ -4,8 +4,9 @@ var racesPlotHeight = $("#racesView").height();
 var aspect = racesPlotWidth / racesPlotHeight;
 
 var racesPlot, x, y;
+var legend;
 
-function getRaces() {
+function getRaces(update_flag) {
     season_races = [];
     firstRound = d3.min(racesIdForRank) - 1;
     allResults.forEach(ar => {
@@ -17,7 +18,7 @@ function getRaces() {
         }
     });
 
-    // Group by pilots
+    // Group by drivers
     season_races = d3.nest()
                         .key(function(d) { return d.driver; })
                         .entries(season_races)
@@ -31,12 +32,18 @@ function getRaces() {
         }
         season_races[i].values = season_races[i].values.sort(function(a,b) {return d3.ascending(a.race,b.race);});
     }
-    makeRacesPlot();
+    
+    if(update_flag == false) {
+        makeRacesPlot();
+    }
+    else {
+        updateRacesPlot();
+    }
 }
 
 
 function makeRacesPlot() {
-    d3.select("#racesView").selectAll("*").remove();
+    //d3.select("#racesView").selectAll("*").remove();
     racesPlot = d3.select("#racesView").attr("class", "center-align").classed("svg-container", true)
                     .append("svg")
                     //.attr("width", sWidth + marginRacePlot.left + marginRacePlot.right)
@@ -107,12 +114,17 @@ function makeRacesPlot() {
     // Add the lines
     var line = d3.line()
                   .x(function(d) { return x(+d.race) })
-                  .y(function(d) { return y(+d.position) })
-    racesPlot.selectAll("lines")
+                  .y(function(d) { return y(+d.position) });
+
+
+    var racesGroups = racesPlot.selectAll(".linesGroups")
         .data(season_races)
         .enter()
-        .append("path")
-        .attr("class", function(d){ return d.key.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot otherDrivers" })
+        .append("g")
+        .attr("class", function(d){ return d.key.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot otherDrivers forRacesUpdate linesGroups" })
+
+    racesGroups.append("path")
+        .attr("class", function(d){ return d.key.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot otherDrivers forRacesUpdate" })
         .attr("d", function(d){ return line(d.values) } )
         .attr("stroke", function(d){ return color(d.key) })
         .style("stroke-width", 4)
@@ -124,7 +136,7 @@ function makeRacesPlot() {
         .enter()
         .append('g')
         .style("fill", function(d){ return color(d.key) })
-        .attr("class", function(d){ return d.key.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot otherDrivers" })
+        .attr("class", function(d){ return d.key.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot otherDrivers forRacesUpdate" })
         .selectAll("myPoints")
         .data(function(d){ return d.values; })
         .enter()
@@ -148,24 +160,8 @@ function makeRacesPlot() {
                 .css("opacity", 0);
         });
 
-    // Add a legend at the end of each line
-    /*racesPlot.selectAll("myLabels")
-            .data(season_races)
-            .enter()
-            .append('g')
-            .append("text")
-            .attr("class", function(d){ return d.key.replace(/\./g, "").replace(/\s/g, '') + " otherDrivers" })
-            .datum(function(d) { return {name: d.key, value: d.values[d.values.length - 1]}; }) // keep only the last value of each time series
-            .attr("transform", function(d) { return "translate(" + x(d.value.race) + "," + y(d.value.position) + ")"; }) // Put the text at the position of the last point
-            .attr("x", 12) // shift the text a bit more right
-            .text(function(d) { return d.name; })
-            .style("fill", function(d){ return color(d.name) })
-            .style("font-size", 15);*/
-
-    // Add a legend (interactive)
-    d3.select("#racesPlotLegendView").selectAll("*").remove();
-    var legend = d3.select("#racesPlotLegendView");
-    legend.append("div").text("Drivers:").style("width", "100%").attr("class", "title center-align");
+    legend = d3.select("#racesPlotLegendView");
+    legend.append("div").text("Drivers:").style("width", "100%").attr("class", "title center-align forRacesUpdate");
     var legendContainer = legend.append("div").attr("class", "legend-grid");
     var drivers = [];
     legendContainer.selectAll("myLegend")
@@ -176,7 +172,182 @@ function makeRacesPlot() {
             .style("margin-right", "5px")
             .style("color", function(d){ return color(d.key) })
             .style("opacity", 0.5)
-            .attr("class", function(d){ return d.key.replace(/\./g, "").replace(/\s/g, '') + "forLegend" })
+            .attr("class", function(d){ return d.key.replace(/\./g, "").replace(/\s/g, '') + "forLegend forRacesUpdate" })
+            .text(function(d) { drivers.push(d.key); return d.key; })
+            .style("font-size", 15)
+            .on("click", function(d){
+                //console.log(d)
+                var currOpacity = d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot").style("opacity");
+                if (currOpacity == 1) {
+                    removeA(selectedDrivers, d.key);
+                    d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, '') + "forLegend")
+                        .transition()
+                        .duration(1000)
+                        .style("opacity", 0.5);
+                    d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot")
+                        .transition()
+                        .duration(1000)
+                        .style("opacity", 0);
+                }
+                else {
+                    selectedDrivers.push(d.key);
+                    d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, '') + "forLegend")
+                        .transition()
+                        .duration(1000)
+                        .style("opacity", 1);
+                    d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot")
+                        .transition()
+                        .duration(1000)
+                        .style("opacity", 1);
+                }
+            })
+            .on("mouseover", function() {
+                var currDriver = d3.select(this);
+                currDriver.style("opacity", 1);
+            })
+            .on("mouseout", function() {
+                var currDriver = d3.select(this);
+                var isSelected = false;
+                for (var i = 0; i < selectedDrivers.length; i++) {
+                    if (selectedDrivers[i].replace(/\./g, "").replace(/\s/g, '') + "forLegend" == currDriver.attr("class")) isSelected = true;
+                }
+                if (!isSelected) currDriver.style("opacity", 0.5);
+            });
+
+    // Show only first driver
+    d3.selectAll(".otherDrivers")
+        .transition()
+        .duration(500)
+        .style("opacity", 0);
+
+    // Select winner
+    for(var i = 0; i < selectedDrivers.length; i++) {
+        d3.selectAll("." + selectedDrivers[i].replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot")
+            .transition()
+            .duration(1000)
+            .style("opacity", 1);
+        d3.selectAll("." + selectedDrivers[i].replace(/\./g, "").replace(/\s/g, '') + "forLegend")
+            .transition()
+            .duration(1000)
+            .style("opacity", 1);
+    }
+
+}
+
+function updateRacesPlot() {
+
+    x.domain([0, racesIdForRank.length]);
+    y.domain([0, maxDrivers + 1]);
+
+    var xAxis = d3.axisBottom(x)
+                    .tickFormat(d3.format('d'))
+                    .ticks(racesIdForRank.length - 1);
+
+    var yAxis = d3.axisLeft(y)
+                .tickFormat(d3.format('d'))
+                .ticks(maxDrivers)
+                .tickFormat(function(d) { return (d == maxDrivers + 1) ? "R" : d; });
+
+    d3.select("#racesView").selectAll(".forRacesUpdate").remove();
+    d3.select("#racesPlotLegendView").selectAll(".forRacesUpdate").remove();
+
+    racesPlot.select(".x-axis.axis")
+        .transition()
+        .duration(1000)
+        .call(xAxis);
+
+    racesPlot.select(".y-axis.axis")
+        .transition()
+        .duration(1000)
+        .call(yAxis);
+
+    // Add the lines
+    var line = d3.line()
+                  .x(function(d) { return x(+d.race) })
+                  .y(function(d) { return y(+d.position) })
+
+    /*
+    racesPlot.selectAll("lines")
+        .data(season_races)
+        .transition()
+        .ease(d3.easeLinear)
+        .duration(2000)
+        .append("path")
+        .attr("class", function(d){ return d.key.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot otherDrivers forRacesUpdate" })
+        .attr("d", function(d){ return line(d.values) } )
+        .attr("stroke", function(d){ return color(d.key) })
+        .style("stroke-width", 4)
+        .style("fill", "none");
+    */
+    var racesGroups = racesPlot.selectAll(".linesGroups")
+        .data(season_races)
+        .enter()
+        .append("g")
+        .attr("class", function(d){ return d.key.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot otherDrivers forRacesUpdate linesGroups" })
+
+    racesGroups.append("path")
+        .transition()
+        .duration(2000)
+        .delay(function(d, i) {
+            return i / season_races.length * 500;
+        })
+        .attrTween("d", function(d) {
+            var previous = d3.select(this).attr('d');
+            var current = line(d.values);
+            return d3.interpolatePath(previous, current);
+        })
+        .attr("class", function(d){ return d.key.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot otherDrivers forRacesUpdate" })
+        .attr("stroke", function(d){ return color(d.key) })
+        .style("stroke-width", 4)
+        .style("fill", "none");
+
+    // Add the points
+    racesPlot.selectAll("dots")
+        .data(season_races)
+        .enter()
+        .append('g')
+        .style("fill", function(d){ return color(d.key) })
+        .attr("class", function(d){ return d.key.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot otherDrivers forRacesUpdate" })
+        .selectAll("myPoints")
+        .data(function(d){ return d.values; })
+        .enter()
+        .append("circle")
+        .on("mouseover", function(d) {
+            $(".tooltip")
+                .css("transition", "1s")
+                .css("left", d3.event.pageX + "px")
+                .css("top", d3.event.pageY + "px")
+                .css("opacity", 1)
+                .css("display", "inline-block")
+                .html(tracks[d.race + firstRound][1]);
+        })
+        .on("mouseout", function(d) {
+            $(".tooltip")
+                .css("transition", "1s")
+                .css("opacity", 0);
+        })
+        .transition()
+            .duration(2000)
+            .delay(function(d, i) {
+                return i / season_races.length * 500;
+            })
+        .attr("cx", function(d) { return x(d.race) } )
+        .attr("cy", function(d) { return y(d.position) } )
+        .attr("r", 8)
+        .attr("stroke", "white");
+
+    legend.append("div").text("Drivers:").style("width", "100%").attr("class", "title center-align forRacesUpdate");
+    var legendContainer = legend.append("div").attr("class", "legend-grid");
+    var drivers = [];
+    legendContainer.selectAll("myLegend")
+            .data(season_races)
+            .enter()
+            .append("h6")
+            .style("float", "left")
+            .style("margin-right", "5px")
+            .style("color", function(d){ return color(d.key) })
+            .style("opacity", 0.5)
+            .attr("class", function(d){ return d.key.replace(/\./g, "").replace(/\s/g, '') + "forLegend forRacesUpdate" })
             .text(function(d) { drivers.push(d.key); return d.key; })
             .style("font-size", 15)
             .on("click", function(d){

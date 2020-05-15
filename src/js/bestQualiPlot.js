@@ -60,23 +60,23 @@ function processBestLaps(err, circs, gps, qualis, drivs, constrs) {
                                     if(c.constructorId == quali.constructorId) {
                                         if(quali.position == "1") {
                                             if(quali.q3 != "\\N" && quali.q3 != "") {
-                                                bestTimes.push({"circuit": t.name, "time": quali.q3, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date, "driver": d.forename + " " + d.surname, "constructor" : c.name });
+                                                bestTimes.push({"circuit": t.name, "time": quali.q3, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date, "driver": d.forename + " " + d.surname, "constructor" : c.name, "raceId" : race.raceId });
                                             }
                                             else if((quali.q3 == "\\N" || quali.q3 == "") && quali.q2 != "\\N" && quali.q2 != "") {
-                                                bestTimes.push({"circuit": t.name, "time": quali.q2, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date, "driver": d.forename + " " + d.surname, "constructor" : c.name });
+                                                bestTimes.push({"circuit": t.name, "time": quali.q2, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date, "driver": d.forename + " " + d.surname, "constructor" : c.name, "raceId" : race.raceId });
                                             }
                                             else if((quali.q2 == "\\N" || quali.q2 == "") && quali.q1 != "\\N" && quali.q1 != "") {
-                                                bestTimes.push({"circuit": t.name, "time": quali.q1, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date, "driver": d.forename + " " + d.surname, "constructor" : c.name });
+                                                bestTimes.push({"circuit": t.name, "time": quali.q1, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date, "driver": d.forename + " " + d.surname, "constructor" : c.name, "raceId" : race.raceId });
                                             }
                                         }
                                         if(quali.q3 != "\\N" && quali.q3 != "") {
-                                            quali_standing.push({"circuit": t.name, "time": quali.q3, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date, "driver": d.forename + " " + d.surname, "constructor" : c.name, "position" : quali.position });
+                                            quali_standing.push({"circuit": t.name, "time": quali.q3, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date, "driver": d.forename + " " + d.surname, "constructor" : c.name, "position" : quali.position, "raceId" : race.raceId });
                                         }
                                         else if((quali.q3 == "\\N" || quali.q3 == "") && quali.q2 != "\\N" && quali.q2 != "") {
-                                            quali_standing.push({"circuit": t.name, "time": quali.q2, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date, "driver": d.forename + " " + d.surname, "constructor" : c.name, "position" : quali.position });
+                                            quali_standing.push({"circuit": t.name, "time": quali.q2, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date, "driver": d.forename + " " + d.surname, "constructor" : c.name, "position" : quali.position, "raceId" : race.raceId });
                                         }
                                         else if((quali.q2 == "\\N" || quali.q2 == "") && quali.q1 != "\\N" && quali.q1 != "") {
-                                            quali_standing.push({"circuit": t.name, "time": quali.q1, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date, "driver": d.forename + " " + d.surname, "constructor" : c.name, "position" : quali.position });
+                                            quali_standing.push({"circuit": t.name, "time": quali.q1, "year": race.year, "lat": t.lat, "long": t.long, "date": race.date, "driver": d.forename + " " + d.surname, "constructor" : c.name, "position" : quali.position, "raceId" : race.raceId });
                                         }
                                     }
                                 });
@@ -111,7 +111,7 @@ function getBestQualiData(currCirc, startTime, endTime, update) {
         if(d.key == currCirc) {
             d.values.forEach(v => {
                 if(parseInt(v.year) >= parseInt(startTime) && parseInt(v.year) <= parseInt(endTime)){
-                    currCircTimes.push({'year': v.year, 'time': v.time, "lat": v.lat, "long": v.long, "date": v.date, "driver": v.driver , "constructor" : v.constructor });
+                    currCircTimes.push({'year': v.year, 'time': v.time, "lat": v.lat, "long": v.long, "date": v.date, "driver": v.driver , "constructor" : v.constructor, "raceId" : v.raceId });
                 }
             });
         }
