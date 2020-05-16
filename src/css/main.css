@@ -17,6 +17,19 @@ html, body, #viewsContainer {
     scrollbar-color: dark;
 }
 
+button {
+    font-family: f1font;
+}
+
+#menuFooter{
+    position: absolute;
+    font-size: 12px;
+    line-height: 1.3;
+    margin-right: 10px;
+    bottom: 70px;
+    left: 20px;
+}
+
 #infoContainer, #pcaContainer, #circuitContainer {
     width: 0%;
     height: 0%;

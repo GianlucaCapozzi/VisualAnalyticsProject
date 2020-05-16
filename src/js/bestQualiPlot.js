@@ -233,8 +233,8 @@ function makeBestQualiPlot(currCircTimes, currCirc) {
                     qs.values.forEach(qsv => {
                         if(parseInt(qsv.key) == d.year) {
                             strYear = "" + d.year;
-                            //$("#yearSelect").val(strYear).change();
-                            onYearChange(strYear);
+                            $("#yearSelect").val(strYear).change();
+                            $("#yearSelect").formSelect();
                             d3.select("#circuitTitle").text("Circuits Info: " + currCirc + ", Year: " + sel_year);
                             d3.select("#standingPlot").selectAll("*").remove();
                             d3.select("#resTable").selectAll("*").remove();
@@ -372,9 +372,17 @@ function updateBestQualiPlot(currCircTimes, currCirc) {
                         qs.values.forEach(qsv => {
                             //console.log(qsv);
                             if(parseInt(qsv.key) == d.year) {
-                                //console.log(qsv)
-                                if (d.year == parseInt(sel_year)) d3.select("#qualiStandingPlotTitle").text("Qualifying Times");
-                                else d3.select("#qualiStandingPlotTitle").text("Qualifying Times " + d.year);
+                                strYear = "" + d.year;
+                                $("#yearSelect").val(strYear).change();
+                                $("#yearSelect").formSelect();
+                                d3.select("#circuitTitle").text("Circuits Info: " + currCirc + ", Year: " + sel_year);
+                                d3.select("#standingPlot").selectAll("*").remove();
+                                d3.select("#resTable").selectAll("*").remove();
+                                d3.select("#lapTimesPlotID").remove();
+                                raceId = d.raceId;
+                                getStanding();
+                                getResults();
+                                getLapDistribution(sel_circuit);
                                 updateQualiPlot(qsv.values);
                             }
                         })
