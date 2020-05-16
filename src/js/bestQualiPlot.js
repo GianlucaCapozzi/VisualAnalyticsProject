@@ -233,7 +233,7 @@ function makeBestQualiPlot(currCircTimes, currCirc) {
                     qs.values.forEach(qsv => {
                         if(parseInt(qsv.key) == d.year) {
                             strYear = "" + d.year;
-                            $("#yearSelect").val(strYear).change();
+                            //$("#yearSelect").val(strYear).change();
                             onYearChange(strYear);
                             d3.select("#circuitTitle").text("Circuits Info: " + currCirc + ", Year: " + sel_year);
                             d3.select("#standingPlot").selectAll("*").remove();

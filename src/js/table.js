@@ -66,6 +66,10 @@ function makeTable(ranking) {
                         .transition()
                         .duration(500)
                         .style("opacity", 0);
+                d3.selectAll("." + d.Driver.replace(/\./g, "").replace(/\s/g, '')+"forQualiPlot")
+                        .transition()
+                        .duration(500)
+                        .style("opacity", 0.1);
                 d3.selectAll("." + d.Driver.replace(/\./g, "").replace(/\s/g, '') + "ForTable").style("color", "#FFFFFF");
             }
             else {
@@ -83,6 +87,10 @@ function makeTable(ranking) {
                     .duration(1000)
                     .style("opacity", 1);
                 d3.selectAll("." + d.Driver.replace(/\./g, "").replace(/\s/g, '')+"forLapTimesPlot")
+                        .transition()
+                        .duration(500)
+                        .style("opacity", 1);
+                d3.selectAll("." + d.Driver.replace(/\./g, "").replace(/\s/g, '')+"forQualiPlot")
                         .transition()
                         .duration(500)
                         .style("opacity", 1);

@@ -84,10 +84,20 @@ function qualiPlot(standingList) {
         .text("Times");
 
     qualiStandingPlot.selectAll("dots")
+        .append("g")
         .data(standingList)
         .enter()
         .append("circle")
-        .attr("class", "qualiDots")
+        .attr("class", function(d) { return d.driver.replace(/\./g, "").replace(/\s/g, '') + "forQualiPlot otherQualiDrivers qualiDots"})
+        .style("opacity", function(d) {
+            if (selectedDrivers.includes(d.driver)) {
+                return 1;
+            }
+            else {
+                return 0.1;
+            }
+        })
+        .style("fill", function(d){ return color(d.constructor) })
         .on("mouseover", function(d) {
             $(".tooltip")
                 .css("transition", "1s")
@@ -102,13 +112,65 @@ function qualiPlot(standingList) {
                         .css("transition", "1s")
                         .css("opacity", 0);
         })
-        .style("fill", function(d){ return color(d.constructor) })
+        .on("click", function(d) {
+            var currOpacity = d3.select(this).style("opacity");
+            if (currOpacity == 1) {
+                removeA(selectedDrivers, d.driver);
+                d3.selectAll("." + d.driver.replace(/\./g, "").replace(/\s/g, '')+"ForRace")
+                    .transition()
+                    .duration(500)
+                    .style("opacity", 0.05);
+                d3.selectAll("." + d.driver.replace(/\./g, "").replace(/\s/g, '') + "forLegend")
+                    .transition()
+                    .duration(1000)
+                    .style("opacity", 0.5);
+                d3.selectAll("." + d.driver.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot")
+                    .transition()
+                    .duration(1000)
+                    .style("opacity", 0);
+                d3.selectAll("." + d.driver.replace(/\./g, "").replace(/\s/g, '')+"forLapTimesPlot")
+                        .transition()
+                        .duration(500)
+                        .style("opacity", 0);
+                d3.selectAll("." + d.driver.replace(/\./g, "").replace(/\s/g, '')+"forQualiPlot")
+                        .transition()
+                        .duration(500)
+                        .style("opacity", 0.1);
+                d3.selectAll("." + d.driver.replace(/\./g, "").replace(/\s/g, '') + "ForTable").style("color", "#FFFFFF");
+            }
+            else {
+                selectedDrivers.push(d.driver);
+                d3.selectAll("." + d.driver.replace(/\./g, "").replace(/\s/g, '')+"ForRace")
+                    .transition()
+                    .duration(500)
+                    .style("opacity", 1);
+                d3.selectAll("." + d.driver.replace(/\./g, "").replace(/\s/g, '') + "forLegend")
+                    .transition()
+                    .duration(1000)
+                    .style("opacity", 1);
+                d3.selectAll("." + d.driver.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot")
+                    .transition()
+                    .duration(1000)
+                    .style("opacity", 1);
+                d3.selectAll("." + d.driver.replace(/\./g, "").replace(/\s/g, '')+"forLapTimesPlot")
+                        .transition()
+                        .duration(500)
+                        .style("opacity", 1);
+                d3.selectAll("." + d.driver.replace(/\./g, "").replace(/\s/g, '')+"forQualiPlot")
+                        .transition()
+                        .duration(500)
+                        .style("opacity", 1);
+                d3.selectAll("." + d.driver.replace(/\./g, "").replace(/\s/g, '') + "ForTable").style("color", "#FF0000");
+            }
+        })
         .transition()
         .duration(2000)
         .attr("cx", function(d) { return x_quali(+d.position); })
         .attr("cy", function(d) { return y_quali(d3.timeParse(specifier)(d.time)); })
         .attr("r", 8)
-        .attr("stroke", function(d){ return color(d.constructor) });
+        .attr("stroke", function(d){ return color(d.constructor) })
+        
+
     if (standingList.length == 0) {
         $("#qualiStandingPlotID").addClass("scale-out");
         $("#qualiStandingPlotID").addClass("no-dimension");
@@ -160,7 +222,15 @@ function updateQualiPlot(standingList) {
             .data(standingList)
             .enter()
             .append("circle")
-            .attr("class", "qualiDots")
+            .attr("class", function(d) { return d.driver.replace(/\./g, "").replace(/\s/g, '') + "forQualiPlot otherQualiDrivers qualiDots"})
+            .style("opacity", function(d) {
+                if (selectedDrivers.includes(d.driver)) {
+                    return 1;
+                }
+                else {
+                    return 0.1;
+                }
+            })
             .on("mouseover", function(d) {
                 // Add tooltip
                 $(".tooltip")
@@ -176,6 +246,57 @@ function updateQualiPlot(standingList) {
                     .css("transition", "1s")
                     .css("opacity", 0);
             })
+            .on("click", function(d) {
+                var currOpacity = d3.select(this).style("opacity");
+                if (currOpacity == 1) {
+                    removeA(selectedDrivers, d.driver);
+                    d3.selectAll("." + d.driver.replace(/\./g, "").replace(/\s/g, '')+"ForRace")
+                        .transition()
+                        .duration(500)
+                        .style("opacity", 0.05);
+                    d3.selectAll("." + d.driver.replace(/\./g, "").replace(/\s/g, '') + "forLegend")
+                        .transition()
+                        .duration(1000)
+                        .style("opacity", 0.5);
+                    d3.selectAll("." + d.driver.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot")
+                        .transition()
+                        .duration(1000)
+                        .style("opacity", 0);
+                    d3.selectAll("." + d.driver.replace(/\./g, "").replace(/\s/g, '')+"forLapTimesPlot")
+                            .transition()
+                            .duration(500)
+                            .style("opacity", 0);
+                    d3.selectAll("." + d.driver.replace(/\./g, "").replace(/\s/g, '')+"forQualiPlot")
+                            .transition()
+                            .duration(500)
+                            .style("opacity", 0.1);
+                    d3.selectAll("." + d.driver.replace(/\./g, "").replace(/\s/g, '') + "ForTable").style("color", "#FFFFFF");
+                }
+                else {
+                    selectedDrivers.push(d.driver);
+                    d3.selectAll("." + d.driver.replace(/\./g, "").replace(/\s/g, '')+"ForRace")
+                        .transition()
+                        .duration(500)
+                        .style("opacity", 1);
+                    d3.selectAll("." + d.driver.replace(/\./g, "").replace(/\s/g, '') + "forLegend")
+                        .transition()
+                        .duration(1000)
+                        .style("opacity", 1);
+                    d3.selectAll("." + d.driver.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot")
+                        .transition()
+                        .duration(1000)
+                        .style("opacity", 1);
+                    d3.selectAll("." + d.driver.replace(/\./g, "").replace(/\s/g, '')+"forLapTimesPlot")
+                            .transition()
+                            .duration(500)
+                            .style("opacity", 1);
+                    d3.selectAll("." + d.driver.replace(/\./g, "").replace(/\s/g, '')+"forQualiPlot")
+                            .transition()
+                            .duration(500)
+                            .style("opacity", 1);
+                    d3.selectAll("." + d.driver.replace(/\./g, "").replace(/\s/g, '') + "ForTable").style("color", "#FF0000");
+                }
+            })
             .style("fill", function(d){ return color(d.constructor) })
             .transition()
             .duration(2000)
@@ -186,5 +307,6 @@ function updateQualiPlot(standingList) {
             .attr("cy", function(d) { return y_quali(d3.timeParse(specifier)(d.time)); })
             .attr("r", 8)
             .attr("stroke", function(d){ return color(d.constructor) });
+
     }
 }
