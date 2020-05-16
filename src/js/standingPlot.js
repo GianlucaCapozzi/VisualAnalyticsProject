@@ -8,7 +8,6 @@ function processStanding(err, drvs, stnds) {
     circ_names = [];
     firstRound = d3.min(racesIdForRank) - 1;
     racesIdForRank.forEach( rId => {
-        //console.log(rId);
         stnds.forEach(stand => {
             if(rId <= parseInt(raceId) && parseInt(stand.raceId) == rId) {
                 drvs.forEach(driver => {
@@ -22,8 +21,6 @@ function processStanding(err, drvs, stnds) {
             }
         });
     });
-
-    //console.log(tracks);
 
     // Group by drivers
     driv_rank = d3.nest()
@@ -83,12 +80,12 @@ function makePlot() {
 
     // text label for the x axis
     scatPlot.append("text")
-        .attr("x", sWidth/2)
-        .attr("y", sHeight + marginPlot.top)
-        .style("text-anchor", "middle")
-        .style("font", "20px f1font")
-        .style("fill", "red")
-        .text("Races");
+            .attr("x", sWidth/2)
+            .attr("y", sHeight + marginPlot.top)
+            .style("text-anchor", "middle")
+            .style("font", "20px f1font")
+            .style("fill", "red")
+            .text("Races");
 
     // Add the y axis
     scatPlot.append("g")
@@ -97,63 +94,61 @@ function makePlot() {
             .call(yAxis);
 
     scatPlot.append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 0 - marginPlot.left)
-        .attr("x", 0 - sHeight / 2)
-        .attr("dy", "1em")
-        .style("text-anchor", "middle")
-        .style("font", "20px f1font")
-        .style("fill", "red")
-        .text("Position");
+            .attr("transform", "rotate(-90)")
+            .attr("y", 0 - marginPlot.left)
+            .attr("x", 0 - sHeight / 2)
+            .attr("dy", "1em")
+            .style("text-anchor", "middle")
+            .style("font", "20px f1font")
+            .style("fill", "red")
+            .text("Position");
 
     // Add the lines
     var line = d3.line()
                   .x(function(d) { return x(+d.race) })
                   .y(function(d) { return y(+d.position) })
     scatPlot.selectAll("lines")
-        .data(driv_rank)
-        .enter()
-        .append("path")
-        .attr("class", function(d) { return d.key.replace(/\./g, "").replace(/\s/g, '') + "ForRace otherDriversForRace"; })
-        .attr("d", function(d){ return line(d.values) } )
-        .attr("stroke", function(d){ return color(d.key) })
-        .style("stroke-width", 4)
-        .style("fill", "none");
+            .data(driv_rank)
+            .enter()
+            .append("path")
+            .attr("class", function(d) { return d.key.replace(/\./g, "").replace(/\s/g, '') + "ForRace otherDriversForRace"; })
+            .attr("d", function(d){ return line(d.values) } )
+            .attr("stroke", function(d){ return color(d.key) })
+            .style("stroke-width", 4)
+            .style("fill", "none");
 
     // Add the points
     scatPlot.selectAll("dots")
-        .data(driv_rank)
-        .enter()
-        .append('g')
-        .style("fill", function(d){ return color(d.key) })
-        .selectAll("myPoints")
-        .data(function(d){ return d.values })
-        .enter()
-        .append("circle")
-        .attr("class", function(d) {
-            return d.driver.replace(/\./g, "").replace(/\s/g, '') + "ForRace otherDriversForRace";
-        })
-        .attr("cx", function(d) { return x(d.race) } )
-        .attr("cy", function(d) { return y(d.position) } )
-        .attr("r", 5)
-        .attr("stroke", "white")
-        .on("mouseover", function(d) {
-            //console.log(tracks[d.race + firstRound])
-            // Add tooltip
-            //console.log(driv_rank);
-            $(".tooltip")
-                .css("transition", "1s")
-                .css("left", (parseInt(d3.select(this).attr("cx")) + document.getElementById("modal1").offsetLeft + document.getElementById("modalContent").offsetLeft + document.getElementById("modalContainer").offsetLeft + document.getElementById("standingPlot").offsetLeft) + "px")
-                .css("top", (parseInt(d3.select(this).attr("cy")) + document.getElementById("standingPlot").offsetTop) + "px")
-                .css("opacity", 1)
-                .css("display", "inline-block")
-                .html(tracks[d.race + firstRound][1]);
-        })
-        .on("mouseout", function(d) {
-            $(".tooltip")
-                .css("transition", "1s")
-                .css("opacity", 0);
-        });
+            .data(driv_rank)
+            .enter()
+            .append('g')
+            .style("fill", function(d){ return color(d.key) })
+            .selectAll("myPoints")
+            .data(function(d){ return d.values })
+            .enter()
+            .append("circle")
+            .attr("class", function(d) {
+                return d.driver.replace(/\./g, "").replace(/\s/g, '') + "ForRace otherDriversForRace";
+            })
+            .attr("cx", function(d) { return x(d.race) } )
+            .attr("cy", function(d) { return y(d.position) } )
+            .attr("r", 5)
+            .attr("stroke", "white")
+            .on("mouseover", function(d) {
+                // Add tooltip
+                $(".tooltip")
+                    .css("transition", "1s")
+                    .css("left", (parseInt(d3.select(this).attr("cx")) + document.getElementById("modal1").offsetLeft + document.getElementById("modalContent").offsetLeft + document.getElementById("modalContainer").offsetLeft + document.getElementById("standingPlot").offsetLeft) + "px")
+                    .css("top", (parseInt(d3.select(this).attr("cy")) + document.getElementById("standingPlot").offsetTop) + "px")
+                    .css("opacity", 1)
+                    .css("display", "inline-block")
+                    .html(tracks[d.race + firstRound][1]);
+            })
+            .on("mouseout", function(d) {
+                $(".tooltip")
+                    .css("transition", "1s")
+                    .css("opacity", 0);
+            });
 
     // Add a legend at the end of each line
     scatPlot.selectAll("myLabels")
@@ -223,9 +218,7 @@ function makePlot() {
                 if (selectedDrivers[i].replace(/\./g, "").replace(/\s/g, '') + "forLegend" == currDriver.attr("class")) isSelected = true;
             }
             if (!isSelected) currDriver.style("opacity", 0.5);
-        });;
-
-    //console.log(driv_rank[driv_rank.length-1]);
+        });
 
     // Show only first driver
     d3.selectAll(".otherDriversForRace")
@@ -241,7 +234,5 @@ function makePlot() {
             .transition()
             .duration(500)
             .style("opacity", 1);
-
     }
-
 }

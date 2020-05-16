@@ -32,7 +32,7 @@ function getRaces(update_flag) {
         }
         season_races[i].values = season_races[i].values.sort(function(a,b) {return d3.ascending(a.race,b.race);});
     }
-    
+
     if(update_flag == false) {
         makeRacesPlot();
     }
@@ -176,7 +176,6 @@ function makeRacesPlot() {
             .text(function(d) { drivers.push(d.key); return d.key; })
             .style("font-size", 15)
             .on("click", function(d){
-                //console.log(d)
                 var currOpacity = d3.selectAll("." + d.key.replace(/\./g, "").replace(/\s/g, '') + "forRacesPlot").style("opacity");
                 if (currOpacity == 1) {
                     removeA(selectedDrivers, d.key);
@@ -209,7 +208,7 @@ function makeRacesPlot() {
                 var currDriver = d3.select(this);
                 var isSelected = false;
                 for (var i = 0; i < selectedDrivers.length; i++) {
-                    if (selectedDrivers[i].replace(/\./g, "").replace(/\s/g, '') + "forLegend" == currDriver.attr("class")) isSelected = true;
+                    if (selectedDrivers[i].replace(/\./g, "").replace(/\s/g, '') + "forLegend" == currDriver.attr("class").split(" ")[0]) isSelected = true;
                 }
                 if (!isSelected) currDriver.style("opacity", 0.5);
             });
@@ -384,7 +383,7 @@ function updateRacesPlot() {
                 var currDriver = d3.select(this);
                 var isSelected = false;
                 for (var i = 0; i < selectedDrivers.length; i++) {
-                    if (selectedDrivers[i].replace(/\./g, "").replace(/\s/g, '') + "forLegend" == currDriver.attr("class")) isSelected = true;
+                    if (selectedDrivers[i].replace(/\./g, "").replace(/\s/g, '') + "forLegend" == currDriver.attr("class").split(" ")[0]) isSelected = true;
                 }
                 if (!isSelected) currDriver.style("opacity", 0.5);
             });

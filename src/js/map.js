@@ -66,6 +66,10 @@ function processAllRaces(circ, rac, res, drivs) {
 
 
 function onYearChange(newYear) {
+    d3.select("#drivChampLabName").selectAll("*").remove();
+    d3.select("#drivChampLabImage").selectAll("*").remove();
+    d3.select("#consChampLabName").selectAll("*").remove();
+    d3.select("#consChampLabImage").selectAll("*").remove();
     selectedDrivers = [];
     countries_with_circ = [];
     tracks = [];
@@ -78,11 +82,6 @@ function onYearChange(newYear) {
     maxDrivers = 0;
     sel_year = newYear;
 
-    d3.select("#drivChampLabName").selectAll("*").remove();
-    d3.select("#drivChampLabImage").selectAll("*").remove();
-    d3.select("#consChampLabName").selectAll("*").remove();
-    d3.select("#consChampLabImage").selectAll("*").remove();
-
     processRacesByYear();
     getRaces(true);
 }
@@ -92,7 +91,6 @@ $("#yearSelect").on("change", function() {
 });
 
 function getChampions() {
-    console.log("SEL_YEAR: " + sel_year);
     driv_champ_wins.forEach(dcw => {
         if(parseInt(dcw.year) === parseInt(sel_year)) {
             var champion = dcw.driver;
@@ -273,6 +271,8 @@ function clicked(d) {
             })
             .on("click", function(d) {
                 d3.select("#qualiStandingPlotID").remove();
+                d3.select("#standingPlot").selectAll("*").remove();
+                d3.select("#resTable").selectAll("*").remove();
                 d3.select("#bestTimesPlotID").remove();
                 d3.select("#circuitTitle").selectAll("*").remove();
                 d3.select("#lapTimesPlotID").remove();

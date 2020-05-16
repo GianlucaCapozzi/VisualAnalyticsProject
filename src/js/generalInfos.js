@@ -14,8 +14,6 @@ var drivDonutHeight = $("#racesView").height() - marginDonut.top - marginDonut.b
 var consDonutWidth = $("#racesView").width() * 40 / 45 - marginDonut.left - marginDonut.right;
 var consDonutHeight = $("#racesView").height() - marginDonut.top - marginDonut.bottom;
 
-var general_update = false;
-
 var champDrivKeyValue = [];
 var champConsKeyValue = [];
 
@@ -32,61 +30,6 @@ var consInfo = [];
 var lastRacesId = [];
 
 var csChampPlot;
-
-var startYear = 1950, endYear = 2019;
-
-var slider = document.getElementById('yearSlider');
-noUiSlider.create(slider, {
-   start: [1950, 2019],
-   connect: true,
-   step: 1,
-   range: {
-       'min': 1950,
-       'max': 2019
-   },
-   format: wNumb({
-       decimals: 0
-   })
-});
-slider.noUiSlider.on('update', function (values, handle) {
-    if(handle == 0) {
-        startYear = values[handle];
-        $("#startYear").text(startYear);
-    }
-    else {
-        endYear = values[handle];
-        $("#endYear").text(endYear);
-    }
-});
-slider.noUiSlider.on('change', function (values, handle) {
-    d3.select("#bestDriverName").selectAll("*").remove();
-    d3.select("#bestDriverVictories").selectAll("*").remove();
-    d3.select("#bestDriverWC").selectAll("*").remove();
-    d3.select("#bestDriverImage").selectAll("*").remove();
-    //d3.select("#driversPlot").selectAll("*").remove();
-    //d3.select("#drChampPlot").selectAll("*").remove();
-    d3.select("#bestConstructorName").selectAll("*").remove();
-    d3.select("#bestConstructorVictories").selectAll("*").remove();
-    d3.select("#bestConstructorWC").selectAll("*").remove();
-    d3.select("#bestConstructorImage").selectAll("*").remove();
-    //d3.select("#constructorsPlot").selectAll("*").remove();
-    //d3.select("#csChampPlot").selectAll("*").remove();
-    champDrivKeyValue = [];
-    champConsKeyValue = [];
-    data_count = [];
-    //drInfo = [];
-    cons_count = [];
-    //consInfo = [];
-    //driv_champ_wins = [];
-    //cons_champ_wins = [];
-    //lastRacesId = [];
-    general_update = true;
-
-    getVictories();
-    getTopChampDrivers();
-    getTopChampCons();
-
-});
 
 function processResults(drvs, cons, rsts, rcs) {
     driver_wins = [];

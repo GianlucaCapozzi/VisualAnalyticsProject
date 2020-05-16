@@ -12,6 +12,8 @@ var pitStops = dataset.concat("/pit_stops.json");
 
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 
+var general_update = false;
+
 var urlImageRequest = "https://cors-anywhere.herokuapp.com/https://it.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&pilicense=any&titles=";
 var driver_urls = {};
 var constructor_urls = {};
@@ -19,17 +21,15 @@ var constructor_urls = {};
 var selectedDrivers = [];
 
 var onCloseModal = function() {
-    d3.select("#standingPlot").selectAll("*").remove();
-    d3.select("#resTable").selectAll("*").remove();
     g.selectAll("#mapID").style("opacity", 1);
     g.selectAll("#circleMap").style("opacity", 1);
     mapID.active = true;
 };
 
 $(document).ready(function(){
-    $('select').formSelect();
-    $('.sidenav').sidenav({edge: 'right'});
-    $('.modal').modal({dismissible: false, onCloseEnd: onCloseModal});
+    $("select").formSelect();
+    $(".sidenav").sidenav({edge: "right"});
+    $(".modal").modal({dismissible: false, onCloseEnd: onCloseModal});
     $(".dropdown-content>li>a").css("color", "red");
 });
 
@@ -38,7 +38,7 @@ $(".brand-logo").on("click", function() {
 });
 
 $("#sidenav-trigger").on("click", function(event) {
-     $('.sidenav').sidenav('open');
+     $(".sidenav").sidenav("open");
 });
 
 for (let i = 2019; i > 1949; i--) {
@@ -126,10 +126,10 @@ function removeA(arr) {
     return arr;
 }
 
-function initializeAllViews(error, drivers, constructors, results, races, circuits, driverStandings, constructorStandings) {
+function initializeAllViews(error, drivers, constructors, results, races, circuits, driverStandings, constructorStandings, qualifying) {
 
     processAllRaces(circuits, races, results, drivers);
-    
+
     //General Info View
     processResults(drivers, constructors, results, races);
     getLastRaces(races);
@@ -141,11 +141,90 @@ function initializeAllViews(error, drivers, constructors, results, races, circui
     // Home View
     processRacesByYear(circuits, races, results);
     getRaces(false);
+    processBestLaps(circuits, races, qualifying, drivers, constructors);
 
     // PCA View
     populatePCASelector(drivers, constructors);
     $("#loading").css("display", "none"); // Hide chargement
 }
+
+var startYear = 1950, endYear = 2019;
+var startYearModal = 1950, endYearModal = 2019;
+
+var slider = document.getElementById("yearSlider");
+var sliderModal = document.getElementById("yearSliderModal");
+
+noUiSlider.create(slider, {
+   start: [1950, 2019],
+   connect: true,
+   step: 1,
+   range: {
+       "min": 1950,
+       "max": 2019
+   },
+   format: wNumb({
+       decimals: 0
+   })
+});
+slider.noUiSlider.on("update", function (values, handle) {
+    if(handle == 0) {
+        startYear = values[handle];
+        $("#startYear").text(startYear);
+    }
+    else {
+        endYear = values[handle];
+        $("#endYear").text(endYear);
+    }
+});
+slider.noUiSlider.on("change", function (values, handle) {
+    d3.select("#bestDriverName").selectAll("*").remove();
+    d3.select("#bestDriverVictories").selectAll("*").remove();
+    d3.select("#bestDriverWC").selectAll("*").remove();
+    d3.select("#bestDriverImage").selectAll("*").remove();
+    d3.select("#bestConstructorName").selectAll("*").remove();
+    d3.select("#bestConstructorVictories").selectAll("*").remove();
+    d3.select("#bestConstructorWC").selectAll("*").remove();
+    d3.select("#bestConstructorImage").selectAll("*").remove();
+    champDrivKeyValue = [];
+    champConsKeyValue = [];
+    data_count = [];
+    cons_count = [];
+    general_update = true;
+
+    getVictories();
+    getTopChampDrivers();
+    getTopChampCons();
+
+});
+
+noUiSlider.create(sliderModal, {
+   start: [1950, 2019],
+   connect: true,
+   step: 1,
+   range: {
+       "min": 1950,
+       "max": 2019
+   },
+   format: wNumb({
+       decimals: 0
+   })
+});
+sliderModal.noUiSlider.on("update", function (values, handle) {
+    if(handle == 0) {
+        startYearModal = values[handle];
+        $("#startYearModal").text(startYearModal);
+    }
+    else {
+        endYearModal = values[handle];
+        $("#endYearModal").text(endYearModal);
+    }
+});
+sliderModal.noUiSlider.on("change", function (values, handle) {
+    d3.select("#circuitRangeTitle").text("Analysis from " + startYearModal + " to " + endYearModal);
+    getWinPolePercentage(sel_circuit, startYearModal, endYearModal);
+    getPitStopDistribution(sel_circuit, startYearModal, endYearModal, true);
+    getBestQualiData(sel_circuit_name, startYearModal, endYearModal, true);
+});
 
 // Initialize
 d3.queue()
@@ -156,4 +235,5 @@ d3.queue()
     .defer(d3.json, circuits)
     .defer(d3.json, driver_standings)
     .defer(d3.json, constructor_standings)
+    .defer(d3.json, qualifying)
     .await(initializeAllViews);

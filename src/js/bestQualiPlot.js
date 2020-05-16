@@ -7,48 +7,7 @@ var heightUpdated = 0;
 var bestTimes = [];
 var quali_standing = [];
 
-var startYearModal = 1950, endYearModal = 2019;
-
-var sliderModal = document.getElementById('yearSliderModal');
-noUiSlider.create(sliderModal, {
-   start: [1950, 2019],
-   connect: true,
-   step: 1,
-   range: {
-       'min': 1950,
-       'max': 2019
-   },
-   format: wNumb({
-       decimals: 0
-   })
-});
-sliderModal.noUiSlider.on('update', function (values, handle) {
-    if(handle == 0) {
-        startYearModal = values[handle];
-        $("#startYearModal").text(startYearModal);
-    }
-    else {
-        endYearModal = values[handle];
-        $("#endYearModal").text(endYearModal);
-    }
-});
-sliderModal.noUiSlider.on('change', function (values, handle) {
-    d3.select("#circuitRangeTitle").text("Analysis from " + startYearModal + " to " + endYearModal);
-    getWinPolePercentage(sel_circuit, startYearModal, endYearModal);
-    getPitStopDistribution(sel_circuit, startYearModal, endYearModal, true);
-    getBestQualiData(sel_circuit_name, startYearModal, endYearModal, true);
-});
-
-d3.queue()
-    .defer(d3.json, circuits)
-    .defer(d3.json, races)
-    .defer(d3.json, qualifying)
-    .defer(d3.json, drivers)
-    .defer(d3.json, constructors)
-    .await(processBestLaps);
-
-
-function processBestLaps(err, circs, gps, qualis, drivs, constrs) {
+function processBestLaps(circs, gps, qualis, drivs, constrs) {
     gps.forEach(race => {
         qualis.forEach(quali => {
             if(quali.raceId == race.raceId) {
@@ -272,11 +231,18 @@ function makeBestQualiPlot(currCircTimes, currCirc) {
             quali_standing.forEach(qs => {
                 if(qs.key == currCirc) {
                     qs.values.forEach(qsv => {
-                        //console.log(qsv);
                         if(parseInt(qsv.key) == d.year) {
-                            //console.log(qsv)
-                            if (d.year == parseInt(sel_year)) d3.select("#qualiStandingPlotTitle").text("Qualifying Times");
-                            else d3.select("#qualiStandingPlotTitle").text("Qualifying Times " + d.year);
+                            strYear = "" + d.year;
+                            $("#yearSelect").val(strYear).change();
+                            onYearChange(strYear);
+                            d3.select("#circuitTitle").text("Circuits Info: " + currCirc + ", Year: " + sel_year);
+                            d3.select("#standingPlot").selectAll("*").remove();
+                            d3.select("#resTable").selectAll("*").remove();
+                            d3.select("#lapTimesPlotID").remove();
+                            raceId = d.raceId;
+                            getStanding();
+                            getResults();
+                            getLapDistribution(sel_circuit);
                             updateQualiPlot(qsv.values);
                         }
                     })
